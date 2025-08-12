@@ -16,24 +16,44 @@ def load_data(path=DATA_PATH, max_samples=None):
         df = df.head(max_samples)
     return df
 
-def preprocess_features(df, feature_cols=None, target_col='Patv', seq_len=24):
+def preprocess_features(df, feature_cols=None, target_col='Patv', seq_len=24, hist_len=24, seq_mode=False):
+    """
+    seq_mode: False（兼容原有），X shape (N, feature_dim); True，X shape (N, hist_len, feature_dim)
+    """
     if feature_cols is None:
         feature_cols = ['Wspd', 'Wdir', 'Etmp', 'Itmp', 'Ndir', 'Pab1', 'Pab2', 'Pab3', 'Prtv']
     X = []
     y = []
-    for i in range(len(df) - seq_len + 1):
-        X.append(df[feature_cols].iloc[i].values)
-        y.append(df[target_col].iloc[i:i+seq_len].values)
-    X = np.array(X)
-    y = np.array(y)  # shape (N, 24)
-    scaler_x = MinMaxScaler()
-    scaler_y = MinMaxScaler()
-    X_scaled = scaler_x.fit_transform(X)
-    # y: (N, 24) -> reshape to (-1, 1) for scaler, then back to (N, 24)
-    y_flat = y.reshape(-1, 1)
-    y_scaled_flat = scaler_y.fit_transform(y_flat)
-    y_scaled = y_scaled_flat.reshape(y.shape)
-    return X_scaled, y_scaled, scaler_x, scaler_y
+    if not seq_mode:
+        for i in range(len(df) - seq_len + 1):
+            X.append(df[feature_cols].iloc[i].values)
+            y.append(df[target_col].iloc[i:i+seq_len].values)
+        X = np.array(X)
+        y = np.array(y)  # shape (N, 24)
+        scaler_x = MinMaxScaler()
+        scaler_y = MinMaxScaler()
+        X_scaled = scaler_x.fit_transform(X)
+        y_flat = y.reshape(-1, 1)
+        y_scaled_flat = scaler_y.fit_transform(y_flat)
+        y_scaled = y_scaled_flat.reshape(y.shape)
+        return X_scaled, y_scaled, scaler_x, scaler_y
+    else:
+        # 序列输入：X为历史hist_len小时的特征序列，y为未来seq_len小时的功率
+        for i in range(len(df) - hist_len - seq_len + 1):
+            X.append(df[feature_cols].iloc[i:i+hist_len].values)  # shape (hist_len, feature_dim)
+            y.append(df[target_col].iloc[i+hist_len:i+hist_len+seq_len].values)  # shape (seq_len,)
+        X = np.array(X)  # (N, hist_len, feature_dim)
+        y = np.array(y)  # (N, seq_len)
+        # 分别归一化
+        scaler_x = MinMaxScaler()
+        scaler_y = MinMaxScaler()
+        X_2d = X.reshape(-1, X.shape[-1])
+        X_scaled_2d = scaler_x.fit_transform(X_2d)
+        X_scaled = X_scaled_2d.reshape(X.shape)
+        y_flat = y.reshape(-1, 1)
+        y_scaled_flat = scaler_y.fit_transform(y_flat)
+        y_scaled = y_scaled_flat.reshape(y.shape)
+        return X_scaled, y_scaled, scaler_x, scaler_y
 
 def split_data(X, y, test_size=0.2, random_state=42):
     return train_test_split(X, y, test_size=test_size, random_state=random_state)

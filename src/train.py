@@ -8,6 +8,9 @@ from baseline_gan import GANGenerator, GANDiscriminator
 from baseline_vae import VAE
 from diffusion_weibull import SimpleDiffusionModelWeibull, WeibullDiffusion
 
+from seq_vae import SeqVAE
+from seq_diffusion import SeqCondEncoder, SeqDiffusionModel, SeqGaussianDiffusion
+
 CHECKPOINT_DIR = os.path.join(os.path.dirname(__file__), '../checkpoints')
 os.makedirs(CHECKPOINT_DIR, exist_ok=True)
 
@@ -134,6 +137,52 @@ def train_vae(X_train, y_train, epochs=10, batch_size=128, device='cpu'):
     print(f"Saved VAE model to {os.path.join(CHECKPOINT_DIR, 'vae.pth')}")
 
 
+def train_seq_vae(X_train, y_train, epochs=10, batch_size=128, device='cpu', hist_len=24, seq_len=24, feature_dim=9):
+    y_dim = 1  # 只预测功率
+    model = SeqVAE(feature_dim=feature_dim, hist_len=hist_len, y_dim=y_dim, seq_len=seq_len).to(device)
+    optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
+    # y_train shape: (N, seq_len) -> (N, seq_len, 1)
+    y_train = y_train[..., None]
+    dataset = TensorDataset(torch.tensor(X_train, dtype=torch.float32), torch.tensor(y_train, dtype=torch.float32))
+    dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
+    for epoch in range(epochs):
+        epoch_loss = 0
+        for x_batch, y_batch in dataloader:
+            x_batch, y_batch = x_batch.to(device), y_batch.squeeze(-1).to(device)
+            recon_y, mu, logvar = model(x_batch)
+            loss = model.loss_function(recon_y, y_batch, mu, logvar)
+            optimizer.zero_grad()
+            loss.backward()
+            optimizer.step()
+            epoch_loss += loss.item()
+        avg_loss = epoch_loss / len(dataloader)
+        print(f"[SeqVAE] Epoch {epoch+1}/{epochs} Loss: {avg_loss:.4f}")
+    torch.save(model.state_dict(), os.path.join(CHECKPOINT_DIR, 'seq_vae.pth'))
+    print(f"Saved SeqVAE model to {os.path.join(CHECKPOINT_DIR, 'seq_vae.pth')}")
+
+def train_seq_diffusion(X_train, y_train, epochs=10, batch_size=128, device='cpu', hist_len=24, seq_len=24, feature_dim=9):
+    y_dim = seq_len
+    cond_encoder = SeqCondEncoder(feature_dim=feature_dim, hist_len=hist_len).to(device)
+    model = SeqDiffusionModel(cond_dim=cond_encoder.hidden_dim, y_dim=y_dim).to(device)
+    diffusion = SeqGaussianDiffusion(model, cond_encoder, device=device)
+    optimizer = torch.optim.Adam(list(model.parameters()) + list(cond_encoder.parameters()), lr=1e-3)
+    dataset = TensorDataset(torch.tensor(X_train, dtype=torch.float32), torch.tensor(y_train, dtype=torch.float32))
+    dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
+    for epoch in range(epochs):
+        epoch_loss = 0
+        for x_batch, y_batch in dataloader:
+            x_batch, y_batch = x_batch.to(device), y_batch.to(device)
+            loss = diffusion.train_loss(x_batch, y_batch)
+            optimizer.zero_grad()
+            loss.backward()
+            optimizer.step()
+            epoch_loss += loss.item()
+        avg_loss = epoch_loss / len(dataloader)
+        print(f"[SeqDiffusion] Epoch {epoch+1}/{epochs} Loss: {avg_loss:.4f}")
+    torch.save({'cond_encoder': cond_encoder.state_dict(), 'model': model.state_dict()},
+               os.path.join(CHECKPOINT_DIR, 'seq_diffusion.pth'))
+    print(f"Saved SeqDiffusion model to {os.path.join(CHECKPOINT_DIR, 'seq_diffusion.pth')}")
+
 def get_default_device():
     """Pick GPU if available, else CPU. Priority: CUDA > MPS > CPU."""
     if torch.cuda.is_available():
@@ -146,7 +195,7 @@ def get_default_device():
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('--model', type=str, default='diffusion', choices=['diffusion', 'gan', 'vae', 'weibull_diffusion'])
+    parser.add_argument('--model', type=str, default='diffusion', choices=['diffusion', 'gan', 'vae', 'weibull_diffusion', 'seq_vae', 'seq_diffusion'])
     parser.add_argument('--epochs', type=int, default=10)
     parser.add_argument('--device', type=str, default=get_default_device(),
                         help="Device to run training on (e.g., 'cpu', 'cuda', 'mps'). "
@@ -156,14 +205,24 @@ if __name__ == "__main__":
     print(f"Using device: {args.device}")
     # 只用前 10000 条数据训练（可根据内存情况调整）
     df = load_data(max_samples=10000)
-    X, y, _, _ = preprocess_features(df, seq_len=24)
-    X_train, X_test, y_train, y_test = split_data(X, y)
-
-    if args.model == 'diffusion':
-        train_diffusion(X_train, y_train, epochs=args.epochs, device=args.device)
-    elif args.model == 'weibull_diffusion':
-        train_weibull_diffusion(X_train, y_train, epochs=args.epochs, device=args.device)
-    elif args.model == 'gan':
-        train_gan(X_train, y_train, epochs=args.epochs, device=args.device)
-    elif args.model == 'vae':
-        train_vae(X_train, y_train, epochs=args.epochs, device=args.device)
+    if args.model == 'seq_vae':
+        X, y, _, _ = preprocess_features(df, seq_len=24, hist_len=24, seq_mode=True)
+        X_train, X_test, y_train, y_test = split_data(X, y)
+        feature_dim = X.shape[-1]
+        train_seq_vae(X_train, y_train, epochs=args.epochs, device=args.device, hist_len=24, seq_len=24, feature_dim=feature_dim)
+    elif args.model == 'seq_diffusion':
+        X, y, _, _ = preprocess_features(df, seq_len=24, hist_len=24, seq_mode=True)
+        X_train, X_test, y_train, y_test = split_data(X, y)
+        feature_dim = X.shape[-1]
+        train_seq_diffusion(X_train, y_train, epochs=args.epochs, device=args.device, hist_len=24, seq_len=24, feature_dim=feature_dim)
+    else:
+        X, y, _, _ = preprocess_features(df, seq_len=24)
+        X_train, X_test, y_train, y_test = split_data(X, y)
+        if args.model == 'diffusion':
+            train_diffusion(X_train, y_train, epochs=args.epochs, device=args.device)
+        elif args.model == 'weibull_diffusion':
+            train_weibull_diffusion(X_train, y_train, epochs=args.epochs, device=args.device)
+        elif args.model == 'gan':
+            train_gan(X_train, y_train, epochs=args.epochs, device=args.device)
+        elif args.model == 'vae':
+            train_vae(X_train, y_train, epochs=args.epochs, device=args.device)
