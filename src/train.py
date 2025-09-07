@@ -10,6 +10,7 @@ from diffusion_weibull import SimpleDiffusionModelWeibull, WeibullDiffusion
 
 from seq_vae import SeqVAE
 from seq_diffusion import SeqCondEncoder, SeqDiffusionModel, SeqGaussianDiffusion
+from seq_ar_diffusion import SeqCondEncoder as ARCondEncoder, SeqARDiffusionModel, SeqARGaussianDiffusion
 
 CHECKPOINT_DIR = os.path.join(os.path.dirname(__file__), '../checkpoints')
 os.makedirs(CHECKPOINT_DIR, exist_ok=True)
@@ -183,19 +184,41 @@ def train_seq_diffusion(X_train, y_train, epochs=10, batch_size=128, device='cpu
                os.path.join(CHECKPOINT_DIR, 'seq_diffusion.pth'))
     print(f"Saved SeqDiffusion model to {os.path.join(CHECKPOINT_DIR, 'seq_diffusion.pth')}")
 
+def train_seq_ar_diffusion(X_train, y_train, epochs=10, batch_size=128, device='cpu', hist_len=24, seq_len=24, feature_dim=9):
+    y_dim = 1
+    cond_encoder = ARCondEncoder(feature_dim=feature_dim, hist_len=hist_len).to(device)
+    model = SeqARDiffusionModel(cond_dim=cond_encoder.hidden_dim, y_dim=y_dim).to(device)
+    diffusion = SeqARGaussianDiffusion(model, cond_encoder, device=device, seq_len=seq_len)
+    optimizer = torch.optim.Adam(list(model.parameters()) + list(cond_encoder.parameters()), lr=1e-3)
+    dataset = TensorDataset(torch.tensor(X_train, dtype=torch.float32), torch.tensor(y_train, dtype=torch.float32))
+    dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True, drop_last=True)
+    for epoch in range(epochs):
+        epoch_loss = 0
+        for x_batch, y_batch in dataloader:
+            if x_batch.shape[0] == 0:
+                continue
+            x_batch, y_batch = x_batch.to(device), y_batch.to(device)
+            loss = diffusion.train_loss(x_batch, y_batch)
+            optimizer.zero_grad()
+            loss.backward()
+            optimizer.step()
+            epoch_loss += loss.item()
+        avg_loss = epoch_loss / len(dataloader)
+        print(f"[SeqAR-Diffusion] Epoch {epoch+1}/{epochs} Loss: {avg_loss:.4f}")
+    torch.save({'cond_encoder': cond_encoder.state_dict(), 'model': model.state_dict()},
+               os.path.join(CHECKPOINT_DIR, 'seq_ar_diffusion.pth'))
+    print(f"Saved SeqAR-Diffusion model to {os.path.join(CHECKPOINT_DIR, 'seq_ar_diffusion.pth')}")
+
 def get_default_device():
-    """Pick GPU if available, else CPU. Priority: CUDA > MPS > CPU."""
+    """Pick GPU if available, else CPU. Priority: CUDA > CPU (MPS disabled)."""
     if torch.cuda.is_available():
         return "cuda"
-    # Check for Apple Silicon (M1/M2)
-    if hasattr(torch.backends, "mps") and torch.backends.mps.is_available():
-        return "mps"
     return "cpu"
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('--model', type=str, default='diffusion', choices=['diffusion', 'gan', 'vae', 'weibull_diffusion', 'seq_vae', 'seq_diffusion'])
+    parser.add_argument('--model', type=str, default='diffusion', choices=['diffusion', 'gan', 'vae', 'weibull_diffusion', 'seq_vae', 'seq_diffusion', 'seq_ar_diffusion'])
     parser.add_argument('--epochs', type=int, default=10)
     parser.add_argument('--device', type=str, default=get_default_device(),
                         help="Device to run training on (e.g., 'cpu', 'cuda', 'mps'). "
@@ -215,6 +238,11 @@ if __name__ == "__main__":
         X_train, X_test, y_train, y_test = split_data(X, y)
         feature_dim = X.shape[-1]
         train_seq_diffusion(X_train, y_train, epochs=args.epochs, device=args.device, hist_len=24, seq_len=24, feature_dim=feature_dim)
+    elif args.model == 'seq_ar_diffusion':
+        X, y, _, _ = preprocess_features(df, seq_len=24, hist_len=24, seq_mode=True)
+        X_train, X_test, y_train, y_test = split_data(X, y)
+        feature_dim = X.shape[-1]
+        train_seq_ar_diffusion(X_train, y_train, epochs=args.epochs, device=args.device, hist_len=24, seq_len=24, feature_dim=feature_dim)
     else:
         X, y, _, _ = preprocess_features(df, seq_len=24)
         X_train, X_test, y_train, y_test = split_data(X, y)

@@ -1,9 +1,35 @@
-# 数据文件
-data/
-# 模型文件
+# === Python ===
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+dist/
+build/
+
 checkpoints/
 
-#环境
-venv/
+# === Jupyter ===
+.ipynb_checkpoints/
+*.ipynb_checkpoints/
 
-.venv/
+# === macOS ===
+.DS_Store
+
+# === IDE ===
+.vscode/
+.idea/
+
+# === 项目级输出（可选，按自己习惯） ===
+results/*.png
+results/*.npy
+results/*.csv
+!results/metrics.json          # 如果想保留指标文件，把这条去掉
+
+
+
+# 项目数据
+data/
+
+# 项目环境
+venv/

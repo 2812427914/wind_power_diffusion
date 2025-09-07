@@ -61,7 +61,7 @@ def evaluate_metrics(y_true, y_pred, y_samples=None):
 
 def main():
     parser = argparse.ArgumentParser(description="Evaluate a model's predictions.")
-    parser.add_argument('--model', type=str, required=True, choices=['diffusion', 'gan', 'vae', 'weibull_diffusion'],
+    parser.add_argument('--model', type=str, required=True, choices=['diffusion', 'gan', 'vae', 'weibull_diffusion', 'seq_vae', 'seq_diffusion', 'seq_ar_diffusion'],
                         help='The model to evaluate.')
     args = parser.parse_args()
     model_name = args.model
