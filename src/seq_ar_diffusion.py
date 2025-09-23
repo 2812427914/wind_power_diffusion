@@ -3,7 +3,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 class SeqCondEncoder(nn.Module):
-    def __init__(self, feature_dim, hist_len, hidden_dim=128, num_layers=1):
+    def __init__(self, feature_dim, hist_len, hidden_dim=256, num_layers=1):
         super().__init__()
         self.lstm = nn.LSTM(input_size=feature_dim, hidden_size=hidden_dim, num_layers=num_layers, batch_first=True)
         self.hidden_dim = hidden_dim
@@ -15,7 +15,7 @@ class SeqCondEncoder(nn.Module):
         return h_last
 
 class SeqARDiffusionModel(nn.Module):
-    def __init__(self, cond_dim, y_dim=1, hidden_dim=128, n_layers=2):
+    def __init__(self, cond_dim, y_dim=1, hidden_dim=128, n_layers=2, dropout=0.1):
         super().__init__()
         layers = []
         input_dim = cond_dim + y_dim + 1  # +1 for timestep
@@ -23,6 +23,7 @@ class SeqARDiffusionModel(nn.Module):
             in_dim = input_dim if i == 0 else hidden_dim
             layers.append(nn.Linear(in_dim, hidden_dim))
             layers.append(nn.ReLU())
+            layers.append(nn.Dropout(dropout))
         layers.append(nn.Linear(hidden_dim, y_dim))
         self.net = nn.Sequential(*layers)
 

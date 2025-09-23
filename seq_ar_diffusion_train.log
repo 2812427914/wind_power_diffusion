@@ -1,0 +1,6 @@
+Using device: cpu
+[SeqAR-Diffusion-Lazy] Epoch 1/2 Train Loss: 0.7484 | Val Loss: 0.7381
+Saved new best SeqAR-Diffusion model at epoch 1 with val loss 0.7381
+[SeqAR-Diffusion-Lazy] Epoch 2/2 Train Loss: 0.7390 | Val Loss: 0.7377
+Saved new best SeqAR-Diffusion model at epoch 2 with val loss 0.7377
+Saved last SeqAR-Diffusion model to src/../checkpoints/seq_ar_diffusion_last.pth

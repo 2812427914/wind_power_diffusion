@@ -1,0 +1,18 @@
+Using device: cpu
+[VAE] Epoch 1/10 Train Loss: 0.1594 | Val Loss: 0.1537
+Saved new best VAE model at epoch 1 with val loss 0.1537
+[VAE] Epoch 2/10 Train Loss: 0.1481 | Val Loss: 0.1491
+Saved new best VAE model at epoch 2 with val loss 0.1491
+[VAE] Epoch 3/10 Train Loss: 0.1297 | Val Loss: 0.1432
+Saved new best VAE model at epoch 3 with val loss 0.1432
+[VAE] Epoch 4/10 Train Loss: 0.1229 | Val Loss: 0.1342
+Saved new best VAE model at epoch 4 with val loss 0.1342
+[VAE] Epoch 5/10 Train Loss: 0.1142 | Val Loss: 0.1176
+Saved new best VAE model at epoch 5 with val loss 0.1176
+[VAE] Epoch 6/10 Train Loss: 0.1199 | Val Loss: 0.1217
+[VAE] Epoch 7/10 Train Loss: 0.1134 | Val Loss: 0.1197
+[VAE] Epoch 8/10 Train Loss: 0.1108 | Val Loss: 0.1073
+Saved new best VAE model at epoch 8 with val loss 0.1073
+[VAE] Epoch 9/10 Train Loss: 0.1075 | Val Loss: 0.1083
+[VAE] Epoch 10/10 Train Loss: 0.1099 | Val Loss: 0.1198
+Saved last VAE model to ../checkpoints/vae_last.pth

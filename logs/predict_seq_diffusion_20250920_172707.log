@@ -1,0 +1,12 @@
+Using device: mps
+Generating predictions with SeqDiffusion model...
+Traceback (most recent call last):
+  File "predict.py", line 279, in <module>
+    main()
+  File "predict.py", line 237, in main
+    y_samples_scaled = predict_seq_diffusion(X_test, y_dim, device=args.device, n_samples=args.n_samples, batch_size=args.batch_size, hist_len=24, seq_len=24, feature_dim=feature_dim)
+  File "predict.py", line 158, in predict_seq_diffusion
+    diffusion = SeqGaussianDiffusion(model, cond_encoder, device=device)
+  File "/Users/bytedance/Downloads/gits/wind_power_diffusion/src/seq_diffusion.py", line 44, in __init__
+    self.alpha_bars = torch.cumprod(self.alphas, dim=0)
+NotImplementedError: The operator 'aten::cumprod.out' is not currently implemented for the MPS device. If you want this op to be added in priority during the prototype phase of this feature, please comment on https://github.com/pytorch/pytorch/issues/77764. As a temporary fix, you can set the environment variable `PYTORCH_ENABLE_MPS_FALLBACK=1` to use the CPU as a fallback for this op. WARNING: this will be slower than running natively on MPS.

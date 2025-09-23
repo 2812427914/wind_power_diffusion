@@ -1,0 +1,18 @@
+Warning: torch.cumprod not supported on MPS, switching to CPU.
+Using device: cpu
+训练集样本数: 332
+[SeqVAE] Epoch 1/10 Train Loss: 0.1310 | Val Loss: 0.0886
+Saved new best SeqVAE model at epoch 1 with val loss 0.0886
+[SeqVAE] Epoch 2/10 Train Loss: 0.1123 | Val Loss: 0.1111
+[SeqVAE] Epoch 3/10 Train Loss: 0.1133 | Val Loss: 0.0802
+Saved new best SeqVAE model at epoch 3 with val loss 0.0802
+[SeqVAE] Epoch 4/10 Train Loss: 0.1039 | Val Loss: 0.0797
+Saved new best SeqVAE model at epoch 4 with val loss 0.0797
+[SeqVAE] Epoch 5/10 Train Loss: 0.1101 | Val Loss: 0.0838
+[SeqVAE] Epoch 6/10 Train Loss: 0.1109 | Val Loss: 0.0979
+[SeqVAE] Epoch 7/10 Train Loss: 0.1076 | Val Loss: 0.0883
+[SeqVAE] Epoch 8/10 Train Loss: 0.1009 | Val Loss: 0.0816
+[SeqVAE] Epoch 9/10 Train Loss: 0.0995 | Val Loss: 0.0787
+Saved new best SeqVAE model at epoch 9 with val loss 0.0787
+[SeqVAE] Epoch 10/10 Train Loss: 0.1063 | Val Loss: 0.0816
+Saved last SeqVAE model to ../checkpoints/seq_vae_last.pth

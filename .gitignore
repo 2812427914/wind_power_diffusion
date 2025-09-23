@@ -31,5 +31,8 @@ results/*.csv
 # 项目数据
 data/
 
+# 项目结果
+results/
+
 # 项目环境
 venv/

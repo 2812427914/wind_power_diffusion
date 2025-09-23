@@ -1,0 +1,19 @@
+Warning: torch.cumprod not supported on MPS, switching to CPU.
+Using device: cuda
+训练集样本数: 29427
+Traceback (most recent call last):
+  File "train.py", line 733, in <module>
+    cond_encoder = ARCondEncoder(feature_dim=feature_dim, hist_len=hist_len).to(args.device)
+  File "/Users/bytedance/Downloads/gits/wind_power_diffusion/venv/lib/python3.7/site-packages/torch/nn/modules/module.py", line 989, in to
+    return self._apply(convert)
+  File "/Users/bytedance/Downloads/gits/wind_power_diffusion/venv/lib/python3.7/site-packages/torch/nn/modules/module.py", line 641, in _apply
+    module._apply(fn)
+  File "/Users/bytedance/Downloads/gits/wind_power_diffusion/venv/lib/python3.7/site-packages/torch/nn/modules/rnn.py", line 187, in _apply
+    ret = super(RNNBase, self)._apply(fn)
+  File "/Users/bytedance/Downloads/gits/wind_power_diffusion/venv/lib/python3.7/site-packages/torch/nn/modules/module.py", line 664, in _apply
+    param_applied = fn(param)
+  File "/Users/bytedance/Downloads/gits/wind_power_diffusion/venv/lib/python3.7/site-packages/torch/nn/modules/module.py", line 987, in convert
+    return t.to(device, dtype if t.is_floating_point() or t.is_complex() else None, non_blocking)
+  File "/Users/bytedance/Downloads/gits/wind_power_diffusion/venv/lib/python3.7/site-packages/torch/cuda/__init__.py", line 221, in _lazy_init
+    raise AssertionError("Torch not compiled with CUDA enabled")
+AssertionError: Torch not compiled with CUDA enabled

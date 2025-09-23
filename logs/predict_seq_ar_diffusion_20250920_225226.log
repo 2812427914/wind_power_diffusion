@@ -1,0 +1,5 @@
+Warning: torch.cumprod not supported on MPS, switching to CPU.
+Using device: cpu
+Generating predictions with SeqAR-Diffusion model...
+SeqAR-Diffusion Sampling:   0%|          | 0/3 [00:00<?, ?it/s]SeqAR-Diffusion Sampling:  33%|███▎      | 1/3 [06:06<12:12, 366.33s/it]SeqAR-Diffusion Sampling:  67%|██████▋   | 2/3 [12:12<06:06, 366.49s/it]SeqAR-Diffusion Sampling: 100%|██████████| 3/3 [17:39<00:00, 348.19s/it]SeqAR-Diffusion Sampling: 100%|██████████| 3/3 [17:39<00:00, 353.12s/it]
+Saved seq_ar_diffusion predictions to ../results

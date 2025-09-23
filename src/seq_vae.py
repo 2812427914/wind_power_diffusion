@@ -20,7 +20,10 @@ class SeqVAE(nn.Module):
         # 解码器：LSTM解码未来序列
         self.decoder_input = nn.Linear(latent_dim, hidden_dim)
         self.decoder_lstm = nn.LSTM(input_size=hidden_dim, hidden_size=hidden_dim, num_layers=num_layers, batch_first=True)
-        self.decoder_out = nn.Linear(hidden_dim, y_dim)
+        self.decoder_out = nn.Sequential(
+            nn.Linear(hidden_dim, y_dim),
+            nn.ReLU()
+        )
 
     def encode(self, x_hist):
         # x_hist: (batch, hist_len, feature_dim)

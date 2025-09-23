@@ -1,0 +1,15 @@
+Using device: cpu
+[Diffusion] Epoch 1/10 Train Loss: 1.0002 | Val Loss: 0.9319
+Saved new best Diffusion model at epoch 1 with val loss 0.9319
+[Diffusion] Epoch 2/10 Train Loss: 0.9968 | Val Loss: 1.0097
+[Diffusion] Epoch 3/10 Train Loss: 0.9789 | Val Loss: 0.9460
+[Diffusion] Epoch 4/10 Train Loss: 0.9759 | Val Loss: 1.0527
+[Diffusion] Epoch 5/10 Train Loss: 1.0125 | Val Loss: 0.9811
+[Diffusion] Epoch 6/10 Train Loss: 0.9419 | Val Loss: 0.9928
+[Diffusion] Epoch 7/10 Train Loss: 0.9504 | Val Loss: 0.9306
+Saved new best Diffusion model at epoch 7 with val loss 0.9306
+[Diffusion] Epoch 8/10 Train Loss: 0.9385 | Val Loss: 0.8775
+Saved new best Diffusion model at epoch 8 with val loss 0.8775
+[Diffusion] Epoch 9/10 Train Loss: 0.9153 | Val Loss: 0.9275
+[Diffusion] Epoch 10/10 Train Loss: 0.8722 | Val Loss: 0.8902
+Saved last Diffusion model to ../checkpoints/diffusion_last.pth

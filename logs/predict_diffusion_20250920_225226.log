@@ -1,0 +1,5 @@
+Warning: torch.cumprod not supported on MPS, switching to CPU.
+Using device: cpu
+Generating predictions with Diffusion model...
+Diffusion Sampling:   0%|          | 0/1 [00:00<?, ?it/s]Diffusion Sampling: 100%|██████████| 1/1 [00:02<00:00,  2.46s/it]Diffusion Sampling: 100%|██████████| 1/1 [00:02<00:00,  2.46s/it]
+Saved diffusion predictions to ../results

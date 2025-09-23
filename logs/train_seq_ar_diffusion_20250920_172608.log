@@ -1,0 +1,20 @@
+Using device: cpu
+[SeqAR-Diffusion] Train samples: 298, Val samples: 34
+[SeqAR-Diffusion] Epoch 1/10 Train Loss: 0.9447 | Val Loss: 0.9366
+Saved new best SeqAR-Diffusion model at epoch 1 with val loss 0.9366
+[SeqAR-Diffusion] Epoch 2/10 Train Loss: 0.9332 | Val Loss: 0.8193
+Saved new best SeqAR-Diffusion model at epoch 2 with val loss 0.8193
+[SeqAR-Diffusion] Epoch 3/10 Train Loss: 0.8721 | Val Loss: 0.8299
+[SeqAR-Diffusion] Epoch 4/10 Train Loss: 0.8185 | Val Loss: 0.8216
+[SeqAR-Diffusion] Epoch 5/10 Train Loss: 0.7511 | Val Loss: 0.7052
+Saved new best SeqAR-Diffusion model at epoch 5 with val loss 0.7052
+[SeqAR-Diffusion] Epoch 6/10 Train Loss: 0.7062 | Val Loss: 0.6128
+Saved new best SeqAR-Diffusion model at epoch 6 with val loss 0.6128
+[SeqAR-Diffusion] Epoch 7/10 Train Loss: 0.6602 | Val Loss: 0.6098
+Saved new best SeqAR-Diffusion model at epoch 7 with val loss 0.6098
+[SeqAR-Diffusion] Epoch 8/10 Train Loss: 0.6155 | Val Loss: 0.6053
+Saved new best SeqAR-Diffusion model at epoch 8 with val loss 0.6053
+[SeqAR-Diffusion] Epoch 9/10 Train Loss: 0.6092 | Val Loss: 0.5294
+Saved new best SeqAR-Diffusion model at epoch 9 with val loss 0.5294
+[SeqAR-Diffusion] Epoch 10/10 Train Loss: 0.5793 | Val Loss: 0.5758
+Saved last SeqAR-Diffusion model to ../checkpoints/seq_ar_diffusion_last.pth

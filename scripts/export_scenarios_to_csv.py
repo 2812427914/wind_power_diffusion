@@ -6,7 +6,11 @@ RESULTS_DIR = os.path.join(os.path.dirname(__file__), '..', 'results')
 MODEL_FILES = {
     'diffusion': 'y_samples_diffusion.npy',
     'gan': 'y_samples_gan.npy',
-    'vae': 'y_samples_vae.npy'
+    'vae': 'y_samples_vae.npy',
+    'weibull_diffusion': 'y_samples_weibull_diffusion.npy',
+    'seq_vae': 'y_samples_seq_vae.npy',
+    'seq_diffusion': 'y_samples_seq_diffusion.npy',
+    'seq_ar_diffusion': 'y_samples_seq_ar_diffusion.npy'
 }
 
 N_HOURS = 24  # 只导出前24小时

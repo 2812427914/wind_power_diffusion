@@ -1,0 +1,17 @@
+Using device: cpu
+[SeqVAE] Epoch 1/10 Train Loss: 0.1519 | Val Loss: 0.1169
+Saved new best SeqVAE model at epoch 1 with val loss 0.1169
+[SeqVAE] Epoch 2/10 Train Loss: 0.1381 | Val Loss: 0.1097
+Saved new best SeqVAE model at epoch 2 with val loss 0.1097
+[SeqVAE] Epoch 3/10 Train Loss: 0.1197 | Val Loss: 0.0852
+Saved new best SeqVAE model at epoch 3 with val loss 0.0852
+[SeqVAE] Epoch 4/10 Train Loss: 0.1130 | Val Loss: 0.0960
+[SeqVAE] Epoch 5/10 Train Loss: 0.1166 | Val Loss: 0.0863
+[SeqVAE] Epoch 6/10 Train Loss: 0.1092 | Val Loss: 0.0826
+Saved new best SeqVAE model at epoch 6 with val loss 0.0826
+[SeqVAE] Epoch 7/10 Train Loss: 0.1047 | Val Loss: 0.0801
+Saved new best SeqVAE model at epoch 7 with val loss 0.0801
+[SeqVAE] Epoch 8/10 Train Loss: 0.1042 | Val Loss: 0.0908
+[SeqVAE] Epoch 9/10 Train Loss: 0.1066 | Val Loss: 0.0888
+[SeqVAE] Epoch 10/10 Train Loss: 0.1057 | Val Loss: 0.0875
+Saved last SeqVAE model to ../checkpoints/seq_vae_last.pth
