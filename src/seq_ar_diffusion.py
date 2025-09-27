@@ -61,6 +61,33 @@ class SeqARGaussianDiffusion:
         noise = torch.randn_like(y_prev) if (t > 0).any() else 0
         return mean + beta_t.sqrt() * noise
 
+    def train_loss(self, x_hist, y_start):
+        cond_base = self.cond_encoder(x_hist)  # (batch, hidden_dim)
+        batch_size = x_hist.shape[0]
+        seq_len = y_start.shape[1]
+        
+        # 简化：随机选择一个时间步进行训练，而不是所有24步
+        step = torch.randint(0, seq_len, (1,)).item()
+        
+        # teacher forcing：使用上一时刻真值作为条件
+        if step == 0:
+            y_prev_seq = torch.zeros((batch_size, 1), device=self.device, dtype=y_start.dtype)
+        else:
+            y_prev_seq = y_start[:, step-1:step]
+        
+        cond = torch.cat([cond_base, y_prev_seq], dim=1)  # (batch, cond_dim+1)
+        y_true = y_start[:, step:step+1]  # (batch, 1)
+        
+        # 扩散过程
+        t = torch.randint(0, self.timesteps, (batch_size,), device=self.device)
+        noise = torch.randn_like(y_true)
+        y_noisy = self.q_sample(y_true, t, noise)
+        pred_noise = self.model(cond, y_noisy, t)
+        
+        # 简单的MSE损失
+        loss = F.mse_loss(pred_noise, noise)
+        return loss
+
     def sample(self, x_hist, seq_len=None):
         # x_hist: (batch, hist_len, feature_dim)
         if seq_len is None:
