@@ -334,11 +334,15 @@ def train_seq_diffusion(X_train, y_train, epochs=10, batch_size=128, device='cpu
     cond_encoder = SeqCondEncoder(feature_dim=feature_dim, hist_len=hist_len).to(device)
     model = SeqDiffusionModel(cond_dim=cond_encoder.hidden_dim, y_dim=y_dim).to(device)
     diffusion = SeqGaussianDiffusion(model, cond_encoder, device=device)
-    # 更稳健的优化器与 OneCycleLR（按 batch 步进）
-    optimizer = torch.optim.AdamW(list(model.parameters()) + list(cond_encoder.parameters()), lr=1e-3, weight_decay=1e-4)
-    from torch.optim.lr_scheduler import OneCycleLR
-    steps_per_epoch = max(1, len(train_loader))
-    scheduler = OneCycleLR(optimizer, max_lr=3e-3, pct_start=0.1, epochs=epochs, steps_per_epoch=steps_per_epoch)
+    # 使用更保守的优化策略
+    optimizer = torch.optim.AdamW(
+        list(model.parameters()) + list(cond_encoder.parameters()), 
+        lr=1e-4,  # 降低学习率
+        weight_decay=1e-4,
+        betas=(0.9, 0.999)  # 使用默认的beta值
+    )
+    # 使用简单的学习率衰减
+    scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=10, gamma=0.5)
     best_val_loss = float('inf')
     best_epoch = -1
     patience = 15
@@ -381,80 +385,6 @@ def train_seq_diffusion(X_train, y_train, epochs=10, batch_size=128, device='cpu
                os.path.join(CHECKPOINT_DIR, 'seq_diffusion_last.pth'))
     print(f"Saved last SeqDiffusion model to {os.path.join(CHECKPOINT_DIR, 'seq_diffusion_last.pth')}")
 
-def train_seq_ar_diffusion(X_train, y_train, epochs=10, batch_size=128, device='cpu', hist_len=24, seq_len=24, feature_dim=9):
-    from sklearn.model_selection import train_test_split
-    y_dim = 1
-    X_tr, X_val, y_tr, y_val = train_test_split(X_train, y_train, test_size=0.1, random_state=42)
-    print(f"[SeqAR-Diffusion] Train samples: {len(X_tr)}, Val samples: {len(X_val)}")
-    train_loader = DataLoader(TensorDataset(torch.tensor(X_tr, dtype=torch.float32),
-                                           torch.tensor(y_tr, dtype=torch.float32)),
-                              batch_size=batch_size, shuffle=True, drop_last=False,
-                              num_workers=4, pin_memory=False)
-    val_loader   = DataLoader(TensorDataset(torch.tensor(X_val, dtype=torch.float32),
-                                           torch.tensor(y_val, dtype=torch.float32)),
-                              batch_size=batch_size, drop_last=False,
-                              num_workers=4, pin_memory=False)
-    cond_encoder = ARCondEncoder(feature_dim=feature_dim, hist_len=hist_len).to(device)
-    # 自回归：把上一时刻y拼到条件中 => cond_dim + 1
-    model = SeqARDiffusionModel(cond_dim=cond_encoder.hidden_dim + 1, y_dim=y_dim).to(device)
-    diffusion = SeqARGaussianDiffusion(model, cond_encoder, device=device, seq_len=seq_len)
-    # 更稳健的优化器与 OneCycleLR（按 batch 步进）
-    optimizer = torch.optim.AdamW(list(model.parameters()) + list(cond_encoder.parameters()), lr=1e-3, weight_decay=1e-4)
-    from torch.optim.lr_scheduler import OneCycleLR
-    steps_per_epoch = max(1, len(train_loader))
-    scheduler = OneCycleLR(optimizer, max_lr=3e-3, pct_start=0.1, epochs=epochs, steps_per_epoch=steps_per_epoch)
-    best_val_loss = float('inf')
-    best_epoch = -1
-    patience = 15
-    pat_counter = 0
-    for epoch in range(epochs):
-        epoch_loss = 0
-        model.train()
-        cond_encoder.train()
-        for x_batch, y_batch in train_loader:
-            if x_batch.shape[0] == 0:
-                continue
-            x_batch, y_batch = x_batch.to(device), y_batch.to(device)
-            loss = diffusion.train_loss(x_batch, y_batch)
-            optimizer.zero_grad()
-            loss.backward()
-            # 梯度裁剪
-            torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=5.0)
-            torch.nn.utils.clip_grad_norm_(diffusion.cond_encoder.parameters(), max_norm=5.0)
-            optimizer.step()
-            # OneCycleLR: step per batch
-            scheduler.step()
-            epoch_loss += loss.item()
-        avg_loss = epoch_loss / len(train_loader)
-        # 验证
-        model.eval()
-        cond_encoder.eval()
-        val_losses = []
-        with torch.no_grad():
-            for x_val, y_val_ in val_loader:
-                if x_val.shape[0] == 0:
-                    continue
-                x_val, y_val_ = x_val.to(device), y_val_.to(device)
-                val_loss = diffusion.train_loss(x_val, y_val_)
-                val_losses.append(val_loss.item())
-        avg_val_loss = float(np.mean(val_losses)) if val_losses else float('inf')
-        print(f"[SeqAR-Diffusion] Epoch {epoch+1}/{epochs} Train Loss: {avg_loss:.4f} | Val Loss: {avg_val_loss:.4f}")
-        # 早停逻辑（OneCycleLR 按 batch 步进，无需 epoch-level step）
-        if avg_val_loss < best_val_loss - 1e-4:          # 显著下降
-            best_val_loss = avg_val_loss
-            best_epoch = epoch + 1
-            pat_counter = 0
-            torch.save({'cond_encoder': cond_encoder.state_dict(), 'model': model.state_dict()},
-                       os.path.join(CHECKPOINT_DIR, 'seq_ar_diffusion_best.pth'))
-            print(f"Saved new best SeqAR-Diffusion model at epoch {best_epoch} with val loss {best_val_loss:.4f}")
-        else:
-            pat_counter += 1
-            if pat_counter >= patience:
-                print(f"Early stop at epoch {epoch+1}")
-                break
-    torch.save({'cond_encoder': cond_encoder.state_dict(), 'model': model.state_dict()},
-               os.path.join(CHECKPOINT_DIR, 'seq_ar_diffusion_last.pth'))
-    print(f"Saved last SeqAR-Diffusion model to {os.path.join(CHECKPOINT_DIR, 'seq_ar_diffusion_last.pth')}")
 
 def get_default_device():
     """Pick GPU if available, else CPU. Priority: CUDA > CPU (MPS disabled for cumprod)."""
