@@ -15,15 +15,16 @@ class SeqCondEncoder(nn.Module):
         return h_last
 
 class SeqARDiffusionModel(nn.Module):
-    def __init__(self, cond_dim, y_dim=1, hidden_dim=128, n_layers=2, dropout=0.1):
+    def __init__(self, cond_dim, y_dim=1, hidden_dim=256, n_layers=4, dropout=0.2):
         super().__init__()
         layers = []
         input_dim = cond_dim + y_dim + 1  # +1 for timestep
         for i in range(n_layers):
             in_dim = input_dim if i == 0 else hidden_dim
             layers.append(nn.Linear(in_dim, hidden_dim))
-            layers.append(nn.ReLU())
+            layers.append(nn.GELU())
             layers.append(nn.Dropout(dropout))
+            layers.append(nn.LayerNorm(hidden_dim))
         layers.append(nn.Linear(hidden_dim, y_dim))
         self.net = nn.Sequential(*layers)
 
@@ -34,7 +35,7 @@ class SeqARDiffusionModel(nn.Module):
         return self.net(x_in)
 
 class SeqARGaussianDiffusion:
-    def __init__(self, model, cond_encoder, timesteps=1000, beta_start=1e-4, beta_end=0.02, device='cpu', seq_len=24):
+    def __init__(self, model, cond_encoder, timesteps=300, beta_start=1e-4, beta_end=0.1, device='cpu', seq_len=24):
         self.model = model
         self.cond_encoder = cond_encoder
         self.timesteps = timesteps
@@ -64,33 +65,47 @@ class SeqARGaussianDiffusion:
         # x_hist: (batch, hist_len, feature_dim)
         if seq_len is None:
             seq_len = self.seq_len
-        cond = self.cond_encoder(x_hist)
+        cond_base = self.cond_encoder(x_hist)  # (batch, hidden_dim)
         batch_size = x_hist.shape[0]
         y_seq = []
-        y_prev = torch.zeros((batch_size, 1), device=self.device)
+        # 自回归：上一时刻的y（初始为0）
+        y_prev_seq = torch.zeros((batch_size, 1), device=self.device)
         for step in range(seq_len):
+            # 把上一步的y拼到条件向量
+            cond = torch.cat([cond_base, y_prev_seq], dim=1)
+            # 扩散反推：从噪声开始
             y = torch.randn((batch_size, 1), device=self.device)
             for t in reversed(range(self.timesteps)):
                 t_tensor = torch.full((batch_size,), t, dtype=torch.long).to(self.device)
                 y = self.p_sample(cond, y, t_tensor)
             y_seq.append(y)
-            y_prev = y
+            # 更新上一时刻y
+            y_prev_seq = y
         y_seq = torch.cat(y_seq, dim=1)  # (batch, seq_len)
         return y_seq
 
     def train_loss(self, x_hist, y_start):
-        cond = self.cond_encoder(x_hist)
+        cond_base = self.cond_encoder(x_hist)  # (batch, hidden_dim)
         batch_size = x_hist.shape[0]
         seq_len = y_start.shape[1]
         # device check
-        assert cond.device == y_start.device, f"cond.device={cond.device}, y_start.device={y_start.device}"
-        loss_total = 0
+        assert cond_base.device == y_start.device, f"cond.device={cond_base.device}, y_start.device={y_start.device}"
+        # 逐步加权：后面的步权重更大，缓解误差累积
+        weights = torch.linspace(1.0, float(seq_len), steps=seq_len, device=self.device)
+        weights = weights / weights.sum()
+        loss_total = 0.0
         for step in range(seq_len):
+            # teacher forcing：第 step 步使用上一时刻真值作为条件
+            if step == 0:
+                y_prev_seq = torch.zeros((batch_size, 1), device=self.device, dtype=y_start.dtype)
+            else:
+                y_prev_seq = y_start[:, step-1:step]
+            cond = torch.cat([cond_base, y_prev_seq], dim=1)  # (batch, cond_dim+1)
             y_true = y_start[:, step:step+1]  # (batch, 1)
             t = torch.randint(0, self.timesteps, (batch_size,), device=self.device)
             noise = torch.randn_like(y_true)
             y_noisy = self.q_sample(y_true, t, noise)
             pred_noise = self.model(cond, y_noisy, t)
             loss = F.mse_loss(pred_noise, noise)
-            loss_total += loss
-        return loss_total / seq_len
+            loss_total += weights[step] * loss
+        return loss_total

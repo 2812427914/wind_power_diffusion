@@ -395,7 +395,8 @@ def train_seq_ar_diffusion(X_train, y_train, epochs=10, batch_size=128, device='
                               batch_size=batch_size, drop_last=False,
                               num_workers=4, pin_memory=False)
     cond_encoder = ARCondEncoder(feature_dim=feature_dim, hist_len=hist_len).to(device)
-    model = SeqARDiffusionModel(cond_dim=cond_encoder.hidden_dim, y_dim=y_dim).to(device)
+    # 自回归：把上一时刻y拼到条件中 => cond_dim + 1
+    model = SeqARDiffusionModel(cond_dim=cond_encoder.hidden_dim + 1, y_dim=y_dim).to(device)
     diffusion = SeqARGaussianDiffusion(model, cond_encoder, device=device, seq_len=seq_len)
     # 更稳健的优化器与 OneCycleLR（按 batch 步进）
     optimizer = torch.optim.AdamW(list(model.parameters()) + list(cond_encoder.parameters()), lr=1e-3, weight_decay=1e-4)
@@ -731,7 +732,8 @@ if __name__ == "__main__":
             from seq_ar_diffusion import SeqCondEncoder as ARCondEncoder, SeqARDiffusionModel, SeqARGaussianDiffusion
             feature_dim = cond_dim
             cond_encoder = ARCondEncoder(feature_dim=feature_dim, hist_len=hist_len).to(args.device)
-            model = SeqARDiffusionModel(cond_dim=cond_encoder.hidden_dim, y_dim=1).to(args.device)
+            # 自回归：把上一时刻y拼到条件中 => cond_dim + 1
+            model = SeqARDiffusionModel(cond_dim=cond_encoder.hidden_dim + 1, y_dim=1).to(args.device)
             diffusion = SeqARGaussianDiffusion(model, cond_encoder, device=args.device, seq_len=seq_len)
             from torch.optim.lr_scheduler import CosineAnnealingWarmRestarts
             optimizer = torch.optim.Adam(list(model.parameters()) + list(cond_encoder.parameters()), lr=1e-3)
