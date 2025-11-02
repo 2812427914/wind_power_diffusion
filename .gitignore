@@ -29,7 +29,7 @@ checkpoints/
 *.json
 *.pth
 *.csv
-*.npy
+# *.npy
 *.joblib
 
 # 项目数据
