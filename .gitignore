@@ -36,3 +36,4 @@ results/
 
 # 项目环境
 venv/
+.aider*

@@ -47,7 +47,8 @@ def evaluate_metrics(y_true, y_pred, y_samples=None):
     results = {}
     # 逐小时计算 MAE、RMSE，然后取均值
     results['MAE'] = mean_absolute_error(y_true, y_pred)
-    results['RMSE'] = mean_squared_error(y_true, y_pred, squared=False)
+    # 兼容不同 sklearn 版本：先计算 MSE，再开根号得到 RMSE（避免使用 squared 参数）
+    results['RMSE'] = float(np.sqrt(mean_squared_error(y_true, y_pred)))
     if y_samples is not None:
         # 对每个时间步分别计算 CRPS/ES/QS，然后对 24 小时取均值
         N, n_samples, T = y_samples.shape

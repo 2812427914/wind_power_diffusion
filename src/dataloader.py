@@ -5,6 +5,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MinMaxScaler
 import torch
 from torch.utils.data import Dataset
+import linecache
 
 DATA_PATH = os.path.join(os.path.dirname(__file__), '../data/wtbdata_hourly.csv')
 
@@ -35,7 +36,7 @@ class WindPowerCSVDataset(Dataset):
     支持 feature_cols、target_col 指定，支持 seq_mode。
     支持多风机独立切片。
     """
-    def __init__(self, csv_path, feature_cols=None, target_col='Patv', transform=None, hist_len=1, seq_len=1, seq_mode=False, wind_id_col='TurbID'):
+    def __init__(self, csv_path, feature_cols=None, target_col='Patv', transform=None, hist_len=1, seq_len=1, seq_mode=False, wind_id_col='TurbID', stride=24, scale=True):
         self.csv_path = csv_path
         self.feature_cols = feature_cols
         self.target_col = target_col
@@ -44,6 +45,8 @@ class WindPowerCSVDataset(Dataset):
         self.seq_len = seq_len
         self.seq_mode = seq_mode
         self.wind_id_col = wind_id_col
+        self.stride = stride
+        self.scale = scale
         # 预读取 header，获取列名
         with open(csv_path, 'r') as f:
             self.header = f.readline().strip().split(',')
@@ -54,6 +57,26 @@ class WindPowerCSVDataset(Dataset):
         self.feature_idx = [self.header.index(col) for col in self.feature_cols]
         self.target_idx = self.header.index(self.target_col)
         self.wind_id_idx = self.header.index(self.wind_id_col)
+        # 计算全局 MinMax 统计以便在线归一化（一次性读取，避免训练期重复 IO）
+        if self.scale:
+            try:
+                df_minmax = pd.read_csv(self.csv_path, usecols=self.feature_cols + [self.target_col], low_memory=False)
+                df_minmax = df_minmax.dropna(how='all').fillna(method='ffill').fillna(method='bfill')
+                x_min_series = df_minmax[self.feature_cols].min()
+                x_max_series = df_minmax[self.feature_cols].max()
+                self.x_min = x_min_series.values.astype(np.float32)
+                self.x_max = x_max_series.values.astype(np.float32)
+                # 目标最小值下限设为 0，避免负功率导致的无意义缩放
+                y_min_val = float(df_minmax[self.target_col].min())
+                self.y_min = float(max(0.0, y_min_val))
+                self.y_max = float(df_minmax[self.target_col].max())
+                # 防止分母为 0
+                self._x_den = (self.x_max - self.x_min).astype(np.float32)
+                self._x_den[self._x_den == 0] = 1.0
+                self._y_den = float(self.y_max - self.y_min) if (self.y_max - self.y_min) != 0 else 1.0
+            except Exception as e:
+                print(f"[WindPowerCSVDataset] MinMax 预计算失败，关闭缩放: {e}")
+                self.scale = False
         # 预处理所有风机的起止行号
         self.slice_index = []  # [(wind_id, start_line, end_line)]
         wind_id_to_lines = {}
@@ -65,12 +88,13 @@ class WindPowerCSVDataset(Dataset):
                 wind_id = row[self.wind_id_idx]
                 if wind_id not in wind_id_to_lines:
                     wind_id_to_lines[wind_id] = []
-                wind_id_to_lines[wind_id].append(i)
+                # 存 1-based 文件行号，便于与 linecache 对齐
+                wind_id_to_lines[wind_id].append(i + 1)
         # 生成所有风机的切片索引
         self.seq_indices = []  # [(wind_id, start_line_idx)]
         for wind_id, lines in wind_id_to_lines.items():
             n = len(lines)
-            for start in range(0, n - self.hist_len - self.seq_len + 1, 24):
+            for start in range(0, n - self.hist_len - self.seq_len + 1, self.stride):
                 self.seq_indices.append((wind_id, lines[start]))
         self.n_samples = len(self.seq_indices) if self.seq_mode else sum(len(lines) for lines in wind_id_to_lines.values())
         self.wind_id_to_lines = wind_id_to_lines
@@ -80,42 +104,53 @@ class WindPowerCSVDataset(Dataset):
 
     def __getitem__(self, idx):
         if not self.seq_mode:
-            # 单点模式
-            # 只支持全量遍历
-            all_lines = []
-            with open(self.csv_path, 'r') as f:
-                for i, line in enumerate(f):
-                    if i == 0:
-                        continue
-                    all_lines.append(line)
-            row = all_lines[idx].strip().split(',')
+            # 单点模式（使用 linecache 加速按行读取）
+            # idx 0 对应文件第 2 行（跳过 header）
+            line = linecache.getline(self.csv_path, idx + 2)
+            if not line:
+                raise IndexError(f"Index {idx} out of range for file {self.csv_path}")
+            row = line.strip().split(',')
             x = np.array([float(row[j]) if row[j] != '' else 0.0 for j in self.feature_idx], dtype=np.float32)
             y = float(row[self.target_idx]) if row[self.target_idx] != '' else 0.0
+            # 在线归一化与裁剪
+            if self.scale:
+                x = (x - self.x_min) / (self._x_den + 1e-8)
+                y = max(y, 0.0)
+                y = (y - self.y_min) / (self._y_den + 1e-8)
+                x = np.clip(x, 0.0, 1.0)
+                y = float(np.clip(y, 0.0, 1.0))
             if self.transform:
                 x, y = self.transform(x, y)
             return x, y
         else:
-            # 序列模式：每台风机独立切片
+            # 序列模式：每台风机独立切片（使用 linecache 加速随机行读取）
             wind_id, start_line_idx = self.seq_indices[idx]
             # 找到该风机的所有行号
             lines = self.wind_id_to_lines[wind_id]
             # 找到start_line_idx在lines中的位置
             start_pos = lines.index(start_line_idx)
-            # 取hist_len+seq_len行
+            # 取hist_len+seq_len行（lines 里存的是基于文件的行号，从 0 开始；linecache 用 1-based）
+            hist_indices = lines[start_pos : start_pos + self.hist_len]
+            fut_indices = lines[start_pos + self.hist_len : start_pos + self.hist_len + self.seq_len]
             x_seq = []
             y_seq = []
-            with open(self.csv_path, 'r') as f:
-                for i, line in enumerate(f):
-                    if i in lines[start_pos : start_pos + self.hist_len]:
-                        row = line.strip().split(',')
-                        x_seq.append([float(row[j]) if row[j] != '' else 0.0 for j in self.feature_idx])
-                    if i in lines[start_pos + self.hist_len : start_pos + self.hist_len + self.seq_len]:
-                        row = line.strip().split(',')
-                        y_seq.append(float(row[self.target_idx]) if row[self.target_idx] != '' else 0.0)
-                    if i > lines[start_pos + self.hist_len + self.seq_len - 1]:
-                        break
+            for i in hist_indices:
+                line = linecache.getline(self.csv_path, i)
+                row = line.strip().split(',')
+                x_seq.append([float(row[j]) if row[j] != '' else 0.0 for j in self.feature_idx])
+            for i in fut_indices:
+                line = linecache.getline(self.csv_path, i)
+                row = line.strip().split(',')
+                y_seq.append(float(row[self.target_idx]) if row[self.target_idx] != '' else 0.0)
             x_seq = np.array(x_seq, dtype=np.float32)  # (hist_len, feature_dim)
             y_seq = np.array(y_seq, dtype=np.float32)  # (seq_len,)
+            # 在线归一化与裁剪
+            if self.scale:
+                x_seq = (x_seq - self.x_min[None, :]) / (self._x_den[None, :] + 1e-8)
+                y_seq = np.maximum(y_seq, 0.0)
+                y_seq = (y_seq - self.y_min) / (self._y_den + 1e-8)
+                x_seq = np.clip(x_seq, 0.0, 1.0)
+                y_seq = np.clip(y_seq, 0.0, 1.0)
             if self.transform:
                 x_seq, y_seq = self.transform(x_seq, y_seq)
             return x_seq, y_seq
@@ -126,7 +161,8 @@ def preprocess_features(df,
                         seq_len=24,
                         hist_len=24,
                         seq_mode=False,
-                        turb_id_col='TurbID'):
+                        turb_id_col='TurbID',
+                        stride=24):
     """
     seq_mode: False（兼容原有），X shape (N, feature_dim); True，X shape (N, hist_len, feature_dim)
     turb_id_col: 风机ID字段，支持分风机独立切片
@@ -138,11 +174,22 @@ def preprocess_features(df,
     if seq_mode:
         X = []
         y = []
-        for i in range(0, len(df) - hist_len - seq_len + 1, 24):
-            X.append(df[feature_cols].iloc[i:i+hist_len].values)  # shape (hist_len, feature_dim)
-            y.append(df[target_col].iloc[i+hist_len:i+hist_len+seq_len].values)  # shape (seq_len,)
+        # 按风机分组独立切片，避免跨风机窗口
+        if turb_id_col in df.columns:
+            for turb_id, grp in df.groupby(turb_id_col):
+                grp = grp.sort_values('Datetime') if 'Datetime' in grp else grp
+                n = len(grp)
+                for i in range(0, n - hist_len - seq_len + 1, stride):
+                    X.append(grp[feature_cols].iloc[i:i+hist_len].values)  # (hist_len, feature_dim)
+                    y.append(grp[target_col].iloc[i+hist_len:i+hist_len+seq_len].values)  # (seq_len,)
+        else:
+            for i in range(0, len(df) - hist_len - seq_len + 1, stride):
+                X.append(df[feature_cols].iloc[i:i+hist_len].values)  # (hist_len, feature_dim)
+                y.append(df[target_col].iloc[i+hist_len:i+hist_len+seq_len].values)  # (seq_len,)
         X = np.array(X)  # (N, hist_len, feature_dim)
         y = np.array(y)  # (N, seq_len)
+        # 目标裁剪为非负，保持与训练一致
+        y = np.maximum(y, 0.0)
         # 分别归一化
         scaler_x = MinMaxScaler()
         scaler_y = MinMaxScaler()

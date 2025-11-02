@@ -1,0 +1,28 @@
+/root/wind_power_diffusion/v2/src/utils.py:75: UserWarning: Could not infer format, so each element will be parsed individually, falling back to `dateutil`. To ensure parsing is consistent and as-expected, please specify a format.
+  df[time_col] = pd.to_datetime(df[time_col], errors="coerce")
+Run args: {'data': 'v2/results/cleaned.csv', 'id_col': None, 'time_col': None, 'wind_col': None, 'power_col': None, 'hist_len': 24, 'pred_len': 24, 'stride': 1, 'checkpoint': 'v2/results/checkpoints/seq2seq/best.pth', 'splits_path': 'v2/results/splits_seq2seq.json', 'batch_size': None, 'seed': 42, 'out': 'v2/results/metrics_seq2seq.json'}
+[INFO] Using device: cuda
+[INFO] Loaded checkpoint: v2/results/checkpoints/seq2seq/best.pth
+[INFO] Loaded splits: train=47900, val=5988, test=6059
+[DEBUG] feature_scaler.mean_: [ 7.63311543e+00  7.25987039e+02  1.10326964e-18 -5.63146529e-18
+  6.32851307e-04 -1.86239544e-01]
+[DEBUG] target_scaler.mean_: [746.06511492]
+[DEBUG] exo_scaler.mean_: [ 7.78879236e+00  1.10326964e-18 -5.63146529e-18 -1.45213366e-01
+ -1.16613238e-01]
+[INFO] Val samples: 5988, Test samples: 6059
+[INFO] Saved metrics to: v2/results/metrics_seq2seq.json
+[RESULT] val: {'mae': 209.17127990722656, 'rmse': 308.9091947886951, 'mse_scaled': 0.45074493775944274}
+[RESULT] test: {'mae': 208.67921447753906, 'rmse': 308.42170045653404, 'mse_scaled': 0.4493234131640777}
+[DEBUG] Saved val MAE: 48.189, RMSE: 73.263 (from npy)
+
+[一致性核查]
+  保存值  — MAE:  48.189   RMSE:  73.263
+  重跑值  — MAE: 209.171   RMSE: 308.909
+  差异    — MAE: 160.982   RMSE: 235.646
+
+  前 5 条样本对比（true | saved_pred | recompute_pred | diff）：
+    sample-0: true=1376.11  saved=1467.33  recompute= 160.86  diff=1306.46
+    sample-1: true=1453.85  saved=1455.05  recompute= 346.08  diff=1108.96
+    sample-2: true=1538.67  saved=1500.86  recompute= 394.79  diff=1106.07
+    sample-3: true=1442.91  saved=1497.03  recompute= 343.25  diff=1153.78
+    sample-4: true=1067.15  saved=1028.17  recompute= 277.80  diff= 750.37

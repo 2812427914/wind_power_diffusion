@@ -1,0 +1,36 @@
+Cleaned data: 787920 -> 609679 rows. Saved: v2/results/cleaned.csv
+Samples -> train: 16453, val: 2056, test: 2121
+
+Train samples (show 5):
+  [0] TurbID=1, start_idx=14, hist=(2020-01-01 16:00:00~2020-01-03 15:00:00), pred=(2020-01-03 16:00:00~2020-01-04 15:00:00)
+  [1] TurbID=1, start_idx=15, hist=(2020-01-01 17:00:00~2020-01-03 16:00:00), pred=(2020-01-03 17:00:00~2020-01-04 16:00:00)
+  [2] TurbID=1, start_idx=16, hist=(2020-01-01 18:00:00~2020-01-03 17:00:00), pred=(2020-01-03 18:00:00~2020-01-04 17:00:00)
+  [3] TurbID=1, start_idx=17, hist=(2020-01-01 19:00:00~2020-01-03 18:00:00), pred=(2020-01-03 19:00:00~2020-01-04 18:00:00)
+  [4] TurbID=1, start_idx=18, hist=(2020-01-01 20:00:00~2020-01-03 19:00:00), pred=(2020-01-03 20:00:00~2020-01-04 19:00:00)
+
+Val samples (show 5):
+  [0] TurbID=1, start_idx=3770, hist=(2020-07-21 11:00:00~2020-07-23 10:00:00), pred=(2020-07-23 11:00:00~2020-07-24 10:00:00)
+  [1] TurbID=1, start_idx=3771, hist=(2020-07-21 12:00:00~2020-07-23 11:00:00), pred=(2020-07-23 12:00:00~2020-07-24 11:00:00)
+  [2] TurbID=1, start_idx=3772, hist=(2020-07-21 13:00:00~2020-07-23 12:00:00), pred=(2020-07-23 13:00:00~2020-07-24 12:00:00)
+  [3] TurbID=1, start_idx=3773, hist=(2020-07-21 14:00:00~2020-07-23 13:00:00), pred=(2020-07-23 14:00:00~2020-07-24 13:00:00)
+  [4] TurbID=1, start_idx=3774, hist=(2020-07-21 15:00:00~2020-07-23 14:00:00), pred=(2020-07-23 15:00:00~2020-07-24 14:00:00)
+
+Test samples (show 5):
+  [0] TurbID=1, start_idx=3964, hist=(2020-08-01 01:00:00~2020-08-03 00:00:00), pred=(2020-08-03 01:00:00~2020-08-04 00:00:00)
+  [1] TurbID=1, start_idx=3965, hist=(2020-08-01 02:00:00~2020-08-03 01:00:00), pred=(2020-08-03 02:00:00~2020-08-04 01:00:00)
+  [2] TurbID=1, start_idx=3966, hist=(2020-08-01 03:00:00~2020-08-03 02:00:00), pred=(2020-08-03 03:00:00~2020-08-04 02:00:00)
+  [3] TurbID=1, start_idx=3967, hist=(2020-08-01 04:00:00~2020-08-03 03:00:00), pred=(2020-08-03 04:00:00~2020-08-04 03:00:00)
+  [4] TurbID=1, start_idx=3968, hist=(2020-08-01 05:00:00~2020-08-03 04:00:00), pred=(2020-08-03 05:00:00~2020-08-04 04:00:00)
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/root/wind_power_diffusion/v2/src/train.py", line 239, in <module>
+    val_metrics = eval_epoch(model, val_loader, device, criterion, train_ds.target_scaler)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/conda/lib/python3.11/site-packages/torch/utils/_contextlib.py", line 116, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/root/wind_power_diffusion/v2/src/train.py", line 63, in eval_epoch
+    scaler = target_scaler[tid] if isinstance(target_scaler, dict) else target_scaler
+             ~~~~~~~~~~~~~^^^^^
+KeyError: tensor(1)

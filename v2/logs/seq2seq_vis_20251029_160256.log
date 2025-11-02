@@ -1,0 +1,13 @@
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/root/wind_power_diffusion/v2/src/visualize.py", line 50, in <module>
+    main()
+  File "/root/wind_power_diffusion/v2/src/visualize.py", line 25, in main
+    y_samples_first = np.load(args.y_samples_first)  # [S, T] for the first example
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/conda/lib/python3.11/site-packages/numpy/lib/_npyio_impl.py", line 451, in load
+    fid = stack.enter_context(open(os.fspath(file), "rb"))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: 'v2/results/seq2seq_y_samples_first.npy'
+Run args: {'y_true': 'v2/results/seq2seq_val_y_true.npy', 'y_pred_mean': 'v2/results/seq2seq_val_y_pred_mean.npy', 'y_samples_first': 'v2/results/seq2seq_y_samples_first.npy', 'out': 'v2/results/plots/seq2seq_scenarios.png', 'index': 0}
