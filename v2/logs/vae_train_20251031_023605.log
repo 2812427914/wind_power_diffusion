@@ -1,0 +1,863 @@
+Run args: {'model': 'vae', 'data': 'data/wtbdata_hourly.csv', 'id_col': None, 'time_col': None, 'wind_col': None, 'power_col': None, 'hist_len': 24, 'pred_len': 24, 'stride': 1, 'time_encode': 'sin-cos', 'batch_size': 256, 'epochs': 2000, 'lr': 0.001, 'hidden_size': 32, 'num_layers': 2, 'dropout': 0.1, 'emb_dim': 5, 'teacher_start': 0.0, 'teacher_end': 0.0, 'patience': 100, 'seed': 42, 'num_workers': 20, 'shuffle_split': True, 'shuffle_seed': 42}
+Cleaned data: 787920 -> 609679 rows. Saved: v2/results/cleaned.csv
+[INFO] Loaded saved splits from: v2/results/splits_vae.json
+Samples -> train: 47900, val: 5988, test: 6059
+
+Train samples (show 5):
+  [0] TurbID=1, start_idx=2745, hist=(2020-05-21 08:00:00~2020-05-22 07:00:00), pred=(2020-05-22 08:00:00~2020-05-23 07:00:00)
+  [1] TurbID=1, start_idx=3980, hist=(2020-08-01 17:00:00~2020-08-02 16:00:00), pred=(2020-08-02 17:00:00~2020-08-03 16:00:00)
+  [2] TurbID=1, start_idx=3038, hist=(2020-06-04 18:00:00~2020-06-05 17:00:00), pred=(2020-06-05 18:00:00~2020-06-06 17:00:00)
+  [3] TurbID=1, start_idx=307, hist=(2020-01-17 08:00:00~2020-01-18 07:00:00), pred=(2020-01-18 08:00:00~2020-01-19 07:00:00)
+  [4] TurbID=1, start_idx=4413, hist=(2020-08-29 16:00:00~2020-08-30 15:00:00), pred=(2020-08-30 16:00:00~2020-08-31 15:00:00)
+
+Val samples (show 5):
+  [0] TurbID=1, start_idx=3666, hist=(2020-07-16 02:00:00~2020-07-17 01:00:00), pred=(2020-07-17 02:00:00~2020-07-18 01:00:00)
+  [1] TurbID=1, start_idx=46, hist=(2020-01-03 00:00:00~2020-01-03 23:00:00), pred=(2020-01-04 00:00:00~2020-01-04 23:00:00)
+  [2] TurbID=1, start_idx=2727, hist=(2020-05-20 14:00:00~2020-05-21 13:00:00), pred=(2020-05-21 14:00:00~2020-05-22 13:00:00)
+  [3] TurbID=1, start_idx=2705, hist=(2020-05-19 16:00:00~2020-05-20 15:00:00), pred=(2020-05-20 16:00:00~2020-05-21 15:00:00)
+  [4] TurbID=1, start_idx=2917, hist=(2020-05-29 14:00:00~2020-05-30 13:00:00), pred=(2020-05-30 14:00:00~2020-05-31 13:00:00)
+
+Test samples (show 5):
+  [0] TurbID=1, start_idx=3769, hist=(2020-07-21 10:00:00~2020-07-22 09:00:00), pred=(2020-07-22 10:00:00~2020-07-23 09:00:00)
+  [1] TurbID=1, start_idx=293, hist=(2020-01-16 18:00:00~2020-01-17 17:00:00), pred=(2020-01-17 18:00:00~2020-01-18 17:00:00)
+  [2] TurbID=1, start_idx=2751, hist=(2020-05-21 14:00:00~2020-05-22 13:00:00), pred=(2020-05-22 14:00:00~2020-05-23 13:00:00)
+  [3] TurbID=1, start_idx=3823, hist=(2020-07-23 16:00:00~2020-07-24 15:00:00), pred=(2020-07-24 16:00:00~2020-07-25 15:00:00)
+  [4] TurbID=1, start_idx=1108, hist=(2020-02-25 17:00:00~2020-02-26 16:00:00), pred=(2020-02-26 17:00:00~2020-02-27 16:00:00)
+[DEBUG] target_scaler.scale_ : [460.11395043]
+[DEBUG] train_ds.feature_scaler.mean_: [ 7.63311543e+00  7.25987039e+02  1.10326964e-18 -5.63146529e-18
+  6.32851307e-04 -1.86239544e-01]
+[DEBUG] train_ds.target_scaler.mean_: [746.06511492]
+[DEBUG] train_ds.exo_scaler.mean_: [ 7.78879236e+00  1.10326964e-18 -5.63146529e-18 -1.45213366e-01
+ -1.16613238e-01]
+Epoch 1/2000 train_mse_scaled=0.432051 val_mae=158.274 val_rmse=220.588 tf=0.00lr=0.001
+Saved validation predictions (best) to: v2/results/vae_val_y_true.npy and v2/results/vae_val_y_pred_mean.npy
+Epoch 2/2000 train_mse_scaled=0.229926 val_mae=138.539 val_rmse=198.062 tf=0.00lr=0.001
+Saved validation predictions (best) to: v2/results/vae_val_y_true.npy and v2/results/vae_val_y_pred_mean.npy
+Epoch 3/2000 train_mse_scaled=0.192581 val_mae=124.366 val_rmse=175.682 tf=0.00lr=0.001
+Saved validation predictions (best) to: v2/results/vae_val_y_true.npy and v2/results/vae_val_y_pred_mean.npy
+Epoch 4/2000 train_mse_scaled=0.165483 val_mae=114.608 val_rmse=164.898 tf=0.00lr=0.001
+Saved validation predictions (best) to: v2/results/vae_val_y_true.npy and v2/results/vae_val_y_pred_mean.npy
+Epoch 5/2000 train_mse_scaled=0.149776 val_mae=109.383 val_rmse=156.853 tf=0.00lr=0.001
+Saved validation predictions (best) to: v2/results/vae_val_y_true.npy and v2/results/vae_val_y_pred_mean.npy
+Epoch 6/2000 train_mse_scaled=0.139979 val_mae=105.082 val_rmse=153.354 tf=0.00lr=0.001
+Saved validation predictions (best) to: v2/results/vae_val_y_true.npy and v2/results/vae_val_y_pred_mean.npy
+Epoch 7/2000 train_mse_scaled=0.132954 val_mae=101.839 val_rmse=147.240 tf=0.00lr=0.001
+Saved validation predictions (best) to: v2/results/vae_val_y_true.npy and v2/results/vae_val_y_pred_mean.npy
+Epoch 8/2000 train_mse_scaled=0.126833 val_mae=99.884 val_rmse=145.856 tf=0.00lr=0.001
+Saved validation predictions (best) to: v2/results/vae_val_y_true.npy and v2/results/vae_val_y_pred_mean.npy
+Epoch 9/2000 train_mse_scaled=0.121533 val_mae=99.022 val_rmse=142.930 tf=0.00lr=0.001
+Saved validation predictions (best) to: v2/results/vae_val_y_true.npy and v2/results/vae_val_y_pred_mean.npy
+Epoch 10/2000 train_mse_scaled=0.117149 val_mae=96.743 val_rmse=138.372 tf=0.00lr=0.001
+Saved validation predictions (best) to: v2/results/vae_val_y_true.npy and v2/results/vae_val_y_pred_mean.npy
+Epoch 11/2000 train_mse_scaled=0.112219 val_mae=96.680 val_rmse=137.098 tf=0.00lr=0.001
+Saved validation predictions (best) to: v2/results/vae_val_y_true.npy and v2/results/vae_val_y_pred_mean.npy
+Epoch 12/2000 train_mse_scaled=0.108832 val_mae=93.619 val_rmse=133.912 tf=0.00lr=0.001
+Saved validation predictions (best) to: v2/results/vae_val_y_true.npy and v2/results/vae_val_y_pred_mean.npy
+Epoch 13/2000 train_mse_scaled=0.105043 val_mae=93.595 val_rmse=133.338 tf=0.00lr=0.001
+Saved validation predictions (best) to: v2/results/vae_val_y_true.npy and v2/results/vae_val_y_pred_mean.npy
+Epoch 14/2000 train_mse_scaled=0.101601 val_mae=89.007 val_rmse=129.073 tf=0.00lr=0.001
+Saved validation predictions (best) to: v2/results/vae_val_y_true.npy and v2/results/vae_val_y_pred_mean.npy
+Epoch 15/2000 train_mse_scaled=0.098846 val_mae=88.565 val_rmse=127.346 tf=0.00lr=0.001
+Saved validation predictions (best) to: v2/results/vae_val_y_true.npy and v2/results/vae_val_y_pred_mean.npy
+Epoch 16/2000 train_mse_scaled=0.095760 val_mae=86.591 val_rmse=124.737 tf=0.00lr=0.001
+Saved validation predictions (best) to: v2/results/vae_val_y_true.npy and v2/results/vae_val_y_pred_mean.npy
+Epoch 17/2000 train_mse_scaled=0.093184 val_mae=84.766 val_rmse=123.169 tf=0.00lr=0.001
+Saved validation predictions (best) to: v2/results/vae_val_y_true.npy and v2/results/vae_val_y_pred_mean.npy
+Epoch 18/2000 train_mse_scaled=0.090308 val_mae=85.059 val_rmse=122.379 tf=0.00lr=0.001
+Saved validation predictions (best) to: v2/results/vae_val_y_true.npy and v2/results/vae_val_y_pred_mean.npy
+Epoch 19/2000 train_mse_scaled=0.088051 val_mae=84.428 val_rmse=120.388 tf=0.00lr=0.001
+Saved validation predictions (best) to: v2/results/vae_val_y_true.npy and v2/results/vae_val_y_pred_mean.npy
+Epoch 20/2000 train_mse_scaled=0.085571 val_mae=83.578 val_rmse=120.207 tf=0.00lr=0.001
+Saved validation predictions (best) to: v2/results/vae_val_y_true.npy and v2/results/vae_val_y_pred_mean.npy
+Epoch 21/2000 train_mse_scaled=0.083702 val_mae=81.462 val_rmse=117.673 tf=0.00lr=0.001
+Saved validation predictions (best) to: v2/results/vae_val_y_true.npy and v2/results/vae_val_y_pred_mean.npy
+Epoch 22/2000 train_mse_scaled=0.081745 val_mae=79.606 val_rmse=115.279 tf=0.00lr=0.001
+Saved validation predictions (best) to: v2/results/vae_val_y_true.npy and v2/results/vae_val_y_pred_mean.npy
+Epoch 23/2000 train_mse_scaled=0.080166 val_mae=79.638 val_rmse=114.548 tf=0.00lr=0.001
+Saved validation predictions (best) to: v2/results/vae_val_y_true.npy and v2/results/vae_val_y_pred_mean.npy
+Epoch 24/2000 train_mse_scaled=0.078109 val_mae=77.870 val_rmse=113.696 tf=0.00lr=0.001
+Saved validation predictions (best) to: v2/results/vae_val_y_true.npy and v2/results/vae_val_y_pred_mean.npy
+Epoch 25/2000 train_mse_scaled=0.076740 val_mae=78.636 val_rmse=112.501 tf=0.00lr=0.001
+Saved validation predictions (best) to: v2/results/vae_val_y_true.npy and v2/results/vae_val_y_pred_mean.npy
+Epoch 26/2000 train_mse_scaled=0.075586 val_mae=79.351 val_rmse=113.449 tf=0.00lr=0.001
+Epoch 27/2000 train_mse_scaled=0.074339 val_mae=75.288 val_rmse=109.152 tf=0.00lr=0.001
+Saved validation predictions (best) to: v2/results/vae_val_y_true.npy and v2/results/vae_val_y_pred_mean.npy
+Epoch 28/2000 train_mse_scaled=0.072879 val_mae=76.686 val_rmse=111.166 tf=0.00lr=0.001
+Epoch 29/2000 train_mse_scaled=0.071850 val_mae=75.882 val_rmse=108.799 tf=0.00lr=0.001
+Saved validation predictions (best) to: v2/results/vae_val_y_true.npy and v2/results/vae_val_y_pred_mean.npy
+Epoch 30/2000 train_mse_scaled=0.070830 val_mae=74.847 val_rmse=108.319 tf=0.00lr=0.001
+Saved validation predictions (best) to: v2/results/vae_val_y_true.npy and v2/results/vae_val_y_pred_mean.npy
+Epoch 31/2000 train_mse_scaled=0.069570 val_mae=73.318 val_rmse=107.333 tf=0.00lr=0.001
+Saved validation predictions (best) to: v2/results/vae_val_y_true.npy and v2/results/vae_val_y_pred_mean.npy
+Epoch 32/2000 train_mse_scaled=0.068698 val_mae=75.619 val_rmse=107.869 tf=0.00lr=0.001
+Epoch 33/2000 train_mse_scaled=0.067715 val_mae=72.189 val_rmse=105.458 tf=0.00lr=0.001
+Saved validation predictions (best) to: v2/results/vae_val_y_true.npy and v2/results/vae_val_y_pred_mean.npy
+Epoch 34/2000 train_mse_scaled=0.067194 val_mae=70.954 val_rmse=104.731 tf=0.00lr=0.001
+Saved validation predictions (best) to: v2/results/vae_val_y_true.npy and v2/results/vae_val_y_pred_mean.npy
+Epoch 35/2000 train_mse_scaled=0.066563 val_mae=71.997 val_rmse=105.543 tf=0.00lr=0.001
+Epoch 36/2000 train_mse_scaled=0.065687 val_mae=73.486 val_rmse=105.808 tf=0.00lr=0.001
+Epoch 37/2000 train_mse_scaled=0.064957 val_mae=71.987 val_rmse=104.284 tf=0.00lr=0.001
+Saved validation predictions (best) to: v2/results/vae_val_y_true.npy and v2/results/vae_val_y_pred_mean.npy
+Epoch 38/2000 train_mse_scaled=0.064244 val_mae=70.353 val_rmse=103.097 tf=0.00lr=0.001
+Saved validation predictions (best) to: v2/results/vae_val_y_true.npy and v2/results/vae_val_y_pred_mean.npy
+Epoch 39/2000 train_mse_scaled=0.063775 val_mae=72.733 val_rmse=104.863 tf=0.00lr=0.001
+Epoch 40/2000 train_mse_scaled=0.062781 val_mae=69.867 val_rmse=102.376 tf=0.00lr=0.001
+Saved validation predictions (best) to: v2/results/vae_val_y_true.npy and v2/results/vae_val_y_pred_mean.npy
+Epoch 41/2000 train_mse_scaled=0.063049 val_mae=69.495 val_rmse=102.215 tf=0.00lr=0.001
+Saved validation predictions (best) to: v2/results/vae_val_y_true.npy and v2/results/vae_val_y_pred_mean.npy
+Epoch 42/2000 train_mse_scaled=0.062034 val_mae=70.429 val_rmse=102.343 tf=0.00lr=0.001
+Epoch 43/2000 train_mse_scaled=0.061589 val_mae=65.817 val_rmse=99.571 tf=0.00lr=0.001
+Saved validation predictions (best) to: v2/results/vae_val_y_true.npy and v2/results/vae_val_y_pred_mean.npy
+Epoch 44/2000 train_mse_scaled=0.060847 val_mae=65.866 val_rmse=98.739 tf=0.00lr=0.001
+Saved validation predictions (best) to: v2/results/vae_val_y_true.npy and v2/results/vae_val_y_pred_mean.npy
+Epoch 45/2000 train_mse_scaled=0.060661 val_mae=68.350 val_rmse=99.917 tf=0.00lr=0.001
+Epoch 46/2000 train_mse_scaled=0.060213 val_mae=68.404 val_rmse=100.446 tf=0.00lr=0.001
+Epoch 47/2000 train_mse_scaled=0.059608 val_mae=66.559 val_rmse=98.667 tf=0.00lr=0.001
+Saved validation predictions (best) to: v2/results/vae_val_y_true.npy and v2/results/vae_val_y_pred_mean.npy
+Epoch 48/2000 train_mse_scaled=0.058811 val_mae=66.289 val_rmse=97.928 tf=0.00lr=0.001
+Saved validation predictions (best) to: v2/results/vae_val_y_true.npy and v2/results/vae_val_y_pred_mean.npy
+Epoch 49/2000 train_mse_scaled=0.058194 val_mae=70.335 val_rmse=100.400 tf=0.00lr=0.001
+Epoch 50/2000 train_mse_scaled=0.058124 val_mae=67.297 val_rmse=98.013 tf=0.00lr=0.001
+Epoch 51/2000 train_mse_scaled=0.057697 val_mae=68.603 val_rmse=99.360 tf=0.00lr=0.001
+Epoch 52/2000 train_mse_scaled=0.057375 val_mae=66.338 val_rmse=97.058 tf=0.00lr=0.001
+Saved validation predictions (best) to: v2/results/vae_val_y_true.npy and v2/results/vae_val_y_pred_mean.npy
+Epoch 53/2000 train_mse_scaled=0.057148 val_mae=76.118 val_rmse=110.394 tf=0.00lr=0.001
+Epoch 54/2000 train_mse_scaled=0.058299 val_mae=65.912 val_rmse=97.239 tf=0.00lr=0.001
+Epoch 55/2000 train_mse_scaled=0.055916 val_mae=70.080 val_rmse=99.072 tf=0.00lr=0.001
+Epoch 56/2000 train_mse_scaled=0.055757 val_mae=63.627 val_rmse=94.885 tf=0.00lr=0.001
+Saved validation predictions (best) to: v2/results/vae_val_y_true.npy and v2/results/vae_val_y_pred_mean.npy
+Epoch 57/2000 train_mse_scaled=0.055824 val_mae=64.660 val_rmse=95.613 tf=0.00lr=0.001
+Epoch 58/2000 train_mse_scaled=0.055356 val_mae=65.671 val_rmse=95.984 tf=0.00lr=0.001
+Epoch 59/2000 train_mse_scaled=0.054521 val_mae=63.260 val_rmse=94.244 tf=0.00lr=0.001
+Saved validation predictions (best) to: v2/results/vae_val_y_true.npy and v2/results/vae_val_y_pred_mean.npy
+Epoch 60/2000 train_mse_scaled=0.054196 val_mae=64.934 val_rmse=95.141 tf=0.00lr=0.001
+Epoch 61/2000 train_mse_scaled=0.054608 val_mae=62.911 val_rmse=93.479 tf=0.00lr=0.001
+Saved validation predictions (best) to: v2/results/vae_val_y_true.npy and v2/results/vae_val_y_pred_mean.npy
+Epoch 62/2000 train_mse_scaled=0.053758 val_mae=64.711 val_rmse=94.768 tf=0.00lr=0.001
+Epoch 63/2000 train_mse_scaled=0.053391 val_mae=64.318 val_rmse=94.857 tf=0.00lr=0.001
+Epoch 64/2000 train_mse_scaled=0.053449 val_mae=64.426 val_rmse=94.282 tf=0.00lr=0.001
+Epoch 65/2000 train_mse_scaled=0.053019 val_mae=61.658 val_rmse=92.452 tf=0.00lr=0.001
+Saved validation predictions (best) to: v2/results/vae_val_y_true.npy and v2/results/vae_val_y_pred_mean.npy
+Epoch 66/2000 train_mse_scaled=0.053230 val_mae=61.797 val_rmse=93.843 tf=0.00lr=0.001
+Epoch 67/2000 train_mse_scaled=0.052406 val_mae=63.699 val_rmse=93.228 tf=0.00lr=0.001
+Epoch 68/2000 train_mse_scaled=0.052248 val_mae=63.122 val_rmse=93.002 tf=0.00lr=0.001
+Epoch 69/2000 train_mse_scaled=0.052024 val_mae=61.287 val_rmse=91.744 tf=0.00lr=0.001
+Saved validation predictions (best) to: v2/results/vae_val_y_true.npy and v2/results/vae_val_y_pred_mean.npy
+Epoch 70/2000 train_mse_scaled=0.051857 val_mae=61.759 val_rmse=91.791 tf=0.00lr=0.001
+Epoch 71/2000 train_mse_scaled=0.051946 val_mae=64.479 val_rmse=93.650 tf=0.00lr=0.001
+Epoch 72/2000 train_mse_scaled=0.051122 val_mae=60.256 val_rmse=91.074 tf=0.00lr=0.001
+Saved validation predictions (best) to: v2/results/vae_val_y_true.npy and v2/results/vae_val_y_pred_mean.npy
+Epoch 73/2000 train_mse_scaled=0.051295 val_mae=62.460 val_rmse=91.600 tf=0.00lr=0.001
+Epoch 74/2000 train_mse_scaled=0.050603 val_mae=60.605 val_rmse=91.250 tf=0.00lr=0.001
+Epoch 75/2000 train_mse_scaled=0.050812 val_mae=60.959 val_rmse=91.193 tf=0.00lr=0.001
+Epoch 76/2000 train_mse_scaled=0.051835 val_mae=64.700 val_rmse=93.792 tf=0.00lr=0.001
+Epoch 77/2000 train_mse_scaled=0.050111 val_mae=60.990 val_rmse=90.896 tf=0.00lr=0.001
+Saved validation predictions (best) to: v2/results/vae_val_y_true.npy and v2/results/vae_val_y_pred_mean.npy
+Epoch 78/2000 train_mse_scaled=0.050067 val_mae=61.657 val_rmse=90.977 tf=0.00lr=0.001
+Epoch 79/2000 train_mse_scaled=0.049768 val_mae=60.822 val_rmse=91.107 tf=0.00lr=0.001
+Epoch 80/2000 train_mse_scaled=0.049786 val_mae=61.115 val_rmse=91.363 tf=0.00lr=0.001
+Epoch 81/2000 train_mse_scaled=0.049360 val_mae=60.848 val_rmse=89.936 tf=0.00lr=0.001
+Saved validation predictions (best) to: v2/results/vae_val_y_true.npy and v2/results/vae_val_y_pred_mean.npy
+Epoch 82/2000 train_mse_scaled=0.049065 val_mae=60.257 val_rmse=91.796 tf=0.00lr=0.001
+Epoch 83/2000 train_mse_scaled=0.049003 val_mae=62.358 val_rmse=91.093 tf=0.00lr=0.001
+Epoch 84/2000 train_mse_scaled=0.049074 val_mae=62.545 val_rmse=90.870 tf=0.00lr=0.001
+Epoch 85/2000 train_mse_scaled=0.048283 val_mae=61.343 val_rmse=90.228 tf=0.00lr=0.001
+Epoch 86/2000 train_mse_scaled=0.048459 val_mae=57.818 val_rmse=87.846 tf=0.00lr=0.001
+Saved validation predictions (best) to: v2/results/vae_val_y_true.npy and v2/results/vae_val_y_pred_mean.npy
+Epoch 87/2000 train_mse_scaled=0.050116 val_mae=58.495 val_rmse=88.465 tf=0.00lr=0.001
+Epoch 88/2000 train_mse_scaled=0.048022 val_mae=61.850 val_rmse=90.005 tf=0.00lr=0.001
+Epoch 89/2000 train_mse_scaled=0.047855 val_mae=62.661 val_rmse=90.977 tf=0.00lr=0.001
+Epoch 90/2000 train_mse_scaled=0.048191 val_mae=62.007 val_rmse=90.157 tf=0.00lr=0.001
+Epoch 91/2000 train_mse_scaled=0.047765 val_mae=58.795 val_rmse=87.963 tf=0.00lr=0.001
+Epoch 92/2000 train_mse_scaled=0.047362 val_mae=62.501 val_rmse=90.649 tf=0.00lr=0.001
+Epoch 93/2000 train_mse_scaled=0.047196 val_mae=58.615 val_rmse=87.799 tf=0.00lr=0.001
+Saved validation predictions (best) to: v2/results/vae_val_y_true.npy and v2/results/vae_val_y_pred_mean.npy
+Epoch 94/2000 train_mse_scaled=0.047065 val_mae=57.941 val_rmse=86.916 tf=0.00lr=0.001
+Saved validation predictions (best) to: v2/results/vae_val_y_true.npy and v2/results/vae_val_y_pred_mean.npy
+Epoch 95/2000 train_mse_scaled=0.046924 val_mae=61.742 val_rmse=89.579 tf=0.00lr=0.001
+Epoch 96/2000 train_mse_scaled=0.046831 val_mae=58.486 val_rmse=87.509 tf=0.00lr=0.001
+Epoch 97/2000 train_mse_scaled=0.046519 val_mae=59.295 val_rmse=87.680 tf=0.00lr=0.001
+Epoch 98/2000 train_mse_scaled=0.046242 val_mae=60.056 val_rmse=88.717 tf=0.00lr=0.001
+Epoch 99/2000 train_mse_scaled=0.046260 val_mae=60.286 val_rmse=88.444 tf=0.00lr=0.001
+Epoch 100/2000 train_mse_scaled=0.046046 val_mae=59.181 val_rmse=87.557 tf=0.00lr=0.001
+Epoch 101/2000 train_mse_scaled=0.045842 val_mae=57.375 val_rmse=86.296 tf=0.00lr=0.001
+Saved validation predictions (best) to: v2/results/vae_val_y_true.npy and v2/results/vae_val_y_pred_mean.npy
+Epoch 102/2000 train_mse_scaled=0.045681 val_mae=57.786 val_rmse=88.080 tf=0.00lr=0.001
+Epoch 103/2000 train_mse_scaled=0.046387 val_mae=61.140 val_rmse=88.562 tf=0.00lr=0.001
+Epoch 104/2000 train_mse_scaled=0.045546 val_mae=60.499 val_rmse=87.803 tf=0.00lr=0.001
+Epoch 105/2000 train_mse_scaled=0.045309 val_mae=58.338 val_rmse=86.087 tf=0.00lr=0.001
+Saved validation predictions (best) to: v2/results/vae_val_y_true.npy and v2/results/vae_val_y_pred_mean.npy
+Epoch 106/2000 train_mse_scaled=0.044986 val_mae=56.786 val_rmse=85.550 tf=0.00lr=0.001
+Saved validation predictions (best) to: v2/results/vae_val_y_true.npy and v2/results/vae_val_y_pred_mean.npy
+Epoch 107/2000 train_mse_scaled=0.044950 val_mae=57.996 val_rmse=86.368 tf=0.00lr=0.001
+Epoch 108/2000 train_mse_scaled=0.045011 val_mae=57.738 val_rmse=85.658 tf=0.00lr=0.001
+Epoch 109/2000 train_mse_scaled=0.044469 val_mae=60.738 val_rmse=91.017 tf=0.00lr=0.001
+Epoch 110/2000 train_mse_scaled=0.044854 val_mae=59.483 val_rmse=87.226 tf=0.00lr=0.001
+Epoch 111/2000 train_mse_scaled=0.044382 val_mae=58.349 val_rmse=86.097 tf=0.00lr=0.001
+Epoch 112/2000 train_mse_scaled=0.044254 val_mae=62.027 val_rmse=88.931 tf=0.00lr=0.001
+Epoch 113/2000 train_mse_scaled=0.044104 val_mae=56.305 val_rmse=84.571 tf=0.00lr=0.001
+Saved validation predictions (best) to: v2/results/vae_val_y_true.npy and v2/results/vae_val_y_pred_mean.npy
+Epoch 114/2000 train_mse_scaled=0.044122 val_mae=57.137 val_rmse=84.749 tf=0.00lr=0.001
+Epoch 115/2000 train_mse_scaled=0.044087 val_mae=58.283 val_rmse=85.760 tf=0.00lr=0.001
+Epoch 116/2000 train_mse_scaled=0.043635 val_mae=58.812 val_rmse=86.055 tf=0.00lr=0.001
+Epoch 117/2000 train_mse_scaled=0.043810 val_mae=60.233 val_rmse=87.747 tf=0.00lr=0.001
+Epoch 118/2000 train_mse_scaled=0.045068 val_mae=60.250 val_rmse=86.857 tf=0.00lr=0.001
+Epoch 119/2000 train_mse_scaled=0.044115 val_mae=57.502 val_rmse=84.994 tf=0.00lr=0.001
+Epoch 120/2000 train_mse_scaled=0.043345 val_mae=61.612 val_rmse=87.673 tf=0.00lr=0.001
+Epoch 121/2000 train_mse_scaled=0.043259 val_mae=58.346 val_rmse=85.291 tf=0.00lr=0.001
+Epoch 122/2000 train_mse_scaled=0.044187 val_mae=55.524 val_rmse=83.637 tf=0.00lr=0.001
+Saved validation predictions (best) to: v2/results/vae_val_y_true.npy and v2/results/vae_val_y_pred_mean.npy
+Epoch 123/2000 train_mse_scaled=0.042882 val_mae=58.401 val_rmse=85.486 tf=0.00lr=0.001
+Epoch 124/2000 train_mse_scaled=0.042929 val_mae=62.848 val_rmse=89.179 tf=0.00lr=0.001
+Epoch 125/2000 train_mse_scaled=0.042996 val_mae=58.329 val_rmse=85.053 tf=0.00lr=0.001
+Epoch 126/2000 train_mse_scaled=0.042543 val_mae=57.328 val_rmse=84.275 tf=0.00lr=0.001
+Epoch 127/2000 train_mse_scaled=0.042370 val_mae=56.614 val_rmse=83.992 tf=0.00lr=0.001
+Epoch 128/2000 train_mse_scaled=0.042367 val_mae=56.787 val_rmse=83.716 tf=0.00lr=0.001
+Epoch 129/2000 train_mse_scaled=0.042184 val_mae=57.234 val_rmse=84.245 tf=0.00lr=0.001
+Epoch 130/2000 train_mse_scaled=0.042000 val_mae=59.689 val_rmse=85.619 tf=0.00lr=0.001
+Epoch 131/2000 train_mse_scaled=0.043132 val_mae=56.926 val_rmse=84.586 tf=0.00lr=0.001
+Epoch 132/2000 train_mse_scaled=0.042101 val_mae=56.299 val_rmse=83.704 tf=0.00lr=0.001
+Epoch 133/2000 train_mse_scaled=0.041663 val_mae=56.353 val_rmse=83.527 tf=0.00lr=0.001
+Saved validation predictions (best) to: v2/results/vae_val_y_true.npy and v2/results/vae_val_y_pred_mean.npy
+Epoch 134/2000 train_mse_scaled=0.041585 val_mae=55.532 val_rmse=83.139 tf=0.00lr=0.001
+Saved validation predictions (best) to: v2/results/vae_val_y_true.npy and v2/results/vae_val_y_pred_mean.npy
+Epoch 135/2000 train_mse_scaled=0.041617 val_mae=56.205 val_rmse=82.945 tf=0.00lr=0.001
+Saved validation predictions (best) to: v2/results/vae_val_y_true.npy and v2/results/vae_val_y_pred_mean.npy
+Epoch 136/2000 train_mse_scaled=0.041608 val_mae=56.193 val_rmse=83.117 tf=0.00lr=0.001
+Epoch 137/2000 train_mse_scaled=0.041404 val_mae=54.844 val_rmse=82.237 tf=0.00lr=0.001
+Saved validation predictions (best) to: v2/results/vae_val_y_true.npy and v2/results/vae_val_y_pred_mean.npy
+Epoch 138/2000 train_mse_scaled=0.041388 val_mae=54.134 val_rmse=81.547 tf=0.00lr=0.001
+Saved validation predictions (best) to: v2/results/vae_val_y_true.npy and v2/results/vae_val_y_pred_mean.npy
+Epoch 139/2000 train_mse_scaled=0.041502 val_mae=54.202 val_rmse=82.464 tf=0.00lr=0.001
+Epoch 140/2000 train_mse_scaled=0.041390 val_mae=56.687 val_rmse=83.224 tf=0.00lr=0.001
+Epoch 141/2000 train_mse_scaled=0.041134 val_mae=55.036 val_rmse=82.449 tf=0.00lr=0.001
+Epoch 142/2000 train_mse_scaled=0.041178 val_mae=55.992 val_rmse=82.362 tf=0.00lr=0.001
+Epoch 143/2000 train_mse_scaled=0.040671 val_mae=56.892 val_rmse=82.925 tf=0.00lr=0.001
+Epoch 144/2000 train_mse_scaled=0.040753 val_mae=54.989 val_rmse=82.210 tf=0.00lr=0.001
+Epoch 145/2000 train_mse_scaled=0.040457 val_mae=55.901 val_rmse=82.471 tf=0.00lr=0.001
+Epoch 146/2000 train_mse_scaled=0.040928 val_mae=55.557 val_rmse=82.594 tf=0.00lr=0.001
+Epoch 147/2000 train_mse_scaled=0.040948 val_mae=56.307 val_rmse=82.463 tf=0.00lr=0.001
+Epoch 148/2000 train_mse_scaled=0.040261 val_mae=55.883 val_rmse=82.330 tf=0.00lr=0.001
+Epoch 149/2000 train_mse_scaled=0.040069 val_mae=54.824 val_rmse=82.342 tf=0.00lr=0.001
+Epoch 150/2000 train_mse_scaled=0.042292 val_mae=54.148 val_rmse=82.332 tf=0.00lr=0.001
+Epoch 151/2000 train_mse_scaled=0.040757 val_mae=54.362 val_rmse=81.127 tf=0.00lr=0.001
+Saved validation predictions (best) to: v2/results/vae_val_y_true.npy and v2/results/vae_val_y_pred_mean.npy
+Epoch 152/2000 train_mse_scaled=0.040018 val_mae=56.610 val_rmse=82.708 tf=0.00lr=0.001
+Epoch 153/2000 train_mse_scaled=0.039816 val_mae=55.779 val_rmse=82.050 tf=0.00lr=0.001
+Epoch 154/2000 train_mse_scaled=0.039814 val_mae=55.852 val_rmse=81.898 tf=0.00lr=0.001
+Epoch 155/2000 train_mse_scaled=0.039845 val_mae=54.832 val_rmse=82.175 tf=0.00lr=0.001
+Epoch 156/2000 train_mse_scaled=0.039820 val_mae=53.039 val_rmse=79.985 tf=0.00lr=0.001
+Saved validation predictions (best) to: v2/results/vae_val_y_true.npy and v2/results/vae_val_y_pred_mean.npy
+Epoch 157/2000 train_mse_scaled=0.039554 val_mae=55.136 val_rmse=81.102 tf=0.00lr=0.001
+Epoch 158/2000 train_mse_scaled=0.039392 val_mae=54.858 val_rmse=80.760 tf=0.00lr=0.001
+Epoch 159/2000 train_mse_scaled=0.039330 val_mae=54.103 val_rmse=80.576 tf=0.00lr=0.001
+Epoch 160/2000 train_mse_scaled=0.039565 val_mae=54.996 val_rmse=81.457 tf=0.00lr=0.001
+Epoch 161/2000 train_mse_scaled=0.039554 val_mae=53.821 val_rmse=80.076 tf=0.00lr=0.001
+Epoch 162/2000 train_mse_scaled=0.039277 val_mae=52.830 val_rmse=79.952 tf=0.00lr=0.001
+Saved validation predictions (best) to: v2/results/vae_val_y_true.npy and v2/results/vae_val_y_pred_mean.npy
+Epoch 163/2000 train_mse_scaled=0.039230 val_mae=53.534 val_rmse=79.993 tf=0.00lr=0.001
+Epoch 164/2000 train_mse_scaled=0.039091 val_mae=54.348 val_rmse=80.581 tf=0.00lr=0.001
+Epoch 165/2000 train_mse_scaled=0.038916 val_mae=57.374 val_rmse=82.291 tf=0.00lr=0.001
+Epoch 166/2000 train_mse_scaled=0.038773 val_mae=52.490 val_rmse=79.209 tf=0.00lr=0.001
+Saved validation predictions (best) to: v2/results/vae_val_y_true.npy and v2/results/vae_val_y_pred_mean.npy
+Epoch 167/2000 train_mse_scaled=0.038707 val_mae=50.931 val_rmse=78.243 tf=0.00lr=0.001
+Saved validation predictions (best) to: v2/results/vae_val_y_true.npy and v2/results/vae_val_y_pred_mean.npy
+Epoch 168/2000 train_mse_scaled=0.038756 val_mae=53.704 val_rmse=79.836 tf=0.00lr=0.001
+Epoch 169/2000 train_mse_scaled=0.038725 val_mae=53.558 val_rmse=79.736 tf=0.00lr=0.001
+Epoch 170/2000 train_mse_scaled=0.038738 val_mae=54.930 val_rmse=80.798 tf=0.00lr=0.001
+Epoch 171/2000 train_mse_scaled=0.039398 val_mae=56.115 val_rmse=81.915 tf=0.00lr=0.001
+Epoch 172/2000 train_mse_scaled=0.038722 val_mae=54.580 val_rmse=80.029 tf=0.00lr=0.001
+Epoch 173/2000 train_mse_scaled=0.038552 val_mae=53.551 val_rmse=79.317 tf=0.00lr=0.001
+Epoch 174/2000 train_mse_scaled=0.038341 val_mae=53.421 val_rmse=79.370 tf=0.00lr=0.001
+Epoch 175/2000 train_mse_scaled=0.038326 val_mae=53.648 val_rmse=79.952 tf=0.00lr=0.001
+Epoch 176/2000 train_mse_scaled=0.038275 val_mae=54.654 val_rmse=80.109 tf=0.00lr=0.001
+Epoch 177/2000 train_mse_scaled=0.038105 val_mae=52.168 val_rmse=79.016 tf=0.00lr=0.001
+Epoch 178/2000 train_mse_scaled=0.038546 val_mae=52.507 val_rmse=78.472 tf=0.00lr=0.001
+Epoch 179/2000 train_mse_scaled=0.037978 val_mae=53.595 val_rmse=79.060 tf=0.00lr=0.001
+Epoch 180/2000 train_mse_scaled=0.037867 val_mae=53.842 val_rmse=79.460 tf=0.00lr=0.001
+Epoch 181/2000 train_mse_scaled=0.038190 val_mae=54.073 val_rmse=80.165 tf=0.00lr=0.001
+Epoch 182/2000 train_mse_scaled=0.037854 val_mae=52.602 val_rmse=78.730 tf=0.00lr=0.001
+Epoch 183/2000 train_mse_scaled=0.037830 val_mae=54.649 val_rmse=80.172 tf=0.00lr=0.001
+Epoch 184/2000 train_mse_scaled=0.037609 val_mae=53.686 val_rmse=79.633 tf=0.00lr=0.001
+Epoch 185/2000 train_mse_scaled=0.037450 val_mae=53.842 val_rmse=78.890 tf=0.00lr=0.001
+Epoch 186/2000 train_mse_scaled=0.037359 val_mae=52.462 val_rmse=78.394 tf=0.00lr=0.001
+Epoch 187/2000 train_mse_scaled=0.037581 val_mae=52.288 val_rmse=77.887 tf=0.00lr=0.001
+Saved validation predictions (best) to: v2/results/vae_val_y_true.npy and v2/results/vae_val_y_pred_mean.npy
+Epoch 188/2000 train_mse_scaled=0.037421 val_mae=52.687 val_rmse=78.267 tf=0.00lr=0.001
+Epoch 189/2000 train_mse_scaled=0.037423 val_mae=51.039 val_rmse=77.358 tf=0.00lr=0.001
+Saved validation predictions (best) to: v2/results/vae_val_y_true.npy and v2/results/vae_val_y_pred_mean.npy
+Epoch 190/2000 train_mse_scaled=0.037473 val_mae=55.389 val_rmse=80.156 tf=0.00lr=0.001
+Epoch 191/2000 train_mse_scaled=0.037179 val_mae=53.563 val_rmse=78.759 tf=0.00lr=0.001
+Epoch 192/2000 train_mse_scaled=0.037406 val_mae=50.575 val_rmse=77.055 tf=0.00lr=0.001
+Saved validation predictions (best) to: v2/results/vae_val_y_true.npy and v2/results/vae_val_y_pred_mean.npy
+Epoch 193/2000 train_mse_scaled=0.037463 val_mae=52.567 val_rmse=79.250 tf=0.00lr=0.001
+Epoch 194/2000 train_mse_scaled=0.037274 val_mae=54.641 val_rmse=79.203 tf=0.00lr=0.001
+Epoch 195/2000 train_mse_scaled=0.037175 val_mae=52.045 val_rmse=77.527 tf=0.00lr=0.001
+Epoch 196/2000 train_mse_scaled=0.037309 val_mae=52.101 val_rmse=77.988 tf=0.00lr=0.001
+Epoch 197/2000 train_mse_scaled=0.037196 val_mae=52.844 val_rmse=78.061 tf=0.00lr=0.001
+Epoch 198/2000 train_mse_scaled=0.036675 val_mae=52.217 val_rmse=77.792 tf=0.00lr=0.001
+Epoch 199/2000 train_mse_scaled=0.036746 val_mae=54.603 val_rmse=79.304 tf=0.00lr=0.001
+Epoch 200/2000 train_mse_scaled=0.036983 val_mae=53.169 val_rmse=78.309 tf=0.00lr=0.001
+Epoch 201/2000 train_mse_scaled=0.037126 val_mae=52.711 val_rmse=78.974 tf=0.00lr=0.001
+Epoch 202/2000 train_mse_scaled=0.036696 val_mae=52.845 val_rmse=77.922 tf=0.00lr=0.001
+Epoch 203/2000 train_mse_scaled=0.036538 val_mae=51.504 val_rmse=77.017 tf=0.00lr=0.001
+Saved validation predictions (best) to: v2/results/vae_val_y_true.npy and v2/results/vae_val_y_pred_mean.npy
+Epoch 204/2000 train_mse_scaled=0.036603 val_mae=52.991 val_rmse=77.728 tf=0.00lr=0.001
+Epoch 205/2000 train_mse_scaled=0.036722 val_mae=54.658 val_rmse=79.147 tf=0.00lr=0.001
+Epoch 206/2000 train_mse_scaled=0.036658 val_mae=54.692 val_rmse=79.130 tf=0.00lr=0.001
+Epoch 207/2000 train_mse_scaled=0.036460 val_mae=50.607 val_rmse=76.648 tf=0.00lr=0.001
+Saved validation predictions (best) to: v2/results/vae_val_y_true.npy and v2/results/vae_val_y_pred_mean.npy
+Epoch 208/2000 train_mse_scaled=0.036309 val_mae=54.572 val_rmse=79.231 tf=0.00lr=0.001
+Epoch 209/2000 train_mse_scaled=0.036304 val_mae=53.524 val_rmse=78.254 tf=0.00lr=0.001
+Epoch 210/2000 train_mse_scaled=0.037143 val_mae=53.696 val_rmse=79.965 tf=0.00lr=0.001
+Epoch 211/2000 train_mse_scaled=0.036785 val_mae=50.721 val_rmse=76.561 tf=0.00lr=0.001
+Saved validation predictions (best) to: v2/results/vae_val_y_true.npy and v2/results/vae_val_y_pred_mean.npy
+Epoch 212/2000 train_mse_scaled=0.036201 val_mae=50.560 val_rmse=76.222 tf=0.00lr=0.001
+Saved validation predictions (best) to: v2/results/vae_val_y_true.npy and v2/results/vae_val_y_pred_mean.npy
+Epoch 213/2000 train_mse_scaled=0.036251 val_mae=53.520 val_rmse=78.376 tf=0.00lr=0.001
+Epoch 214/2000 train_mse_scaled=0.036032 val_mae=54.019 val_rmse=78.532 tf=0.00lr=0.001
+Epoch 215/2000 train_mse_scaled=0.036168 val_mae=49.275 val_rmse=76.102 tf=0.00lr=0.001
+Saved validation predictions (best) to: v2/results/vae_val_y_true.npy and v2/results/vae_val_y_pred_mean.npy
+Epoch 216/2000 train_mse_scaled=0.036455 val_mae=53.489 val_rmse=79.045 tf=0.00lr=0.001
+Epoch 217/2000 train_mse_scaled=0.036576 val_mae=55.578 val_rmse=81.601 tf=0.00lr=0.001
+Epoch 218/2000 train_mse_scaled=0.036141 val_mae=51.667 val_rmse=76.847 tf=0.00lr=0.001
+Epoch 219/2000 train_mse_scaled=0.036299 val_mae=50.450 val_rmse=76.289 tf=0.00lr=0.001
+Epoch 220/2000 train_mse_scaled=0.035808 val_mae=51.591 val_rmse=76.310 tf=0.00lr=0.001
+Epoch 221/2000 train_mse_scaled=0.035706 val_mae=51.898 val_rmse=76.913 tf=0.00lr=0.001
+Epoch 222/2000 train_mse_scaled=0.035662 val_mae=49.490 val_rmse=75.670 tf=0.00lr=0.001
+Saved validation predictions (best) to: v2/results/vae_val_y_true.npy and v2/results/vae_val_y_pred_mean.npy
+Epoch 223/2000 train_mse_scaled=0.035499 val_mae=50.348 val_rmse=76.119 tf=0.00lr=0.001
+Epoch 224/2000 train_mse_scaled=0.035795 val_mae=53.941 val_rmse=77.823 tf=0.00lr=0.001
+Epoch 225/2000 train_mse_scaled=0.035694 val_mae=52.392 val_rmse=78.583 tf=0.00lr=0.001
+Epoch 226/2000 train_mse_scaled=0.035555 val_mae=51.521 val_rmse=76.337 tf=0.00lr=0.001
+Epoch 227/2000 train_mse_scaled=0.035601 val_mae=50.921 val_rmse=76.057 tf=0.00lr=0.001
+Epoch 228/2000 train_mse_scaled=0.035504 val_mae=51.378 val_rmse=76.461 tf=0.00lr=0.001
+Epoch 229/2000 train_mse_scaled=0.035521 val_mae=52.660 val_rmse=76.859 tf=0.00lr=0.001
+Epoch 230/2000 train_mse_scaled=0.035599 val_mae=50.891 val_rmse=76.327 tf=0.00lr=0.001
+Epoch 231/2000 train_mse_scaled=0.035309 val_mae=52.375 val_rmse=77.032 tf=0.00lr=0.001
+Epoch 232/2000 train_mse_scaled=0.035213 val_mae=49.970 val_rmse=75.680 tf=0.00lr=0.001
+Epoch 233/2000 train_mse_scaled=0.035256 val_mae=51.845 val_rmse=76.954 tf=0.00lr=0.001
+Epoch 234/2000 train_mse_scaled=0.035459 val_mae=51.777 val_rmse=76.650 tf=0.00lr=0.001
+Epoch 235/2000 train_mse_scaled=0.035141 val_mae=52.439 val_rmse=76.274 tf=0.00lr=0.001
+Epoch 236/2000 train_mse_scaled=0.035212 val_mae=52.160 val_rmse=76.662 tf=0.00lr=0.001
+Epoch 237/2000 train_mse_scaled=0.035260 val_mae=50.761 val_rmse=75.659 tf=0.00lr=0.001
+Saved validation predictions (best) to: v2/results/vae_val_y_true.npy and v2/results/vae_val_y_pred_mean.npy
+Epoch 238/2000 train_mse_scaled=0.035650 val_mae=50.635 val_rmse=75.665 tf=0.00lr=0.001
+Epoch 239/2000 train_mse_scaled=0.035589 val_mae=50.493 val_rmse=75.238 tf=0.00lr=0.001
+Saved validation predictions (best) to: v2/results/vae_val_y_true.npy and v2/results/vae_val_y_pred_mean.npy
+Epoch 240/2000 train_mse_scaled=0.035200 val_mae=52.420 val_rmse=76.684 tf=0.00lr=0.001
+Epoch 241/2000 train_mse_scaled=0.034712 val_mae=51.851 val_rmse=76.493 tf=0.00lr=0.001
+Epoch 242/2000 train_mse_scaled=0.035151 val_mae=50.224 val_rmse=75.035 tf=0.00lr=0.001
+Saved validation predictions (best) to: v2/results/vae_val_y_true.npy and v2/results/vae_val_y_pred_mean.npy
+Epoch 243/2000 train_mse_scaled=0.034879 val_mae=48.843 val_rmse=74.319 tf=0.00lr=0.001
+Saved validation predictions (best) to: v2/results/vae_val_y_true.npy and v2/results/vae_val_y_pred_mean.npy
+Epoch 244/2000 train_mse_scaled=0.034674 val_mae=50.021 val_rmse=75.009 tf=0.00lr=0.001
+Epoch 245/2000 train_mse_scaled=0.034674 val_mae=51.383 val_rmse=75.950 tf=0.00lr=0.001
+Epoch 246/2000 train_mse_scaled=0.034790 val_mae=51.224 val_rmse=76.706 tf=0.00lr=0.001
+Epoch 247/2000 train_mse_scaled=0.034960 val_mae=49.785 val_rmse=74.941 tf=0.00lr=0.001
+Epoch 248/2000 train_mse_scaled=0.034678 val_mae=49.576 val_rmse=75.637 tf=0.00lr=0.001
+Epoch 249/2000 train_mse_scaled=0.034786 val_mae=51.590 val_rmse=75.757 tf=0.00lr=0.001
+Epoch 250/2000 train_mse_scaled=0.034580 val_mae=52.266 val_rmse=76.508 tf=0.00lr=0.001
+Epoch 251/2000 train_mse_scaled=0.034629 val_mae=52.021 val_rmse=76.311 tf=0.00lr=0.001
+Epoch 252/2000 train_mse_scaled=0.034584 val_mae=50.723 val_rmse=75.439 tf=0.00lr=0.001
+Epoch 253/2000 train_mse_scaled=0.034734 val_mae=52.207 val_rmse=76.709 tf=0.00lr=0.001
+Epoch 254/2000 train_mse_scaled=0.034700 val_mae=51.722 val_rmse=76.093 tf=0.00lr=0.001
+Epoch 255/2000 train_mse_scaled=0.034390 val_mae=50.811 val_rmse=75.054 tf=0.00lr=0.001
+Epoch 256/2000 train_mse_scaled=0.034411 val_mae=51.940 val_rmse=76.205 tf=0.00lr=0.001
+Epoch 257/2000 train_mse_scaled=0.034668 val_mae=50.145 val_rmse=75.294 tf=0.00lr=0.001
+Epoch 258/2000 train_mse_scaled=0.034310 val_mae=52.671 val_rmse=76.490 tf=0.00lr=0.001
+Epoch 259/2000 train_mse_scaled=0.034185 val_mae=51.635 val_rmse=75.795 tf=0.00lr=0.001
+Epoch 260/2000 train_mse_scaled=0.034263 val_mae=50.090 val_rmse=75.071 tf=0.00lr=0.001
+Epoch 261/2000 train_mse_scaled=0.034230 val_mae=51.253 val_rmse=75.523 tf=0.00lr=0.001
+Epoch 262/2000 train_mse_scaled=0.034080 val_mae=50.607 val_rmse=75.338 tf=0.00lr=0.001
+Epoch 263/2000 train_mse_scaled=0.034102 val_mae=49.194 val_rmse=74.193 tf=0.00lr=0.001
+Saved validation predictions (best) to: v2/results/vae_val_y_true.npy and v2/results/vae_val_y_pred_mean.npy
+Epoch 264/2000 train_mse_scaled=0.034423 val_mae=51.169 val_rmse=76.836 tf=0.00lr=0.001
+Epoch 265/2000 train_mse_scaled=0.034458 val_mae=50.358 val_rmse=74.902 tf=0.00lr=0.001
+Epoch 266/2000 train_mse_scaled=0.033923 val_mae=49.685 val_rmse=74.870 tf=0.00lr=0.001
+Epoch 267/2000 train_mse_scaled=0.034159 val_mae=50.737 val_rmse=76.115 tf=0.00lr=0.001
+Epoch 268/2000 train_mse_scaled=0.034132 val_mae=49.656 val_rmse=74.826 tf=0.00lr=0.001
+Epoch 269/2000 train_mse_scaled=0.034149 val_mae=49.727 val_rmse=74.751 tf=0.00lr=0.001
+Epoch 270/2000 train_mse_scaled=0.034199 val_mae=50.569 val_rmse=75.771 tf=0.00lr=0.001
+Epoch 271/2000 train_mse_scaled=0.034046 val_mae=51.991 val_rmse=75.744 tf=0.00lr=0.001
+Epoch 272/2000 train_mse_scaled=0.033956 val_mae=50.818 val_rmse=76.078 tf=0.00lr=0.001
+Epoch 273/2000 train_mse_scaled=0.034117 val_mae=49.228 val_rmse=74.336 tf=0.00lr=0.001
+Epoch 274/2000 train_mse_scaled=0.033771 val_mae=50.605 val_rmse=74.435 tf=0.00lr=0.001
+Epoch 275/2000 train_mse_scaled=0.034418 val_mae=51.437 val_rmse=75.236 tf=0.00lr=0.001
+Epoch 276/2000 train_mse_scaled=0.033772 val_mae=51.977 val_rmse=75.741 tf=0.00lr=0.001
+Epoch 277/2000 train_mse_scaled=0.034074 val_mae=51.693 val_rmse=75.837 tf=0.00lr=0.001
+Epoch 278/2000 train_mse_scaled=0.033814 val_mae=50.237 val_rmse=75.028 tf=0.00lr=0.001
+Epoch 279/2000 train_mse_scaled=0.033447 val_mae=47.903 val_rmse=73.201 tf=0.00lr=0.001
+Saved validation predictions (best) to: v2/results/vae_val_y_true.npy and v2/results/vae_val_y_pred_mean.npy
+Epoch 280/2000 train_mse_scaled=0.034196 val_mae=50.326 val_rmse=74.828 tf=0.00lr=0.001
+Epoch 281/2000 train_mse_scaled=0.033641 val_mae=50.036 val_rmse=74.120 tf=0.00lr=0.001
+Epoch 282/2000 train_mse_scaled=0.033594 val_mae=52.043 val_rmse=76.040 tf=0.00lr=0.001
+Epoch 283/2000 train_mse_scaled=0.033984 val_mae=49.059 val_rmse=73.679 tf=0.00lr=0.001
+Epoch 284/2000 train_mse_scaled=0.033565 val_mae=51.013 val_rmse=75.157 tf=0.00lr=0.001
+Epoch 285/2000 train_mse_scaled=0.033484 val_mae=49.167 val_rmse=73.431 tf=0.00lr=0.001
+Epoch 286/2000 train_mse_scaled=0.033423 val_mae=48.584 val_rmse=73.443 tf=0.00lr=0.001
+Epoch 287/2000 train_mse_scaled=0.033574 val_mae=48.930 val_rmse=73.634 tf=0.00lr=0.001
+Epoch 288/2000 train_mse_scaled=0.033806 val_mae=50.513 val_rmse=74.659 tf=0.00lr=0.001
+Epoch 289/2000 train_mse_scaled=0.033518 val_mae=51.602 val_rmse=75.135 tf=0.00lr=0.001
+Epoch 290/2000 train_mse_scaled=0.033256 val_mae=55.206 val_rmse=82.033 tf=0.00lr=0.001
+Epoch 291/2000 train_mse_scaled=0.035411 val_mae=51.489 val_rmse=75.113 tf=0.00lr=0.001
+Epoch 292/2000 train_mse_scaled=0.033341 val_mae=53.206 val_rmse=76.028 tf=0.00lr=0.001
+Epoch 293/2000 train_mse_scaled=0.033309 val_mae=51.083 val_rmse=74.777 tf=0.00lr=0.001
+Epoch 294/2000 train_mse_scaled=0.033400 val_mae=50.892 val_rmse=75.110 tf=0.00lr=0.001
+Epoch 295/2000 train_mse_scaled=0.033421 val_mae=51.790 val_rmse=75.157 tf=0.00lr=0.001
+Epoch 296/2000 train_mse_scaled=0.033225 val_mae=49.652 val_rmse=73.530 tf=0.00lr=0.001
+Epoch 297/2000 train_mse_scaled=0.032931 val_mae=49.943 val_rmse=73.547 tf=0.00lr=0.001
+Epoch 298/2000 train_mse_scaled=0.032992 val_mae=48.499 val_rmse=72.780 tf=0.00lr=0.001
+Saved validation predictions (best) to: v2/results/vae_val_y_true.npy and v2/results/vae_val_y_pred_mean.npy
+Epoch 299/2000 train_mse_scaled=0.032869 val_mae=50.336 val_rmse=74.281 tf=0.00lr=0.001
+Epoch 300/2000 train_mse_scaled=0.032987 val_mae=49.673 val_rmse=73.439 tf=0.00lr=0.001
+Epoch 301/2000 train_mse_scaled=0.033088 val_mae=51.287 val_rmse=76.499 tf=0.00lr=0.001
+Epoch 302/2000 train_mse_scaled=0.033530 val_mae=50.635 val_rmse=74.457 tf=0.00lr=0.001
+Epoch 303/2000 train_mse_scaled=0.032964 val_mae=50.667 val_rmse=74.509 tf=0.00lr=0.001
+Epoch 304/2000 train_mse_scaled=0.032955 val_mae=48.444 val_rmse=72.786 tf=0.00lr=0.001
+Epoch 305/2000 train_mse_scaled=0.032861 val_mae=49.809 val_rmse=73.895 tf=0.00lr=0.001
+Epoch 306/2000 train_mse_scaled=0.032840 val_mae=51.120 val_rmse=74.878 tf=0.00lr=0.001
+Epoch 307/2000 train_mse_scaled=0.032873 val_mae=53.576 val_rmse=76.442 tf=0.00lr=0.001
+Epoch 308/2000 train_mse_scaled=0.033144 val_mae=49.194 val_rmse=73.943 tf=0.00lr=0.001
+Epoch 309/2000 train_mse_scaled=0.032853 val_mae=50.408 val_rmse=74.307 tf=0.00lr=0.001
+Epoch 310/2000 train_mse_scaled=0.032958 val_mae=49.899 val_rmse=73.642 tf=0.00lr=0.001
+Epoch 311/2000 train_mse_scaled=0.032984 val_mae=48.124 val_rmse=72.813 tf=0.00lr=0.001
+Epoch 312/2000 train_mse_scaled=0.032849 val_mae=50.964 val_rmse=74.791 tf=0.00lr=0.001
+Epoch 313/2000 train_mse_scaled=0.032980 val_mae=50.404 val_rmse=74.085 tf=0.00lr=0.001
+Epoch 314/2000 train_mse_scaled=0.032794 val_mae=50.620 val_rmse=74.064 tf=0.00lr=0.001
+Epoch 315/2000 train_mse_scaled=0.032786 val_mae=50.848 val_rmse=74.293 tf=0.00lr=0.001
+Epoch 316/2000 train_mse_scaled=0.032504 val_mae=49.153 val_rmse=72.970 tf=0.00lr=0.001
+Epoch 317/2000 train_mse_scaled=0.033029 val_mae=50.071 val_rmse=74.657 tf=0.00lr=0.001
+Epoch 318/2000 train_mse_scaled=0.032810 val_mae=50.470 val_rmse=73.998 tf=0.00lr=0.001
+Epoch 319/2000 train_mse_scaled=0.032697 val_mae=51.089 val_rmse=74.343 tf=0.00lr=0.001
+Epoch 320/2000 train_mse_scaled=0.032509 val_mae=49.390 val_rmse=73.494 tf=0.00lr=0.001
+Epoch 321/2000 train_mse_scaled=0.032743 val_mae=52.475 val_rmse=75.604 tf=0.00lr=0.001
+Epoch 322/2000 train_mse_scaled=0.032840 val_mae=49.832 val_rmse=74.259 tf=0.00lr=0.001
+Epoch 323/2000 train_mse_scaled=0.032768 val_mae=49.519 val_rmse=73.846 tf=0.00lr=0.001
+Epoch 324/2000 train_mse_scaled=0.032852 val_mae=49.632 val_rmse=73.431 tf=0.00lr=0.001
+Epoch 325/2000 train_mse_scaled=0.032397 val_mae=49.059 val_rmse=73.197 tf=0.00lr=0.001
+Epoch 326/2000 train_mse_scaled=0.032381 val_mae=50.415 val_rmse=74.557 tf=0.00lr=0.001
+Epoch 327/2000 train_mse_scaled=0.032679 val_mae=49.744 val_rmse=73.924 tf=0.00lr=0.001
+Epoch 328/2000 train_mse_scaled=0.032878 val_mae=50.717 val_rmse=74.272 tf=0.00lr=0.001
+Epoch 329/2000 train_mse_scaled=0.032634 val_mae=50.746 val_rmse=74.075 tf=0.00lr=0.001
+Epoch 330/2000 train_mse_scaled=0.032400 val_mae=48.679 val_rmse=72.970 tf=0.00lr=0.001
+Epoch 331/2000 train_mse_scaled=0.032189 val_mae=49.847 val_rmse=73.731 tf=0.00lr=0.001
+Epoch 332/2000 train_mse_scaled=0.032225 val_mae=49.031 val_rmse=72.662 tf=0.00lr=0.001
+Saved validation predictions (best) to: v2/results/vae_val_y_true.npy and v2/results/vae_val_y_pred_mean.npy
+Epoch 333/2000 train_mse_scaled=0.032466 val_mae=49.725 val_rmse=73.496 tf=0.00lr=0.001
+Epoch 334/2000 train_mse_scaled=0.032230 val_mae=51.000 val_rmse=74.046 tf=0.00lr=0.001
+Epoch 335/2000 train_mse_scaled=0.032279 val_mae=52.406 val_rmse=75.595 tf=0.00lr=0.001
+Epoch 336/2000 train_mse_scaled=0.032540 val_mae=47.191 val_rmse=71.534 tf=0.00lr=0.001
+Saved validation predictions (best) to: v2/results/vae_val_y_true.npy and v2/results/vae_val_y_pred_mean.npy
+Epoch 337/2000 train_mse_scaled=0.032077 val_mae=49.543 val_rmse=73.070 tf=0.00lr=0.001
+Epoch 338/2000 train_mse_scaled=0.032061 val_mae=49.923 val_rmse=74.569 tf=0.00lr=0.001
+Epoch 339/2000 train_mse_scaled=0.032414 val_mae=49.512 val_rmse=73.584 tf=0.00lr=0.001
+Epoch 340/2000 train_mse_scaled=0.032160 val_mae=49.496 val_rmse=73.540 tf=0.00lr=0.001
+Epoch 341/2000 train_mse_scaled=0.032189 val_mae=47.886 val_rmse=72.186 tf=0.00lr=0.001
+Epoch 342/2000 train_mse_scaled=0.032077 val_mae=49.489 val_rmse=73.140 tf=0.00lr=0.001
+Epoch 343/2000 train_mse_scaled=0.032020 val_mae=49.288 val_rmse=73.141 tf=0.00lr=0.001
+Epoch 344/2000 train_mse_scaled=0.031935 val_mae=49.033 val_rmse=72.690 tf=0.00lr=0.001
+Epoch 345/2000 train_mse_scaled=0.032316 val_mae=50.288 val_rmse=73.928 tf=0.00lr=0.001
+Epoch 346/2000 train_mse_scaled=0.032224 val_mae=50.471 val_rmse=73.747 tf=0.00lr=0.001
+Epoch 347/2000 train_mse_scaled=0.031947 val_mae=52.968 val_rmse=75.666 tf=0.00lr=0.001
+Epoch 348/2000 train_mse_scaled=0.031922 val_mae=50.824 val_rmse=73.750 tf=0.00lr=0.001
+Epoch 349/2000 train_mse_scaled=0.032319 val_mae=49.399 val_rmse=72.722 tf=0.00lr=0.001
+Epoch 350/2000 train_mse_scaled=0.031860 val_mae=50.193 val_rmse=73.753 tf=0.00lr=0.001
+Epoch 351/2000 train_mse_scaled=0.032339 val_mae=49.462 val_rmse=72.793 tf=0.00lr=0.001
+Epoch 352/2000 train_mse_scaled=0.031915 val_mae=50.062 val_rmse=73.622 tf=0.00lr=0.001
+Epoch 353/2000 train_mse_scaled=0.032002 val_mae=48.731 val_rmse=72.456 tf=0.00lr=0.001
+Epoch 354/2000 train_mse_scaled=0.031722 val_mae=50.437 val_rmse=73.699 tf=0.00lr=0.001
+Epoch 355/2000 train_mse_scaled=0.031848 val_mae=50.478 val_rmse=74.147 tf=0.00lr=0.001
+Epoch 356/2000 train_mse_scaled=0.031987 val_mae=49.704 val_rmse=73.285 tf=0.00lr=0.001
+Epoch 357/2000 train_mse_scaled=0.031858 val_mae=50.276 val_rmse=74.571 tf=0.00lr=0.001
+Epoch 358/2000 train_mse_scaled=0.031956 val_mae=49.485 val_rmse=73.150 tf=0.00lr=0.001
+Epoch 359/2000 train_mse_scaled=0.031740 val_mae=50.652 val_rmse=74.026 tf=0.00lr=0.001
+Epoch 360/2000 train_mse_scaled=0.031774 val_mae=48.593 val_rmse=72.604 tf=0.00lr=0.001
+Epoch 361/2000 train_mse_scaled=0.031960 val_mae=52.576 val_rmse=74.914 tf=0.00lr=0.001
+Epoch 362/2000 train_mse_scaled=0.031675 val_mae=48.640 val_rmse=72.185 tf=0.00lr=0.001
+Epoch 363/2000 train_mse_scaled=0.031850 val_mae=49.067 val_rmse=72.440 tf=0.00lr=0.001
+Epoch 364/2000 train_mse_scaled=0.031809 val_mae=48.888 val_rmse=73.281 tf=0.00lr=0.001
+Epoch 365/2000 train_mse_scaled=0.032180 val_mae=48.437 val_rmse=72.852 tf=0.00lr=0.001
+Epoch 366/2000 train_mse_scaled=0.031851 val_mae=48.942 val_rmse=72.967 tf=0.00lr=0.001
+Epoch 367/2000 train_mse_scaled=0.031673 val_mae=48.011 val_rmse=72.164 tf=0.00lr=0.001
+Epoch 368/2000 train_mse_scaled=0.032599 val_mae=50.933 val_rmse=76.213 tf=0.00lr=0.001
+Epoch 369/2000 train_mse_scaled=0.032161 val_mae=49.645 val_rmse=73.255 tf=0.00lr=0.001
+Epoch 370/2000 train_mse_scaled=0.031817 val_mae=48.598 val_rmse=73.701 tf=0.00lr=0.001
+Epoch 371/2000 train_mse_scaled=0.031672 val_mae=49.389 val_rmse=72.703 tf=0.00lr=0.001
+Epoch 372/2000 train_mse_scaled=0.031485 val_mae=50.578 val_rmse=74.019 tf=0.00lr=0.001
+Epoch 373/2000 train_mse_scaled=0.031553 val_mae=50.394 val_rmse=73.091 tf=0.00lr=0.001
+Epoch 374/2000 train_mse_scaled=0.031352 val_mae=48.594 val_rmse=72.312 tf=0.00lr=0.001
+Epoch 375/2000 train_mse_scaled=0.032045 val_mae=51.409 val_rmse=75.507 tf=0.00lr=0.001
+Epoch 376/2000 train_mse_scaled=0.031505 val_mae=49.421 val_rmse=72.895 tf=0.00lr=0.001
+Epoch 377/2000 train_mse_scaled=0.031527 val_mae=50.863 val_rmse=74.859 tf=0.00lr=0.001
+Epoch 378/2000 train_mse_scaled=0.031673 val_mae=49.481 val_rmse=72.961 tf=0.00lr=0.001
+Epoch 379/2000 train_mse_scaled=0.031366 val_mae=50.616 val_rmse=74.194 tf=0.00lr=0.001
+Epoch 380/2000 train_mse_scaled=0.031178 val_mae=49.281 val_rmse=72.516 tf=0.00lr=0.001
+Epoch 381/2000 train_mse_scaled=0.031443 val_mae=52.666 val_rmse=75.184 tf=0.00lr=0.001
+Epoch 382/2000 train_mse_scaled=0.031478 val_mae=49.711 val_rmse=73.156 tf=0.00lr=0.001
+Epoch 383/2000 train_mse_scaled=0.031352 val_mae=46.470 val_rmse=70.807 tf=0.00lr=0.001
+Saved validation predictions (best) to: v2/results/vae_val_y_true.npy and v2/results/vae_val_y_pred_mean.npy
+Epoch 384/2000 train_mse_scaled=0.031364 val_mae=50.529 val_rmse=73.425 tf=0.00lr=0.001
+Epoch 385/2000 train_mse_scaled=0.031716 val_mae=52.767 val_rmse=75.405 tf=0.00lr=0.001
+Epoch 386/2000 train_mse_scaled=0.032747 val_mae=49.067 val_rmse=74.044 tf=0.00lr=0.001
+Epoch 387/2000 train_mse_scaled=0.031512 val_mae=49.444 val_rmse=72.746 tf=0.00lr=0.001
+Epoch 388/2000 train_mse_scaled=0.031320 val_mae=49.959 val_rmse=73.645 tf=0.00lr=0.001
+Epoch 389/2000 train_mse_scaled=0.031268 val_mae=50.800 val_rmse=73.402 tf=0.00lr=0.001
+Epoch 390/2000 train_mse_scaled=0.031494 val_mae=49.663 val_rmse=72.713 tf=0.00lr=0.001
+Epoch 391/2000 train_mse_scaled=0.031266 val_mae=49.719 val_rmse=72.807 tf=0.00lr=0.001
+Epoch 392/2000 train_mse_scaled=0.031296 val_mae=50.720 val_rmse=73.447 tf=0.00lr=0.001
+Epoch 393/2000 train_mse_scaled=0.031313 val_mae=50.636 val_rmse=74.008 tf=0.00lr=0.001
+Epoch 394/2000 train_mse_scaled=0.031538 val_mae=48.732 val_rmse=72.374 tf=0.00lr=0.001
+Epoch 395/2000 train_mse_scaled=0.031267 val_mae=49.867 val_rmse=72.592 tf=0.00lr=0.001
+Epoch 396/2000 train_mse_scaled=0.031066 val_mae=48.569 val_rmse=71.854 tf=0.00lr=0.001
+Epoch 397/2000 train_mse_scaled=0.031242 val_mae=58.288 val_rmse=91.545 tf=0.00lr=0.001
+Epoch 398/2000 train_mse_scaled=0.034299 val_mae=48.519 val_rmse=72.988 tf=0.00lr=0.001
+Epoch 399/2000 train_mse_scaled=0.031387 val_mae=51.776 val_rmse=74.613 tf=0.00lr=0.001
+Epoch 400/2000 train_mse_scaled=0.031082 val_mae=48.411 val_rmse=71.626 tf=0.00lr=0.001
+Epoch 401/2000 train_mse_scaled=0.030937 val_mae=51.236 val_rmse=73.941 tf=0.00lr=0.001
+Epoch 402/2000 train_mse_scaled=0.031118 val_mae=50.086 val_rmse=72.883 tf=0.00lr=0.001
+Epoch 403/2000 train_mse_scaled=0.030985 val_mae=48.556 val_rmse=72.098 tf=0.00lr=0.001
+Epoch 404/2000 train_mse_scaled=0.031174 val_mae=48.629 val_rmse=71.890 tf=0.00lr=0.001
+Epoch 405/2000 train_mse_scaled=0.031029 val_mae=49.807 val_rmse=72.740 tf=0.00lr=0.001
+Epoch 406/2000 train_mse_scaled=0.031080 val_mae=48.829 val_rmse=72.481 tf=0.00lr=0.001
+Epoch 407/2000 train_mse_scaled=0.031048 val_mae=47.174 val_rmse=71.556 tf=0.00lr=0.001
+Epoch 408/2000 train_mse_scaled=0.030782 val_mae=48.699 val_rmse=71.655 tf=0.00lr=0.001
+Epoch 409/2000 train_mse_scaled=0.030711 val_mae=50.234 val_rmse=73.303 tf=0.00lr=0.001
+Epoch 410/2000 train_mse_scaled=0.031273 val_mae=49.508 val_rmse=75.672 tf=0.00lr=0.001
+Epoch 411/2000 train_mse_scaled=0.031916 val_mae=50.413 val_rmse=73.144 tf=0.00lr=0.001
+Epoch 412/2000 train_mse_scaled=0.031066 val_mae=50.478 val_rmse=73.202 tf=0.00lr=0.001
+Epoch 413/2000 train_mse_scaled=0.030786 val_mae=49.613 val_rmse=72.389 tf=0.00lr=0.001
+Epoch 414/2000 train_mse_scaled=0.030851 val_mae=49.375 val_rmse=72.356 tf=0.00lr=0.001
+Epoch 415/2000 train_mse_scaled=0.031266 val_mae=47.815 val_rmse=71.863 tf=0.00lr=0.001
+Epoch 416/2000 train_mse_scaled=0.030902 val_mae=48.523 val_rmse=71.610 tf=0.00lr=0.001
+Epoch 417/2000 train_mse_scaled=0.030879 val_mae=50.527 val_rmse=73.213 tf=0.00lr=0.001
+Epoch 418/2000 train_mse_scaled=0.030772 val_mae=50.363 val_rmse=72.936 tf=0.00lr=0.001
+Epoch 419/2000 train_mse_scaled=0.030901 val_mae=48.852 val_rmse=72.019 tf=0.00lr=0.001
+Epoch 420/2000 train_mse_scaled=0.030781 val_mae=49.103 val_rmse=72.696 tf=0.00lr=0.001
+Epoch 421/2000 train_mse_scaled=0.030838 val_mae=50.892 val_rmse=73.428 tf=0.00lr=0.001
+Epoch 422/2000 train_mse_scaled=0.030806 val_mae=50.251 val_rmse=72.838 tf=0.00lr=0.001
+Epoch 423/2000 train_mse_scaled=0.030871 val_mae=49.351 val_rmse=72.526 tf=0.00lr=0.001
+Epoch 424/2000 train_mse_scaled=0.030788 val_mae=49.459 val_rmse=72.323 tf=0.00lr=0.001
+Epoch 425/2000 train_mse_scaled=0.030676 val_mae=49.101 val_rmse=73.003 tf=0.00lr=0.001
+Epoch 426/2000 train_mse_scaled=0.030722 val_mae=50.109 val_rmse=73.087 tf=0.00lr=0.001
+Epoch 427/2000 train_mse_scaled=0.030792 val_mae=48.713 val_rmse=71.607 tf=0.00lr=0.001
+Epoch 428/2000 train_mse_scaled=0.030842 val_mae=51.130 val_rmse=73.762 tf=0.00lr=0.001
+Epoch 429/2000 train_mse_scaled=0.030778 val_mae=48.403 val_rmse=71.751 tf=0.00lr=0.001
+Epoch 430/2000 train_mse_scaled=0.030470 val_mae=47.969 val_rmse=71.502 tf=0.00lr=0.001
+Epoch 431/2000 train_mse_scaled=0.030698 val_mae=47.947 val_rmse=71.482 tf=0.00lr=0.001
+Epoch 432/2000 train_mse_scaled=0.030788 val_mae=49.677 val_rmse=72.597 tf=0.00lr=0.001
+Epoch 433/2000 train_mse_scaled=0.030575 val_mae=51.839 val_rmse=73.882 tf=0.00lr=0.001
+Epoch 434/2000 train_mse_scaled=0.030377 val_mae=46.648 val_rmse=70.630 tf=0.00lr=0.001
+Saved validation predictions (best) to: v2/results/vae_val_y_true.npy and v2/results/vae_val_y_pred_mean.npy
+Epoch 435/2000 train_mse_scaled=0.030638 val_mae=47.575 val_rmse=70.869 tf=0.00lr=0.001
+Epoch 436/2000 train_mse_scaled=0.030394 val_mae=51.793 val_rmse=74.187 tf=0.00lr=0.001
+Epoch 437/2000 train_mse_scaled=0.030578 val_mae=48.570 val_rmse=71.673 tf=0.00lr=0.001
+Epoch 438/2000 train_mse_scaled=0.030558 val_mae=49.929 val_rmse=73.071 tf=0.00lr=0.001
+Epoch 439/2000 train_mse_scaled=0.030775 val_mae=48.224 val_rmse=71.261 tf=0.00lr=0.001
+Epoch 440/2000 train_mse_scaled=0.030521 val_mae=48.826 val_rmse=71.673 tf=0.00lr=0.001
+Epoch 441/2000 train_mse_scaled=0.030489 val_mae=51.001 val_rmse=74.293 tf=0.00lr=0.001
+Epoch 442/2000 train_mse_scaled=0.030691 val_mae=48.888 val_rmse=71.935 tf=0.00lr=0.001
+Epoch 443/2000 train_mse_scaled=0.030414 val_mae=47.856 val_rmse=72.033 tf=0.00lr=0.001
+Epoch 444/2000 train_mse_scaled=0.030664 val_mae=49.293 val_rmse=72.003 tf=0.00lr=0.001
+Epoch 445/2000 train_mse_scaled=0.030607 val_mae=48.667 val_rmse=72.048 tf=0.00lr=0.001
+Epoch 446/2000 train_mse_scaled=0.030574 val_mae=49.098 val_rmse=71.991 tf=0.00lr=0.001
+Epoch 447/2000 train_mse_scaled=0.030437 val_mae=51.027 val_rmse=73.954 tf=0.00lr=0.001
+Epoch 448/2000 train_mse_scaled=0.030309 val_mae=47.944 val_rmse=71.174 tf=0.00lr=0.001
+Epoch 449/2000 train_mse_scaled=0.030263 val_mae=48.561 val_rmse=71.674 tf=0.00lr=0.001
+Epoch 450/2000 train_mse_scaled=0.030394 val_mae=48.578 val_rmse=71.486 tf=0.00lr=0.001
+Epoch 451/2000 train_mse_scaled=0.030325 val_mae=48.472 val_rmse=71.405 tf=0.00lr=0.001
+Epoch 452/2000 train_mse_scaled=0.030331 val_mae=49.537 val_rmse=72.270 tf=0.00lr=0.001
+Epoch 453/2000 train_mse_scaled=0.030094 val_mae=49.254 val_rmse=71.762 tf=0.00lr=0.001
+Epoch 454/2000 train_mse_scaled=0.030168 val_mae=47.908 val_rmse=71.203 tf=0.00lr=0.001
+Epoch 455/2000 train_mse_scaled=0.030329 val_mae=49.823 val_rmse=72.188 tf=0.00lr=0.001
+Epoch 456/2000 train_mse_scaled=0.030289 val_mae=48.484 val_rmse=72.186 tf=0.00lr=0.001
+Epoch 457/2000 train_mse_scaled=0.030525 val_mae=51.077 val_rmse=73.446 tf=0.00lr=0.001
+Epoch 458/2000 train_mse_scaled=0.030163 val_mae=48.370 val_rmse=71.379 tf=0.00lr=0.001
+Epoch 459/2000 train_mse_scaled=0.030214 val_mae=48.631 val_rmse=71.812 tf=0.00lr=0.001
+Epoch 460/2000 train_mse_scaled=0.030457 val_mae=50.929 val_rmse=74.938 tf=0.00lr=0.001
+Epoch 461/2000 train_mse_scaled=0.030333 val_mae=48.961 val_rmse=71.909 tf=0.00lr=0.001
+Epoch 462/2000 train_mse_scaled=0.030536 val_mae=47.684 val_rmse=70.867 tf=0.00lr=0.001
+Epoch 463/2000 train_mse_scaled=0.030699 val_mae=48.990 val_rmse=71.599 tf=0.00lr=0.001
+Epoch 464/2000 train_mse_scaled=0.030111 val_mae=48.283 val_rmse=71.636 tf=0.00lr=0.001
+Epoch 465/2000 train_mse_scaled=0.030186 val_mae=49.633 val_rmse=72.534 tf=0.00lr=0.001
+Epoch 466/2000 train_mse_scaled=0.030217 val_mae=48.559 val_rmse=71.840 tf=0.00lr=0.001
+Epoch 467/2000 train_mse_scaled=0.030121 val_mae=48.008 val_rmse=71.552 tf=0.00lr=0.001
+Epoch 468/2000 train_mse_scaled=0.029938 val_mae=49.683 val_rmse=72.654 tf=0.00lr=0.001
+Epoch 469/2000 train_mse_scaled=0.030881 val_mae=49.428 val_rmse=72.557 tf=0.00lr=0.001
+Epoch 470/2000 train_mse_scaled=0.030355 val_mae=49.261 val_rmse=71.557 tf=0.00lr=0.001
+Epoch 471/2000 train_mse_scaled=0.030003 val_mae=49.388 val_rmse=72.028 tf=0.00lr=0.001
+Epoch 472/2000 train_mse_scaled=0.030220 val_mae=49.104 val_rmse=72.243 tf=0.00lr=0.001
+Epoch 473/2000 train_mse_scaled=0.029841 val_mae=49.771 val_rmse=72.416 tf=0.00lr=0.001
+Epoch 474/2000 train_mse_scaled=0.029772 val_mae=49.914 val_rmse=72.393 tf=0.00lr=0.001
+Epoch 475/2000 train_mse_scaled=0.029711 val_mae=49.006 val_rmse=71.959 tf=0.00lr=0.001
+Epoch 476/2000 train_mse_scaled=0.030391 val_mae=47.855 val_rmse=71.446 tf=0.00lr=0.001
+Epoch 477/2000 train_mse_scaled=0.029968 val_mae=49.626 val_rmse=72.460 tf=0.00lr=0.001
+Epoch 478/2000 train_mse_scaled=0.029948 val_mae=50.196 val_rmse=72.818 tf=0.00lr=0.001
+Epoch 479/2000 train_mse_scaled=0.029897 val_mae=48.542 val_rmse=71.498 tf=0.00lr=0.001
+Epoch 480/2000 train_mse_scaled=0.029937 val_mae=48.780 val_rmse=71.740 tf=0.00lr=0.001
+Epoch 481/2000 train_mse_scaled=0.030235 val_mae=51.482 val_rmse=73.963 tf=0.00lr=0.001
+Epoch 482/2000 train_mse_scaled=0.030232 val_mae=49.044 val_rmse=71.935 tf=0.00lr=0.001
+Epoch 483/2000 train_mse_scaled=0.029632 val_mae=48.268 val_rmse=71.080 tf=0.00lr=0.001
+Epoch 484/2000 train_mse_scaled=0.029852 val_mae=47.827 val_rmse=70.997 tf=0.00lr=0.001
+Epoch 485/2000 train_mse_scaled=0.029751 val_mae=49.196 val_rmse=71.668 tf=0.00lr=0.001
+Epoch 486/2000 train_mse_scaled=0.030017 val_mae=49.335 val_rmse=72.112 tf=0.00lr=0.001
+Epoch 487/2000 train_mse_scaled=0.030065 val_mae=49.612 val_rmse=72.549 tf=0.00lr=0.001
+Epoch 488/2000 train_mse_scaled=0.029862 val_mae=45.973 val_rmse=69.848 tf=0.00lr=0.001
+Saved validation predictions (best) to: v2/results/vae_val_y_true.npy and v2/results/vae_val_y_pred_mean.npy
+Epoch 489/2000 train_mse_scaled=0.029784 val_mae=46.595 val_rmse=70.223 tf=0.00lr=0.001
+Epoch 490/2000 train_mse_scaled=0.030430 val_mae=48.629 val_rmse=71.779 tf=0.00lr=0.001
+Epoch 491/2000 train_mse_scaled=0.030050 val_mae=51.880 val_rmse=73.976 tf=0.00lr=0.001
+Epoch 492/2000 train_mse_scaled=0.029784 val_mae=48.636 val_rmse=71.889 tf=0.00lr=0.001
+Epoch 493/2000 train_mse_scaled=0.030079 val_mae=48.219 val_rmse=71.206 tf=0.00lr=0.001
+Epoch 494/2000 train_mse_scaled=0.029747 val_mae=48.735 val_rmse=71.570 tf=0.00lr=0.001
+Epoch 495/2000 train_mse_scaled=0.029658 val_mae=50.021 val_rmse=72.445 tf=0.00lr=0.001
+Epoch 496/2000 train_mse_scaled=0.029679 val_mae=49.839 val_rmse=72.759 tf=0.00lr=0.001
+Epoch 497/2000 train_mse_scaled=0.030577 val_mae=50.963 val_rmse=78.016 tf=0.00lr=0.001
+Epoch 498/2000 train_mse_scaled=0.030686 val_mae=47.919 val_rmse=71.466 tf=0.00lr=0.001
+Epoch 499/2000 train_mse_scaled=0.029654 val_mae=49.281 val_rmse=72.159 tf=0.00lr=0.001
+Epoch 500/2000 train_mse_scaled=0.029560 val_mae=48.473 val_rmse=71.796 tf=0.00lr=0.001
+Epoch 501/2000 train_mse_scaled=0.029603 val_mae=49.538 val_rmse=72.099 tf=0.00lr=0.001
+Epoch 502/2000 train_mse_scaled=0.029695 val_mae=48.304 val_rmse=71.374 tf=0.00lr=0.001
+Epoch 503/2000 train_mse_scaled=0.029555 val_mae=48.196 val_rmse=71.553 tf=0.00lr=0.001
+Epoch 504/2000 train_mse_scaled=0.029712 val_mae=50.099 val_rmse=72.545 tf=0.00lr=0.001
+Epoch 505/2000 train_mse_scaled=0.029640 val_mae=46.749 val_rmse=69.881 tf=0.00lr=0.001
+Epoch 506/2000 train_mse_scaled=0.029640 val_mae=49.069 val_rmse=72.070 tf=0.00lr=0.001
+Epoch 507/2000 train_mse_scaled=0.029844 val_mae=49.596 val_rmse=72.590 tf=0.00lr=0.001
+Epoch 508/2000 train_mse_scaled=0.030267 val_mae=48.508 val_rmse=71.565 tf=0.00lr=0.001
+Epoch 509/2000 train_mse_scaled=0.029849 val_mae=49.344 val_rmse=71.882 tf=0.00lr=0.001
+Epoch 510/2000 train_mse_scaled=0.029424 val_mae=48.861 val_rmse=71.369 tf=0.00lr=0.001
+Epoch 511/2000 train_mse_scaled=0.029717 val_mae=49.454 val_rmse=72.831 tf=0.00lr=0.001
+Epoch 512/2000 train_mse_scaled=0.029729 val_mae=49.366 val_rmse=72.154 tf=0.00lr=0.001
+Epoch 513/2000 train_mse_scaled=0.029309 val_mae=48.919 val_rmse=71.585 tf=0.00lr=0.001
+Epoch 514/2000 train_mse_scaled=0.029659 val_mae=47.606 val_rmse=70.356 tf=0.00lr=0.001
+Epoch 515/2000 train_mse_scaled=0.030551 val_mae=48.540 val_rmse=71.782 tf=0.00lr=0.001
+Epoch 516/2000 train_mse_scaled=0.029723 val_mae=47.571 val_rmse=70.251 tf=0.00lr=0.001
+Epoch 517/2000 train_mse_scaled=0.029417 val_mae=48.592 val_rmse=70.981 tf=0.00lr=0.001
+Epoch 518/2000 train_mse_scaled=0.029617 val_mae=49.815 val_rmse=72.787 tf=0.00lr=0.001
+Epoch 519/2000 train_mse_scaled=0.029505 val_mae=46.914 val_rmse=69.905 tf=0.00lr=0.001
+Epoch 520/2000 train_mse_scaled=0.029367 val_mae=46.750 val_rmse=69.768 tf=0.00lr=0.001
+Saved validation predictions (best) to: v2/results/vae_val_y_true.npy and v2/results/vae_val_y_pred_mean.npy
+Epoch 521/2000 train_mse_scaled=0.029477 val_mae=48.105 val_rmse=71.109 tf=0.00lr=0.001
+Epoch 522/2000 train_mse_scaled=0.029668 val_mae=49.155 val_rmse=72.503 tf=0.00lr=0.001
+Epoch 523/2000 train_mse_scaled=0.029451 val_mae=48.970 val_rmse=71.786 tf=0.00lr=0.001
+Epoch 524/2000 train_mse_scaled=0.029769 val_mae=47.796 val_rmse=71.304 tf=0.00lr=0.001
+Epoch 525/2000 train_mse_scaled=0.029378 val_mae=49.504 val_rmse=71.773 tf=0.00lr=0.001
+Epoch 526/2000 train_mse_scaled=0.029501 val_mae=48.473 val_rmse=71.000 tf=0.00lr=0.001
+Epoch 527/2000 train_mse_scaled=0.029597 val_mae=48.984 val_rmse=71.475 tf=0.00lr=0.001
+Epoch 528/2000 train_mse_scaled=0.029273 val_mae=49.685 val_rmse=72.090 tf=0.00lr=0.001
+Epoch 529/2000 train_mse_scaled=0.029669 val_mae=48.603 val_rmse=71.514 tf=0.00lr=0.001
+Epoch 530/2000 train_mse_scaled=0.029424 val_mae=51.264 val_rmse=73.395 tf=0.00lr=0.001
+Epoch 531/2000 train_mse_scaled=0.029183 val_mae=48.871 val_rmse=71.451 tf=0.00lr=0.001
+Epoch 532/2000 train_mse_scaled=0.029148 val_mae=49.823 val_rmse=71.855 tf=0.00lr=0.001
+Epoch 533/2000 train_mse_scaled=0.029134 val_mae=47.397 val_rmse=70.539 tf=0.00lr=0.001
+Epoch 534/2000 train_mse_scaled=0.029125 val_mae=48.725 val_rmse=71.537 tf=0.00lr=0.001
+Epoch 535/2000 train_mse_scaled=0.029616 val_mae=47.586 val_rmse=71.249 tf=0.00lr=0.001
+Epoch 536/2000 train_mse_scaled=0.029291 val_mae=52.931 val_rmse=75.882 tf=0.00lr=0.001
+Epoch 537/2000 train_mse_scaled=0.029441 val_mae=47.466 val_rmse=70.268 tf=0.00lr=0.001
+Epoch 538/2000 train_mse_scaled=0.029668 val_mae=47.918 val_rmse=70.503 tf=0.00lr=0.001
+Epoch 539/2000 train_mse_scaled=0.029192 val_mae=48.490 val_rmse=70.887 tf=0.00lr=0.001
+Epoch 540/2000 train_mse_scaled=0.029033 val_mae=48.958 val_rmse=71.131 tf=0.00lr=0.001
+Epoch 541/2000 train_mse_scaled=0.029332 val_mae=49.080 val_rmse=71.269 tf=0.00lr=0.001
+Epoch 542/2000 train_mse_scaled=0.029271 val_mae=48.879 val_rmse=71.145 tf=0.00lr=0.001
+Epoch 543/2000 train_mse_scaled=0.029428 val_mae=50.874 val_rmse=73.128 tf=0.00lr=0.001
+Epoch 544/2000 train_mse_scaled=0.029242 val_mae=47.729 val_rmse=70.719 tf=0.00lr=0.001
+Epoch 545/2000 train_mse_scaled=0.029185 val_mae=48.928 val_rmse=71.042 tf=0.00lr=0.001
+Epoch 546/2000 train_mse_scaled=0.029462 val_mae=49.569 val_rmse=73.511 tf=0.00lr=0.001
+Epoch 547/2000 train_mse_scaled=0.029461 val_mae=49.250 val_rmse=71.627 tf=0.00lr=0.001
+Epoch 548/2000 train_mse_scaled=0.029350 val_mae=49.189 val_rmse=71.694 tf=0.00lr=0.001
+Epoch 549/2000 train_mse_scaled=0.029260 val_mae=48.528 val_rmse=71.697 tf=0.00lr=0.001
+Epoch 550/2000 train_mse_scaled=0.029316 val_mae=47.531 val_rmse=70.910 tf=0.00lr=0.001
+Epoch 551/2000 train_mse_scaled=0.029633 val_mae=48.619 val_rmse=71.754 tf=0.00lr=0.001
+Epoch 552/2000 train_mse_scaled=0.029157 val_mae=48.847 val_rmse=71.574 tf=0.00lr=0.001
+Epoch 553/2000 train_mse_scaled=0.029289 val_mae=48.007 val_rmse=71.221 tf=0.00lr=0.001
+Epoch 554/2000 train_mse_scaled=0.029145 val_mae=49.755 val_rmse=72.154 tf=0.00lr=0.001
+Epoch 555/2000 train_mse_scaled=0.029334 val_mae=48.513 val_rmse=70.489 tf=0.00lr=0.001
+Epoch 556/2000 train_mse_scaled=0.029102 val_mae=47.554 val_rmse=70.221 tf=0.00lr=0.001
+Epoch 557/2000 train_mse_scaled=0.028889 val_mae=49.671 val_rmse=71.580 tf=0.00lr=0.001
+Epoch 558/2000 train_mse_scaled=0.029063 val_mae=47.007 val_rmse=69.782 tf=0.00lr=0.001
+Epoch 559/2000 train_mse_scaled=0.028959 val_mae=48.480 val_rmse=70.879 tf=0.00lr=0.001
+Epoch 560/2000 train_mse_scaled=0.029179 val_mae=49.330 val_rmse=71.630 tf=0.00lr=0.001
+Epoch 561/2000 train_mse_scaled=0.028825 val_mae=50.181 val_rmse=72.214 tf=0.00lr=0.001
+Epoch 562/2000 train_mse_scaled=0.028917 val_mae=49.774 val_rmse=71.829 tf=0.00lr=0.001
+Epoch 563/2000 train_mse_scaled=0.029660 val_mae=47.989 val_rmse=71.024 tf=0.00lr=0.001
+Epoch 564/2000 train_mse_scaled=0.029044 val_mae=46.685 val_rmse=69.772 tf=0.00lr=0.001
+Epoch 565/2000 train_mse_scaled=0.028890 val_mae=48.314 val_rmse=70.840 tf=0.00lr=0.001
+Epoch 566/2000 train_mse_scaled=0.029235 val_mae=47.235 val_rmse=70.342 tf=0.00lr=0.001
+Epoch 567/2000 train_mse_scaled=0.029326 val_mae=48.182 val_rmse=71.291 tf=0.00lr=0.001
+Epoch 568/2000 train_mse_scaled=0.029018 val_mae=49.734 val_rmse=71.887 tf=0.00lr=0.001
+Epoch 569/2000 train_mse_scaled=0.029244 val_mae=48.637 val_rmse=71.106 tf=0.00lr=0.001
+Epoch 570/2000 train_mse_scaled=0.028858 val_mae=48.172 val_rmse=70.405 tf=0.00lr=0.001
+Epoch 571/2000 train_mse_scaled=0.029022 val_mae=49.145 val_rmse=71.799 tf=0.00lr=0.001
+Epoch 572/2000 train_mse_scaled=0.028971 val_mae=46.906 val_rmse=70.396 tf=0.00lr=0.001
+Epoch 573/2000 train_mse_scaled=0.029177 val_mae=50.231 val_rmse=72.601 tf=0.00lr=0.001
+Epoch 574/2000 train_mse_scaled=0.028894 val_mae=48.316 val_rmse=71.218 tf=0.00lr=0.001
+Epoch 575/2000 train_mse_scaled=0.029108 val_mae=48.296 val_rmse=71.389 tf=0.00lr=0.001
+Epoch 576/2000 train_mse_scaled=0.029122 val_mae=49.844 val_rmse=72.480 tf=0.00lr=0.001
+Epoch 577/2000 train_mse_scaled=0.028877 val_mae=48.263 val_rmse=70.810 tf=0.00lr=0.001
+Epoch 578/2000 train_mse_scaled=0.029018 val_mae=49.402 val_rmse=71.969 tf=0.00lr=0.001
+Epoch 579/2000 train_mse_scaled=0.028928 val_mae=47.701 val_rmse=70.368 tf=0.00lr=0.001
+Epoch 580/2000 train_mse_scaled=0.029303 val_mae=50.393 val_rmse=72.394 tf=0.00lr=0.001
+Epoch 581/2000 train_mse_scaled=0.028906 val_mae=49.097 val_rmse=71.453 tf=0.00lr=0.001
+Epoch 582/2000 train_mse_scaled=0.029161 val_mae=49.215 val_rmse=71.688 tf=0.00lr=0.001
+Epoch 583/2000 train_mse_scaled=0.028815 val_mae=47.840 val_rmse=70.348 tf=0.00lr=0.001
+Epoch 584/2000 train_mse_scaled=0.029075 val_mae=50.213 val_rmse=72.506 tf=0.00lr=0.001
+Epoch 585/2000 train_mse_scaled=0.028947 val_mae=48.316 val_rmse=70.962 tf=0.00lr=0.001
+Epoch 586/2000 train_mse_scaled=0.031476 val_mae=50.560 val_rmse=73.576 tf=0.00lr=0.001
+Epoch 587/2000 train_mse_scaled=0.029040 val_mae=49.648 val_rmse=71.952 tf=0.00lr=0.001
+Epoch 588/2000 train_mse_scaled=0.028757 val_mae=50.760 val_rmse=73.579 tf=0.00lr=0.001
+Epoch 589/2000 train_mse_scaled=0.028639 val_mae=47.581 val_rmse=70.049 tf=0.00lr=0.001
+Epoch 590/2000 train_mse_scaled=0.028397 val_mae=49.702 val_rmse=72.014 tf=0.00lr=0.001
+Epoch 591/2000 train_mse_scaled=0.029089 val_mae=51.522 val_rmse=76.424 tf=0.00lr=0.001
+Epoch 592/2000 train_mse_scaled=0.029498 val_mae=46.861 val_rmse=70.001 tf=0.00lr=0.001
+Epoch 593/2000 train_mse_scaled=0.029152 val_mae=47.927 val_rmse=70.348 tf=0.00lr=0.001
+Epoch 594/2000 train_mse_scaled=0.028832 val_mae=47.963 val_rmse=71.190 tf=0.00lr=0.001
+Epoch 595/2000 train_mse_scaled=0.028702 val_mae=48.223 val_rmse=70.916 tf=0.00lr=0.001
+Epoch 596/2000 train_mse_scaled=0.028715 val_mae=50.290 val_rmse=72.035 tf=0.00lr=0.001
+Epoch 597/2000 train_mse_scaled=0.028576 val_mae=49.017 val_rmse=71.542 tf=0.00lr=0.001
+Epoch 598/2000 train_mse_scaled=0.029506 val_mae=49.690 val_rmse=72.086 tf=0.00lr=0.001
+Epoch 599/2000 train_mse_scaled=0.028794 val_mae=48.717 val_rmse=70.667 tf=0.00lr=0.001
+Epoch 600/2000 train_mse_scaled=0.028640 val_mae=50.282 val_rmse=71.905 tf=0.00lr=0.001
+Epoch 601/2000 train_mse_scaled=0.028618 val_mae=47.992 val_rmse=70.120 tf=0.00lr=0.001
+Epoch 602/2000 train_mse_scaled=0.028571 val_mae=48.221 val_rmse=70.552 tf=0.00lr=0.001
+Epoch 603/2000 train_mse_scaled=0.028608 val_mae=50.059 val_rmse=71.650 tf=0.00lr=0.001
+Epoch 604/2000 train_mse_scaled=0.029205 val_mae=49.084 val_rmse=71.693 tf=0.00lr=0.001
+Epoch 605/2000 train_mse_scaled=0.028948 val_mae=47.448 val_rmse=70.140 tf=0.00lr=0.001
+Epoch 606/2000 train_mse_scaled=0.028752 val_mae=46.342 val_rmse=69.396 tf=0.00lr=0.001
+Saved validation predictions (best) to: v2/results/vae_val_y_true.npy and v2/results/vae_val_y_pred_mean.npy
+Epoch 607/2000 train_mse_scaled=0.028517 val_mae=50.011 val_rmse=72.035 tf=0.00lr=0.001
+Epoch 608/2000 train_mse_scaled=0.028358 val_mae=49.061 val_rmse=71.375 tf=0.00lr=0.001
+Epoch 609/2000 train_mse_scaled=0.028803 val_mae=51.024 val_rmse=72.959 tf=0.00lr=0.001
+Epoch 610/2000 train_mse_scaled=0.028753 val_mae=49.362 val_rmse=71.553 tf=0.00lr=0.001
+Epoch 611/2000 train_mse_scaled=0.029962 val_mae=51.934 val_rmse=74.489 tf=0.00lr=0.001
+Epoch 612/2000 train_mse_scaled=0.028963 val_mae=47.497 val_rmse=70.090 tf=0.00lr=0.001
+Epoch 613/2000 train_mse_scaled=0.028452 val_mae=47.820 val_rmse=70.723 tf=0.00lr=0.001
+Epoch 614/2000 train_mse_scaled=0.028509 val_mae=49.042 val_rmse=70.808 tf=0.00lr=0.001
+Epoch 615/2000 train_mse_scaled=0.028335 val_mae=48.456 val_rmse=70.581 tf=0.00lr=0.001
+Epoch 616/2000 train_mse_scaled=0.028385 val_mae=49.575 val_rmse=71.861 tf=0.00lr=0.001
+Epoch 617/2000 train_mse_scaled=0.028634 val_mae=47.503 val_rmse=70.527 tf=0.00lr=0.001
+Epoch 618/2000 train_mse_scaled=0.028469 val_mae=48.584 val_rmse=71.003 tf=0.00lr=0.001
+Epoch 619/2000 train_mse_scaled=0.028337 val_mae=47.027 val_rmse=69.822 tf=0.00lr=0.001
+Epoch 620/2000 train_mse_scaled=0.028511 val_mae=50.165 val_rmse=72.723 tf=0.00lr=0.001
+Epoch 621/2000 train_mse_scaled=0.028585 val_mae=47.848 val_rmse=70.563 tf=0.00lr=0.001
+Epoch 622/2000 train_mse_scaled=0.028578 val_mae=48.362 val_rmse=71.053 tf=0.00lr=0.001
+Epoch 623/2000 train_mse_scaled=0.028477 val_mae=48.645 val_rmse=71.410 tf=0.00lr=0.001
+Epoch 624/2000 train_mse_scaled=0.028440 val_mae=50.637 val_rmse=72.469 tf=0.00lr=0.001
+Epoch 625/2000 train_mse_scaled=0.028536 val_mae=48.929 val_rmse=72.201 tf=0.00lr=0.001
+Epoch 626/2000 train_mse_scaled=0.028549 val_mae=48.341 val_rmse=71.013 tf=0.00lr=0.001
+Epoch 627/2000 train_mse_scaled=0.028719 val_mae=46.753 val_rmse=69.925 tf=0.00lr=0.001
+Epoch 628/2000 train_mse_scaled=0.028368 val_mae=47.149 val_rmse=70.205 tf=0.00lr=0.001
+Epoch 629/2000 train_mse_scaled=0.028441 val_mae=47.560 val_rmse=70.349 tf=0.00lr=0.001
+Epoch 630/2000 train_mse_scaled=0.028137 val_mae=48.779 val_rmse=70.954 tf=0.00lr=0.001
+Epoch 631/2000 train_mse_scaled=0.028358 val_mae=48.461 val_rmse=70.542 tf=0.00lr=0.001
+Epoch 632/2000 train_mse_scaled=0.028504 val_mae=46.941 val_rmse=69.681 tf=0.00lr=0.001
+Epoch 633/2000 train_mse_scaled=0.028821 val_mae=46.189 val_rmse=70.079 tf=0.00lr=0.001
+Epoch 634/2000 train_mse_scaled=0.028465 val_mae=47.664 val_rmse=70.432 tf=0.00lr=0.001
+Epoch 635/2000 train_mse_scaled=0.031766 val_mae=50.443 val_rmse=74.901 tf=0.00lr=0.001
+Epoch 636/2000 train_mse_scaled=0.029626 val_mae=49.343 val_rmse=72.062 tf=0.00lr=0.001
+Epoch 637/2000 train_mse_scaled=0.028901 val_mae=48.944 val_rmse=71.456 tf=0.00lr=0.001
+Epoch 638/2000 train_mse_scaled=0.028588 val_mae=48.053 val_rmse=70.350 tf=0.00lr=0.001
+Epoch 639/2000 train_mse_scaled=0.028320 val_mae=49.360 val_rmse=71.268 tf=0.00lr=0.001
+Epoch 640/2000 train_mse_scaled=0.028308 val_mae=45.475 val_rmse=68.514 tf=0.00lr=0.001
+Saved validation predictions (best) to: v2/results/vae_val_y_true.npy and v2/results/vae_val_y_pred_mean.npy
+Epoch 641/2000 train_mse_scaled=0.028164 val_mae=49.469 val_rmse=70.978 tf=0.00lr=0.001
+Epoch 642/2000 train_mse_scaled=0.028596 val_mae=49.603 val_rmse=71.278 tf=0.00lr=0.001
+Epoch 643/2000 train_mse_scaled=0.028241 val_mae=48.140 val_rmse=70.639 tf=0.00lr=0.001
+Epoch 644/2000 train_mse_scaled=0.028300 val_mae=48.311 val_rmse=70.675 tf=0.00lr=0.001
+Epoch 645/2000 train_mse_scaled=0.028533 val_mae=46.112 val_rmse=69.916 tf=0.00lr=0.001
+Epoch 646/2000 train_mse_scaled=0.028157 val_mae=47.314 val_rmse=69.924 tf=0.00lr=0.001
+Epoch 647/2000 train_mse_scaled=0.028413 val_mae=50.416 val_rmse=75.023 tf=0.00lr=0.001
+Epoch 648/2000 train_mse_scaled=0.028934 val_mae=50.385 val_rmse=71.924 tf=0.00lr=0.001
+Epoch 649/2000 train_mse_scaled=0.028202 val_mae=46.285 val_rmse=68.668 tf=0.00lr=0.001
+Epoch 650/2000 train_mse_scaled=0.028185 val_mae=46.726 val_rmse=69.141 tf=0.00lr=0.001
+Epoch 651/2000 train_mse_scaled=0.028157 val_mae=48.101 val_rmse=70.067 tf=0.00lr=0.001
+Epoch 652/2000 train_mse_scaled=0.028086 val_mae=48.174 val_rmse=70.255 tf=0.00lr=0.001
+Epoch 653/2000 train_mse_scaled=0.028174 val_mae=49.552 val_rmse=71.040 tf=0.00lr=0.001
+Epoch 654/2000 train_mse_scaled=0.028229 val_mae=46.610 val_rmse=70.171 tf=0.00lr=0.001
+Epoch 655/2000 train_mse_scaled=0.028125 val_mae=49.093 val_rmse=71.203 tf=0.00lr=0.001
+Epoch 656/2000 train_mse_scaled=0.028536 val_mae=48.816 val_rmse=70.546 tf=0.00lr=0.001
+Epoch 657/2000 train_mse_scaled=0.028271 val_mae=47.175 val_rmse=69.764 tf=0.00lr=0.001
+Epoch 658/2000 train_mse_scaled=0.028271 val_mae=49.941 val_rmse=72.110 tf=0.00lr=0.001
+Epoch 659/2000 train_mse_scaled=0.028402 val_mae=49.687 val_rmse=71.175 tf=0.00lr=0.001
+Epoch 660/2000 train_mse_scaled=0.028138 val_mae=49.809 val_rmse=71.780 tf=0.00lr=0.001
+Epoch 661/2000 train_mse_scaled=0.028457 val_mae=48.009 val_rmse=70.511 tf=0.00lr=0.001
+Epoch 662/2000 train_mse_scaled=0.028217 val_mae=47.243 val_rmse=70.450 tf=0.00lr=0.001
+Epoch 663/2000 train_mse_scaled=0.028068 val_mae=47.187 val_rmse=69.342 tf=0.00lr=0.001
+Epoch 664/2000 train_mse_scaled=0.028050 val_mae=47.990 val_rmse=70.190 tf=0.00lr=0.001
+Epoch 665/2000 train_mse_scaled=0.028082 val_mae=48.748 val_rmse=70.507 tf=0.00lr=0.001
+Epoch 666/2000 train_mse_scaled=0.028319 val_mae=48.709 val_rmse=70.935 tf=0.00lr=0.001
+Epoch 667/2000 train_mse_scaled=0.028082 val_mae=49.393 val_rmse=70.883 tf=0.00lr=0.001
+Epoch 668/2000 train_mse_scaled=0.027964 val_mae=49.034 val_rmse=70.901 tf=0.00lr=0.001
+Epoch 669/2000 train_mse_scaled=0.028163 val_mae=48.828 val_rmse=70.995 tf=0.00lr=0.001
+Epoch 670/2000 train_mse_scaled=0.028720 val_mae=49.875 val_rmse=72.916 tf=0.00lr=0.001
+Epoch 671/2000 train_mse_scaled=0.028237 val_mae=48.669 val_rmse=70.444 tf=0.00lr=0.001
+Epoch 672/2000 train_mse_scaled=0.028199 val_mae=46.377 val_rmse=69.192 tf=0.00lr=0.001
+Epoch 673/2000 train_mse_scaled=0.027979 val_mae=49.691 val_rmse=71.274 tf=0.00lr=0.001
+Epoch 674/2000 train_mse_scaled=0.028205 val_mae=46.956 val_rmse=69.829 tf=0.00lr=0.001
+Epoch 675/2000 train_mse_scaled=0.028308 val_mae=48.106 val_rmse=70.651 tf=0.00lr=0.001
+Epoch 676/2000 train_mse_scaled=0.028263 val_mae=48.167 val_rmse=70.201 tf=0.00lr=0.001
+Epoch 677/2000 train_mse_scaled=0.028003 val_mae=46.097 val_rmse=68.899 tf=0.00lr=0.001
+Epoch 678/2000 train_mse_scaled=0.028820 val_mae=49.265 val_rmse=71.984 tf=0.00lr=0.001
+Epoch 679/2000 train_mse_scaled=0.028562 val_mae=48.097 val_rmse=70.611 tf=0.00lr=0.001
+Epoch 680/2000 train_mse_scaled=0.028113 val_mae=49.044 val_rmse=70.863 tf=0.00lr=0.001
+Epoch 681/2000 train_mse_scaled=0.028117 val_mae=48.606 val_rmse=71.116 tf=0.00lr=0.001
+Epoch 682/2000 train_mse_scaled=0.028573 val_mae=49.638 val_rmse=72.668 tf=0.00lr=0.001
+Epoch 683/2000 train_mse_scaled=0.028586 val_mae=48.839 val_rmse=70.594 tf=0.00lr=0.001
+Epoch 684/2000 train_mse_scaled=0.027993 val_mae=47.208 val_rmse=70.015 tf=0.00lr=0.001
+Epoch 685/2000 train_mse_scaled=0.027875 val_mae=47.939 val_rmse=70.946 tf=0.00lr=0.001
+Epoch 686/2000 train_mse_scaled=0.028593 val_mae=48.977 val_rmse=71.288 tf=0.00lr=0.001
+Epoch 687/2000 train_mse_scaled=0.028216 val_mae=48.209 val_rmse=70.285 tf=0.00lr=0.001
+Epoch 688/2000 train_mse_scaled=0.027813 val_mae=49.149 val_rmse=71.004 tf=0.00lr=0.001
+Epoch 689/2000 train_mse_scaled=0.028120 val_mae=45.416 val_rmse=68.529 tf=0.00lr=0.001
+Epoch 690/2000 train_mse_scaled=0.027993 val_mae=48.771 val_rmse=71.027 tf=0.00lr=0.001
+Epoch 691/2000 train_mse_scaled=0.028077 val_mae=46.537 val_rmse=69.824 tf=0.00lr=0.001
+Epoch 692/2000 train_mse_scaled=0.027895 val_mae=48.194 val_rmse=70.677 tf=0.00lr=0.001
+Epoch 693/2000 train_mse_scaled=0.027740 val_mae=46.765 val_rmse=69.571 tf=0.00lr=0.001
+Epoch 694/2000 train_mse_scaled=0.027882 val_mae=46.906 val_rmse=69.941 tf=0.00lr=0.001
+Epoch 695/2000 train_mse_scaled=0.027857 val_mae=48.640 val_rmse=71.534 tf=0.00lr=0.001
+Epoch 696/2000 train_mse_scaled=0.027950 val_mae=46.155 val_rmse=69.080 tf=0.00lr=0.001
+Epoch 697/2000 train_mse_scaled=0.028008 val_mae=46.923 val_rmse=70.051 tf=0.00lr=0.001
+Epoch 698/2000 train_mse_scaled=0.027905 val_mae=48.421 val_rmse=70.615 tf=0.00lr=0.001
+Epoch 699/2000 train_mse_scaled=0.027841 val_mae=48.482 val_rmse=70.797 tf=0.00lr=0.001
+Epoch 700/2000 train_mse_scaled=0.027733 val_mae=48.918 val_rmse=71.465 tf=0.00lr=0.001
+Epoch 701/2000 train_mse_scaled=0.027669 val_mae=48.886 val_rmse=71.382 tf=0.00lr=0.001
+Epoch 702/2000 train_mse_scaled=0.028433 val_mae=46.662 val_rmse=69.679 tf=0.00lr=0.001
+Epoch 703/2000 train_mse_scaled=0.027908 val_mae=45.976 val_rmse=69.157 tf=0.00lr=0.001
+Epoch 704/2000 train_mse_scaled=0.027715 val_mae=46.833 val_rmse=69.760 tf=0.00lr=0.001
+Epoch 705/2000 train_mse_scaled=0.028143 val_mae=48.767 val_rmse=70.780 tf=0.00lr=0.001
+Epoch 706/2000 train_mse_scaled=0.028077 val_mae=47.582 val_rmse=69.590 tf=0.00lr=0.001
+Epoch 707/2000 train_mse_scaled=0.027926 val_mae=46.918 val_rmse=68.975 tf=0.00lr=0.001
+Epoch 708/2000 train_mse_scaled=0.027864 val_mae=49.025 val_rmse=70.803 tf=0.00lr=0.001
+Epoch 709/2000 train_mse_scaled=0.027774 val_mae=48.083 val_rmse=69.946 tf=0.00lr=0.001
+Epoch 710/2000 train_mse_scaled=0.027800 val_mae=46.429 val_rmse=68.665 tf=0.00lr=0.001
+Epoch 711/2000 train_mse_scaled=0.028113 val_mae=48.592 val_rmse=71.106 tf=0.00lr=0.001
+Epoch 712/2000 train_mse_scaled=0.027879 val_mae=46.020 val_rmse=68.603 tf=0.00lr=0.001
+Epoch 713/2000 train_mse_scaled=0.027860 val_mae=48.961 val_rmse=70.723 tf=0.00lr=0.001
+Epoch 714/2000 train_mse_scaled=0.027618 val_mae=49.042 val_rmse=70.890 tf=0.00lr=0.001
+Epoch 715/2000 train_mse_scaled=0.027662 val_mae=46.156 val_rmse=69.008 tf=0.00lr=0.001
+Epoch 716/2000 train_mse_scaled=0.027687 val_mae=46.760 val_rmse=69.433 tf=0.00lr=0.001
+Epoch 717/2000 train_mse_scaled=0.027794 val_mae=48.678 val_rmse=70.494 tf=0.00lr=0.001
+Epoch 718/2000 train_mse_scaled=0.027669 val_mae=47.833 val_rmse=69.719 tf=0.00lr=0.001
+Epoch 719/2000 train_mse_scaled=0.027652 val_mae=47.928 val_rmse=69.871 tf=0.00lr=0.001
+Epoch 720/2000 train_mse_scaled=0.027497 val_mae=48.295 val_rmse=70.540 tf=0.00lr=0.001
+Epoch 721/2000 train_mse_scaled=0.029108 val_mae=47.430 val_rmse=70.481 tf=0.00lr=0.001
+Epoch 722/2000 train_mse_scaled=0.028007 val_mae=46.528 val_rmse=70.290 tf=0.00lr=0.001
+Epoch 723/2000 train_mse_scaled=0.028108 val_mae=49.227 val_rmse=71.082 tf=0.00lr=0.001
+Epoch 724/2000 train_mse_scaled=0.027692 val_mae=47.902 val_rmse=70.168 tf=0.00lr=0.001
+Epoch 725/2000 train_mse_scaled=0.027615 val_mae=47.014 val_rmse=69.493 tf=0.00lr=0.001
+Epoch 726/2000 train_mse_scaled=0.027751 val_mae=47.829 val_rmse=69.569 tf=0.00lr=0.001
+Epoch 727/2000 train_mse_scaled=0.028121 val_mae=47.482 val_rmse=70.301 tf=0.00lr=0.001
+Epoch 728/2000 train_mse_scaled=0.027702 val_mae=47.348 val_rmse=69.258 tf=0.00lr=0.001
+Epoch 729/2000 train_mse_scaled=0.027591 val_mae=46.776 val_rmse=68.705 tf=0.00lr=0.001
+Epoch 730/2000 train_mse_scaled=0.027556 val_mae=47.888 val_rmse=69.819 tf=0.00lr=0.001
+Epoch 731/2000 train_mse_scaled=0.028167 val_mae=48.412 val_rmse=70.896 tf=0.00lr=0.001
+Epoch 732/2000 train_mse_scaled=0.027644 val_mae=48.689 val_rmse=70.743 tf=0.00lr=0.001
+Epoch 733/2000 train_mse_scaled=0.027537 val_mae=48.264 val_rmse=70.071 tf=0.00lr=0.001
+Epoch 734/2000 train_mse_scaled=0.027677 val_mae=49.252 val_rmse=71.090 tf=0.00lr=0.001
+Epoch 735/2000 train_mse_scaled=0.027554 val_mae=46.677 val_rmse=69.880 tf=0.00lr=0.001
+Epoch 736/2000 train_mse_scaled=0.028158 val_mae=45.944 val_rmse=68.670 tf=0.00lr=0.001
+Epoch 737/2000 train_mse_scaled=0.027657 val_mae=46.306 val_rmse=68.800 tf=0.00lr=0.001
+Epoch 738/2000 train_mse_scaled=0.027428 val_mae=50.364 val_rmse=71.746 tf=0.00lr=0.001
+Epoch 739/2000 train_mse_scaled=0.027613 val_mae=48.581 val_rmse=70.133 tf=0.00lr=0.001
+Epoch 740/2000 train_mse_scaled=0.027571 val_mae=46.733 val_rmse=69.581 tf=0.00lr=0.001
+Early stopping triggered at epoch 740. Best val RMSE: 68.514
+Training complete. Best checkpoint at: v2/results/checkpoints/vae/best.pth

@@ -1,0 +1,7 @@
+Warning: torch.cumprod not supported on MPS, switching to CPU.
+usage: predict.py [-h] --model
+                  {diffusion,gan,vae,weibull_diffusion,seq_vae,seq_diffusion,seq_ar_diffusion}
+                  [--n_samples N_SAMPLES] [--device DEVICE]
+                  [--batch_size BATCH_SIZE] [--dry_run_fit_train]
+                  [--hidden_dim HIDDEN_DIM]
+predict.py: error: unrecognized arguments: --use_lazy_dataset

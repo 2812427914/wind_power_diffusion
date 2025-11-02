@@ -1,0 +1,6 @@
+Traceback (most recent call last):
+  File "/Users/bytedance/Downloads/gits/wind_power_diffusion/src/predict.py", line 12, in <module>
+    from dataloader import load_data, preprocess_features, split_data
+  File "/Users/bytedance/Downloads/gits/wind_power_diffusion/src/dataloader.py", line 4, in <module>
+    from sklearn.model_selection import train_test_split
+ModuleNotFoundError: No module named 'sklearn'

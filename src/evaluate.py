@@ -1,9 +1,15 @@
+import warnings
+warnings.filterwarnings("ignore")
+import os
+os.environ["OMP_NUM_THREADS"] = "1"
+os.environ["MKL_NUM_THREADS"] = "1"
 import argparse
 import numpy as np
-import os
 import json
 from sklearn.metrics import mean_absolute_error, mean_squared_error
 from properscoring import crps_ensemble
+import torch
+torch.set_num_threads(1)
 
 RESULTS_DIR = os.path.join(os.path.dirname(__file__), '../results')
 
@@ -41,7 +47,8 @@ def evaluate_metrics(y_true, y_pred, y_samples=None):
     results = {}
     # 逐小时计算 MAE、RMSE，然后取均值
     results['MAE'] = mean_absolute_error(y_true, y_pred)
-    results['RMSE'] = mean_squared_error(y_true, y_pred, squared=False)
+    # 兼容不同 sklearn 版本：先计算 MSE，再开根号得到 RMSE（避免使用 squared 参数）
+    results['RMSE'] = float(np.sqrt(mean_squared_error(y_true, y_pred)))
     if y_samples is not None:
         # 对每个时间步分别计算 CRPS/ES/QS，然后对 24 小时取均值
         N, n_samples, T = y_samples.shape
@@ -66,14 +73,28 @@ def main():
     args = parser.parse_args()
     model_name = args.model
 
-    try:
-        y_true = np.load(os.path.join(RESULTS_DIR, 'y_true.npy'))
+    # 优先读取模型专属 y_true_{model}_dryrun.npy
+    dryrun_y_true_path = os.path.join(RESULTS_DIR, f'y_true_{model_name}_dryrun.npy')
+    dryrun_y_pred_path = os.path.join(RESULTS_DIR, f'y_pred_{model_name}_dryrun.npy')
+    dryrun_y_samples_path = os.path.join(RESULTS_DIR, f'y_samples_{model_name}_dryrun.npy')
+    if os.path.exists(dryrun_y_true_path):
+        y_true = np.load(dryrun_y_true_path)
+        y_pred = np.load(dryrun_y_pred_path)
+        y_samples = np.load(dryrun_y_samples_path)
+        print(f"评估 dry-run 拟合训练集结果: {model_name}")
+    else:
+        # 优先读取模型专属 y_true_{model}.npy
+        y_true_path = os.path.join(RESULTS_DIR, f'y_true_{model_name}.npy')
+        if os.path.exists(y_true_path):
+            y_true = np.load(y_true_path)
+        else:
+            y_true = np.load(os.path.join(RESULTS_DIR, 'y_true.npy'))
         y_pred = np.load(os.path.join(RESULTS_DIR, f'y_pred_{model_name}.npy'))
         y_samples = np.load(os.path.join(RESULTS_DIR, f'y_samples_{model_name}.npy'))
-    except FileNotFoundError as e:
-        print(f"Error loading prediction files for model '{model_name}': {e}")
-        print("Please run the prediction script first using 'bash scripts/run_predict.sh'.")
-        return
+
+    # 检查样本数一致性
+    if y_true.shape[0] != y_pred.shape[0]:
+        raise ValueError(f"y_true.shape[0]={y_true.shape[0]} 与 y_pred.shape[0]={y_pred.shape[0]} 不一致，请重新运行预测脚本，确保 y_true/y_pred/y_samples 匹配。")
 
     metrics = evaluate_metrics(y_true, y_pred, y_samples)
     print(f"Metrics for {model_name.upper()} model:")

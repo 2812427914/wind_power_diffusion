@@ -1,0 +1,10 @@
+/root/wind_power_diffusion/v2/src/utils.py:75: UserWarning: Could not infer format, so each element will be parsed individually, falling back to `dateutil`. To ensure parsing is consistent and as-expected, please specify a format.
+  df[time_col] = pd.to_datetime(df[time_col], errors="coerce")
+Run args: {'data': 'v2/results/cleaned.csv', 'id_col': None, 'time_col': None, 'wind_col': None, 'power_col': None, 'hist_len': 24, 'pred_len': 24, 'stride': 1, 'checkpoint': 'v2/results/checkpoints/seq2seq/best.pth', 'splits_path': 'v2/results/splits_seq2seq.json', 'batch_size': None, 'seed': 42, 'out': 'v2/results/metrics_seq2seq.json'}
+[INFO] Using device: cuda
+[INFO] Loaded checkpoint: v2/results/checkpoints/seq2seq/best.pth
+[INFO] Loaded splits: train=47900, val=5988, test=6059
+[INFO] Val samples: 5988, Test samples: 6059
+[INFO] Saved metrics to: v2/results/metrics_seq2seq.json
+[RESULT] val: {'mae': 209.0624237060547, 'rmse': 315.67489704599575, 'mse_scaled': 0.4707056297488267}
+[RESULT] test: {'mae': 208.63294982910156, 'rmse': 314.57867408249405, 'mse_scaled': 0.4674420507360673}

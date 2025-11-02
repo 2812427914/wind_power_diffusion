@@ -1,0 +1,36 @@
+/root/wind_power_diffusion/v2/src/utils.py:75: UserWarning: Could not infer format, so each element will be parsed individually, falling back to `dateutil`. To ensure parsing is consistent and as-expected, please specify a format.
+  df[time_col] = pd.to_datetime(df[time_col], errors="coerce")
+Run args: {'data': 'v2/results/cleaned.csv', 'id_col': None, 'time_col': None, 'wind_col': None, 'power_col': None, 'hist_len': 24, 'pred_len': 24, 'stride': 1, 'checkpoint': 'v2/results/checkpoints/seq2seq/best.pth', 'splits_path': 'v2/results/splits_seq2seq.json', 'batch_size': None, 'seed': 42, 'out': 'v2/results/metrics_seq2seq.json'}
+[INFO] Using device: cuda
+[INFO] Loaded checkpoint: v2/results/checkpoints/seq2seq/best.pth
+[INFO] Loaded splits: train=47900, val=5988, test=6059
+[DEBUG] target_scaler.scale_ : [460.11395043]
+[DEBUG] feature_scaler.mean_: [ 7.63311543e+00  7.25987039e+02  1.10326964e-18 -5.63146529e-18
+  6.32851307e-04 -1.86239544e-01]
+[DEBUG] target_scaler.mean_: [746.06511492]
+[DEBUG] exo_scaler.mean_: [ 7.78879236e+00  1.10326964e-18 -5.63146529e-18 -1.45213366e-01
+ -1.16613238e-01]
+
+Val samples (show 5):
+  [0] TurbID=1, start_idx=3666, hist=(2025-10-30 19:00:00~2025-10-30 19:00:00), pred=(2025-10-30 19:00:00~2025-10-30 20:00:00)
+  [1] TurbID=1, start_idx=46, hist=(2025-10-30 00:00:00~2025-10-30 00:00:00), pred=(2025-10-30 00:00:00~2025-10-30 00:00:00)
+  [2] TurbID=1, start_idx=2727, hist=(2025-10-30 15:00:00~2025-10-30 15:00:00), pred=(2025-10-30 15:00:00~2025-10-30 15:00:00)
+  [3] TurbID=1, start_idx=2705, hist=(2025-10-30 15:00:00~2025-10-30 15:00:00), pred=(2025-10-30 15:00:00~2025-10-30 15:00:00)
+  [4] TurbID=1, start_idx=2917, hist=(2025-10-30 16:00:00~2025-10-30 16:00:00), pred=(2025-10-30 16:00:00~2025-10-30 16:00:00)
+[INFO] Val samples: 5988, Test samples: 6059
+[INFO] Saved metrics to: v2/results/metrics_seq2seq.json
+[RESULT] val: {'mae': 206.04544067382812, 'rmse': 307.0487924377818, 'mse_scaled': 0.44533210081025293}
+[RESULT] test: {'mae': 205.76304626464844, 'rmse': 306.6456500384442, 'mse_scaled': 0.44416343844119893}
+[DEBUG] Saved val MAE: 59.244, RMSE: 88.876 (from npy)
+
+[一致性核查]
+  保存值  — MAE:  59.244   RMSE:  88.876
+  重跑值  — MAE: 206.045   RMSE: 307.049
+  差异    — MAE: 146.801   RMSE: 218.173
+
+  前 5 条样本对比（true | saved_pred | recompute_pred | diff）：
+    sample-0: true=1376.11  saved=1426.71  recompute= 265.48  diff=1161.23
+    sample-1: true=1453.85  saved=1505.82  recompute= 486.21  diff=1019.61
+    sample-2: true=1538.67  saved=1536.95  recompute= 604.20  diff= 932.76
+    sample-3: true=1442.91  saved=1480.53  recompute= 408.86  diff=1071.67
+    sample-4: true=1067.15  saved= 833.11  recompute= 273.16  diff= 559.95

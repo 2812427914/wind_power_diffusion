@@ -1,0 +1,69 @@
+Cleaned data: 787920 -> 609679 rows. Saved: v2/results/cleaned.csv
+Samples -> train: 47900, val: 5988, test: 6059
+
+Train samples (show 5):
+  [0] TurbID=1, start_idx=2745, hist=(2020-05-21 08:00:00~2020-05-22 07:00:00), pred=(2020-05-22 08:00:00~2020-05-23 07:00:00)
+  [1] TurbID=1, start_idx=3980, hist=(2020-08-01 17:00:00~2020-08-02 16:00:00), pred=(2020-08-02 17:00:00~2020-08-03 16:00:00)
+  [2] TurbID=1, start_idx=3038, hist=(2020-06-04 18:00:00~2020-06-05 17:00:00), pred=(2020-06-05 18:00:00~2020-06-06 17:00:00)
+  [3] TurbID=1, start_idx=307, hist=(2020-01-17 08:00:00~2020-01-18 07:00:00), pred=(2020-01-18 08:00:00~2020-01-19 07:00:00)
+  [4] TurbID=1, start_idx=4413, hist=(2020-08-29 16:00:00~2020-08-30 15:00:00), pred=(2020-08-30 16:00:00~2020-08-31 15:00:00)
+
+Val samples (show 5):
+  [0] TurbID=1, start_idx=3666, hist=(2020-07-16 02:00:00~2020-07-17 01:00:00), pred=(2020-07-17 02:00:00~2020-07-18 01:00:00)
+  [1] TurbID=1, start_idx=46, hist=(2020-01-03 00:00:00~2020-01-03 23:00:00), pred=(2020-01-04 00:00:00~2020-01-04 23:00:00)
+  [2] TurbID=1, start_idx=2727, hist=(2020-05-20 14:00:00~2020-05-21 13:00:00), pred=(2020-05-21 14:00:00~2020-05-22 13:00:00)
+  [3] TurbID=1, start_idx=2705, hist=(2020-05-19 16:00:00~2020-05-20 15:00:00), pred=(2020-05-20 16:00:00~2020-05-21 15:00:00)
+  [4] TurbID=1, start_idx=2917, hist=(2020-05-29 14:00:00~2020-05-30 13:00:00), pred=(2020-05-30 14:00:00~2020-05-31 13:00:00)
+
+Test samples (show 5):
+  [0] TurbID=1, start_idx=3769, hist=(2020-07-21 10:00:00~2020-07-22 09:00:00), pred=(2020-07-22 10:00:00~2020-07-23 09:00:00)
+  [1] TurbID=1, start_idx=293, hist=(2020-01-16 18:00:00~2020-01-17 17:00:00), pred=(2020-01-17 18:00:00~2020-01-18 17:00:00)
+  [2] TurbID=1, start_idx=2751, hist=(2020-05-21 14:00:00~2020-05-22 13:00:00), pred=(2020-05-22 14:00:00~2020-05-23 13:00:00)
+  [3] TurbID=1, start_idx=3823, hist=(2020-07-23 16:00:00~2020-07-24 15:00:00), pred=(2020-07-24 16:00:00~2020-07-25 15:00:00)
+  [4] TurbID=1, start_idx=1108, hist=(2020-02-25 17:00:00~2020-02-26 16:00:00), pred=(2020-02-26 17:00:00~2020-02-27 16:00:00)
+Epoch 1/400 train_mse_scaled=0.260001 val_mae=216.939 val_rmse=295.786 tf=1.00lr=0.001
+Epoch 2/400 train_mse_scaled=0.067204 val_mae=214.319 val_rmse=291.679 tf=1.00lr=0.001
+Epoch 3/400 train_mse_scaled=0.060825 val_mae=206.039 val_rmse=278.766 tf=1.00lr=0.001
+Epoch 4/400 train_mse_scaled=0.055960 val_mae=206.820 val_rmse=279.205 tf=0.99lr=0.001
+Epoch 5/400 train_mse_scaled=0.052937 val_mae=207.310 val_rmse=280.974 tf=0.99lr=0.001
+Epoch 6/400 train_mse_scaled=0.050070 val_mae=203.708 val_rmse=272.231 tf=0.99lr=0.001
+Epoch 7/400 train_mse_scaled=0.047239 val_mae=216.319 val_rmse=305.742 tf=0.99lr=0.001
+Epoch 8/400 train_mse_scaled=0.044483 val_mae=211.795 val_rmse=295.788 tf=0.99lr=0.001
+Epoch 9/400 train_mse_scaled=0.042356 val_mae=212.694 val_rmse=288.161 tf=0.98lr=0.001
+Epoch 10/400 train_mse_scaled=0.040074 val_mae=212.746 val_rmse=283.415 tf=0.98lr=0.001
+Epoch 11/400 train_mse_scaled=0.038265 val_mae=208.200 val_rmse=276.321 tf=0.98lr=0.001
+Epoch 12/400 train_mse_scaled=0.035004 val_mae=209.677 val_rmse=271.875 tf=0.98lr=0.001
+Epoch 13/400 train_mse_scaled=0.032525 val_mae=205.736 val_rmse=267.112 tf=0.98lr=0.001
+Epoch 14/400 train_mse_scaled=0.030074 val_mae=214.823 val_rmse=277.032 tf=0.97lr=0.001
+Epoch 15/400 train_mse_scaled=0.029771 val_mae=211.553 val_rmse=273.344 tf=0.97lr=0.001
+Epoch 16/400 train_mse_scaled=0.028568 val_mae=223.850 val_rmse=284.452 tf=0.97lr=0.001
+Epoch 17/400 train_mse_scaled=0.027058 val_mae=221.823 val_rmse=275.617 tf=0.97lr=0.001
+Epoch 18/400 train_mse_scaled=0.027092 val_mae=218.235 val_rmse=274.792 tf=0.97lr=0.001
+Epoch 19/400 train_mse_scaled=0.026521 val_mae=223.131 val_rmse=278.859 tf=0.96lr=0.001
+Epoch 20/400 train_mse_scaled=0.026094 val_mae=226.793 val_rmse=280.610 tf=0.96lr=0.001
+Epoch 21/400 train_mse_scaled=0.026573 val_mae=216.840 val_rmse=273.187 tf=0.96lr=0.001
+Epoch 22/400 train_mse_scaled=0.025545 val_mae=219.547 val_rmse=274.582 tf=0.96lr=0.001
+Epoch 23/400 train_mse_scaled=0.024615 val_mae=224.823 val_rmse=281.646 tf=0.96lr=0.001
+Epoch 24/400 train_mse_scaled=0.024229 val_mae=219.311 val_rmse=273.336 tf=0.95lr=0.001
+Epoch 25/400 train_mse_scaled=0.025869 val_mae=207.385 val_rmse=265.122 tf=0.95lr=0.001
+Epoch 26/400 train_mse_scaled=0.024625 val_mae=216.398 val_rmse=271.118 tf=0.95lr=0.001
+Epoch 27/400 train_mse_scaled=0.025101 val_mae=210.208 val_rmse=264.933 tf=0.95lr=0.001
+Epoch 28/400 train_mse_scaled=0.024320 val_mae=210.308 val_rmse=272.487 tf=0.95lr=0.001
+Epoch 29/400 train_mse_scaled=0.024630 val_mae=214.083 val_rmse=271.382 tf=0.94lr=0.001
+Epoch 30/400 train_mse_scaled=0.024171 val_mae=208.572 val_rmse=264.021 tf=0.94lr=0.001
+Epoch 31/400 train_mse_scaled=0.024069 val_mae=208.681 val_rmse=264.550 tf=0.94lr=0.001
+Epoch 32/400 train_mse_scaled=0.024372 val_mae=190.199 val_rmse=244.821 tf=0.94lr=0.001
+Epoch 33/400 train_mse_scaled=0.024407 val_mae=185.625 val_rmse=239.888 tf=0.94lr=0.001
+Epoch 34/400 train_mse_scaled=0.023927 val_mae=186.851 val_rmse=240.507 tf=0.93lr=0.001
+Epoch 35/400 train_mse_scaled=0.023495 val_mae=201.072 val_rmse=258.846 tf=0.93lr=0.001
+Epoch 36/400 train_mse_scaled=0.023743 val_mae=185.097 val_rmse=239.716 tf=0.93lr=0.001
+Epoch 37/400 train_mse_scaled=0.024126 val_mae=185.986 val_rmse=240.163 tf=0.93lr=0.001
+Epoch 38/400 train_mse_scaled=0.023438 val_mae=191.437 val_rmse=243.123 tf=0.93lr=0.001
+Epoch 39/400 train_mse_scaled=0.023710 val_mae=187.666 val_rmse=244.862 tf=0.92lr=0.001
+Epoch 40/400 train_mse_scaled=0.023788 val_mae=193.986 val_rmse=248.355 tf=0.92lr=0.001
+Epoch 41/400 train_mse_scaled=0.023822 val_mae=196.695 val_rmse=252.916 tf=0.92lr=0.001
+Epoch 42/400 train_mse_scaled=0.024068 val_mae=187.923 val_rmse=244.814 tf=0.92lr=0.001
+Epoch 43/400 train_mse_scaled=0.024423 val_mae=161.736 val_rmse=208.378 tf=0.92lr=0.001
+Epoch 44/400 train_mse_scaled=0.023264 val_mae=178.033 val_rmse=229.407 tf=0.91lr=0.001
+Epoch 45/400 train_mse_scaled=0.024176 val_mae=183.844 val_rmse=234.949 tf=0.91lr=0.001
+Epoch 46/400 train_mse_scaled=0.024572 val_mae=175.756 val_rmse=223.295 tf=0.91lr=0.001

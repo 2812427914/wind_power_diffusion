@@ -1,0 +1,8 @@
+Warning: torch.cumprod not supported on MPS, switching to CPU.
+Using device: cuda
+Traceback (most recent call last):
+  File "train.py", line 511, in <module>
+    hist_len=hist_len, seq_len=seq_len, seq_mode=seq_mode
+  File "/Users/bytedance/Downloads/gits/wind_power_diffusion/src/dataloader.py", line 56, in __init__
+    self.wind_id_idx = self.header.index(self.wind_id_col)
+ValueError: 'Wtid' is not in list

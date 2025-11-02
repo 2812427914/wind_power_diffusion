@@ -1,0 +1,63 @@
+Run args: {'data': 'data/wtbdata_hourly.csv', 'id_col': None, 'time_col': None, 'wind_col': None, 'power_col': None, 'hist_len': 24, 'pred_len': 24, 'stride': 1, 'time_encode': 'sin-cos', 'batch_size': 256, 'epochs': 2000, 'lr': 0.001, 'hidden_size': 32, 'num_layers': 2, 'dropout': 0.1, 'emb_dim': 5, 'teacher_start': 0.0, 'teacher_end': 0.0, 'patience': 100, 'seed': 42, 'num_workers': 20, 'shuffle_split': True, 'shuffle_seed': 42}
+Cleaned data: 787920 -> 609679 rows. Saved: v2/results/cleaned.csv
+[INFO] Saved cleaned snapshot to: v2/results/cleaned_snapshot_2234599aa02e3f340edf4bb0b7ed3062.csv (md5=2234599aa02e3f340edf4bb0b7ed3062)
+[INFO] Saved new splits to: v2/results/splits_seq2seq.json
+Samples -> train: 47900, val: 5988, test: 6059
+
+Train samples (show 5):
+  [0] TurbID=1, start_idx=2745, hist=(2020-05-21 08:00:00~2020-05-22 07:00:00), pred=(2020-05-22 08:00:00~2020-05-23 07:00:00)
+  [1] TurbID=1, start_idx=3980, hist=(2020-08-01 17:00:00~2020-08-02 16:00:00), pred=(2020-08-02 17:00:00~2020-08-03 16:00:00)
+  [2] TurbID=1, start_idx=3038, hist=(2020-06-04 18:00:00~2020-06-05 17:00:00), pred=(2020-06-05 18:00:00~2020-06-06 17:00:00)
+  [3] TurbID=1, start_idx=307, hist=(2020-01-17 08:00:00~2020-01-18 07:00:00), pred=(2020-01-18 08:00:00~2020-01-19 07:00:00)
+  [4] TurbID=1, start_idx=4413, hist=(2020-08-29 16:00:00~2020-08-30 15:00:00), pred=(2020-08-30 16:00:00~2020-08-31 15:00:00)
+
+Val samples (show 5):
+  [0] TurbID=1, start_idx=3666, hist=(2020-07-16 02:00:00~2020-07-17 01:00:00), pred=(2020-07-17 02:00:00~2020-07-18 01:00:00)
+  [1] TurbID=1, start_idx=46, hist=(2020-01-03 00:00:00~2020-01-03 23:00:00), pred=(2020-01-04 00:00:00~2020-01-04 23:00:00)
+  [2] TurbID=1, start_idx=2727, hist=(2020-05-20 14:00:00~2020-05-21 13:00:00), pred=(2020-05-21 14:00:00~2020-05-22 13:00:00)
+  [3] TurbID=1, start_idx=2705, hist=(2020-05-19 16:00:00~2020-05-20 15:00:00), pred=(2020-05-20 16:00:00~2020-05-21 15:00:00)
+  [4] TurbID=1, start_idx=2917, hist=(2020-05-29 14:00:00~2020-05-30 13:00:00), pred=(2020-05-30 14:00:00~2020-05-31 13:00:00)
+
+Test samples (show 5):
+  [0] TurbID=1, start_idx=3769, hist=(2020-07-21 10:00:00~2020-07-22 09:00:00), pred=(2020-07-22 10:00:00~2020-07-23 09:00:00)
+  [1] TurbID=1, start_idx=293, hist=(2020-01-16 18:00:00~2020-01-17 17:00:00), pred=(2020-01-17 18:00:00~2020-01-18 17:00:00)
+  [2] TurbID=1, start_idx=2751, hist=(2020-05-21 14:00:00~2020-05-22 13:00:00), pred=(2020-05-22 14:00:00~2020-05-23 13:00:00)
+  [3] TurbID=1, start_idx=3823, hist=(2020-07-23 16:00:00~2020-07-24 15:00:00), pred=(2020-07-24 16:00:00~2020-07-25 15:00:00)
+  [4] TurbID=1, start_idx=1108, hist=(2020-02-25 17:00:00~2020-02-26 16:00:00), pred=(2020-02-26 17:00:00~2020-02-27 16:00:00)
+[DEBUG] target_scaler.scale_ : [460.11395043]
+[DEBUG] train_ds.feature_scaler.mean_: [ 7.63311543e+00  7.25987039e+02  1.10326964e-18 -5.63146529e-18
+  6.32851307e-04 -1.86239544e-01]
+[DEBUG] train_ds.target_scaler.mean_: [746.06511492]
+[DEBUG] train_ds.exo_scaler.mean_: [ 7.78879236e+00  1.10326964e-18 -5.63146529e-18 -1.45213366e-01
+ -1.16613238e-01]
+Epoch 1/2000 train_mse_scaled=0.421917 val_mae=156.268 val_rmse=218.687 tf=0.00lr=0.001
+Saved validation predictions (best) to: v2/results/seq2seq_val_y_true.npy and v2/results/seq2seq_val_y_pred_mean.npy
+Epoch 2/2000 train_mse_scaled=0.220041 val_mae=134.848 val_rmse=188.413 tf=0.00lr=0.001
+Saved validation predictions (best) to: v2/results/seq2seq_val_y_true.npy and v2/results/seq2seq_val_y_pred_mean.npy
+Epoch 3/2000 train_mse_scaled=0.180194 val_mae=121.216 val_rmse=172.460 tf=0.00lr=0.001
+Saved validation predictions (best) to: v2/results/seq2seq_val_y_true.npy and v2/results/seq2seq_val_y_pred_mean.npy
+Epoch 4/2000 train_mse_scaled=0.156710 val_mae=113.506 val_rmse=159.761 tf=0.00lr=0.001
+Saved validation predictions (best) to: v2/results/seq2seq_val_y_true.npy and v2/results/seq2seq_val_y_pred_mean.npy
+Epoch 5/2000 train_mse_scaled=0.141344 val_mae=107.015 val_rmse=152.794 tf=0.00lr=0.001
+Saved validation predictions (best) to: v2/results/seq2seq_val_y_true.npy and v2/results/seq2seq_val_y_pred_mean.npy
+Epoch 6/2000 train_mse_scaled=0.131545 val_mae=101.592 val_rmse=146.626 tf=0.00lr=0.001
+Saved validation predictions (best) to: v2/results/seq2seq_val_y_true.npy and v2/results/seq2seq_val_y_pred_mean.npy
+Epoch 7/2000 train_mse_scaled=0.123974 val_mae=98.844 val_rmse=142.598 tf=0.00lr=0.001
+Saved validation predictions (best) to: v2/results/seq2seq_val_y_true.npy and v2/results/seq2seq_val_y_pred_mean.npy
+Epoch 8/2000 train_mse_scaled=0.118346 val_mae=96.382 val_rmse=139.192 tf=0.00lr=0.001
+Saved validation predictions (best) to: v2/results/seq2seq_val_y_true.npy and v2/results/seq2seq_val_y_pred_mean.npy
+Epoch 9/2000 train_mse_scaled=0.112916 val_mae=96.020 val_rmse=136.595 tf=0.00lr=0.001
+Saved validation predictions (best) to: v2/results/seq2seq_val_y_true.npy and v2/results/seq2seq_val_y_pred_mean.npy
+Epoch 10/2000 train_mse_scaled=0.107653 val_mae=93.772 val_rmse=134.228 tf=0.00lr=0.001
+Saved validation predictions (best) to: v2/results/seq2seq_val_y_true.npy and v2/results/seq2seq_val_y_pred_mean.npy
+Epoch 11/2000 train_mse_scaled=0.102729 val_mae=90.470 val_rmse=129.549 tf=0.00lr=0.001
+Saved validation predictions (best) to: v2/results/seq2seq_val_y_true.npy and v2/results/seq2seq_val_y_pred_mean.npy
+Epoch 12/2000 train_mse_scaled=0.098306 val_mae=88.366 val_rmse=129.676 tf=0.00lr=0.001
+Epoch 13/2000 train_mse_scaled=0.094827 val_mae=86.073 val_rmse=125.322 tf=0.00lr=0.001
+Saved validation predictions (best) to: v2/results/seq2seq_val_y_true.npy and v2/results/seq2seq_val_y_pred_mean.npy
+Epoch 14/2000 train_mse_scaled=0.091088 val_mae=85.950 val_rmse=123.965 tf=0.00lr=0.001
+Saved validation predictions (best) to: v2/results/seq2seq_val_y_true.npy and v2/results/seq2seq_val_y_pred_mean.npy
+Epoch 15/2000 train_mse_scaled=0.088247 val_mae=85.203 val_rmse=121.570 tf=0.00lr=0.001
+Saved validation predictions (best) to: v2/results/seq2seq_val_y_true.npy and v2/results/seq2seq_val_y_pred_mean.npy
+Epoch 16/2000 train_mse_scaled=0.085439 val_mae=82.397 val_rmse=119.610 tf=0.00lr=0.001
+Saved validation predictions (best) to: v2/results/seq2seq_val_y_true.npy and v2/results/seq2seq_val_y_pred_mean.npy

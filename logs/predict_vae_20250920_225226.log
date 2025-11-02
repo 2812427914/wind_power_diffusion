@@ -1,0 +1,5 @@
+Warning: torch.cumprod not supported on MPS, switching to CPU.
+Using device: cpu
+Generating predictions with VAE model...
+VAE Sampling:   0%|          | 0/3 [00:00<?, ?it/s]VAE Sampling: 100%|██████████| 3/3 [00:00<00:00, 306.06it/s]
+Saved vae predictions to ../results

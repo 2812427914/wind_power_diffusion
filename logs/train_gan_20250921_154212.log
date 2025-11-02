@@ -1,0 +1,20 @@
+Warning: torch.cumprod not supported on MPS, switching to CPU.
+Using device: cpu
+训练集样本数: 332
+[GAN] Epoch 1/10 D Loss: 1.4047 G Loss: 0.6256 | Val G Loss: 0.6155
+Saved new best GAN generator/discriminator at epoch 1 with val G loss 0.6155
+[GAN] Epoch 2/10 D Loss: 1.3719 G Loss: 0.6321 | Val G Loss: 0.6236
+[GAN] Epoch 3/10 D Loss: 1.3573 G Loss: 0.6403 | Val G Loss: 0.6274
+[GAN] Epoch 4/10 D Loss: 1.3517 G Loss: 0.6382 | Val G Loss: 0.6220
+[GAN] Epoch 5/10 D Loss: 1.3866 G Loss: 0.6215 | Val G Loss: 0.6017
+Saved new best GAN generator/discriminator at epoch 5 with val G loss 0.6017
+[GAN] Epoch 6/10 D Loss: 1.3963 G Loss: 0.6011 | Val G Loss: 0.5808
+Saved new best GAN generator/discriminator at epoch 6 with val G loss 0.5808
+[GAN] Epoch 7/10 D Loss: 1.4206 G Loss: 0.5851 | Val G Loss: 0.5371
+Saved new best GAN generator/discriminator at epoch 7 with val G loss 0.5371
+[GAN] Epoch 8/10 D Loss: 1.4701 G Loss: 0.5595 | Val G Loss: 0.5277
+Saved new best GAN generator/discriminator at epoch 8 with val G loss 0.5277
+[GAN] Epoch 9/10 D Loss: 1.5119 G Loss: 0.5664 | Val G Loss: 0.5219
+Saved new best GAN generator/discriminator at epoch 9 with val G loss 0.5219
+[GAN] Epoch 10/10 D Loss: 1.4627 G Loss: 0.6070 | Val G Loss: 0.5534
+Saved last GAN models to ../checkpoints

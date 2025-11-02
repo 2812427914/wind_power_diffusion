@@ -1,0 +1,20 @@
+Warning: torch.cumprod not supported on MPS, switching to CPU.
+Using device: cpu
+训练集样本数: 332
+[Diffusion] Epoch 1/10 Train Loss: 1.0276 | Val Loss: 0.9350
+Saved new best Diffusion model at epoch 1 with val loss 0.9350
+[Diffusion] Epoch 2/10 Train Loss: 0.9994 | Val Loss: 0.9474
+[Diffusion] Epoch 3/10 Train Loss: 0.9971 | Val Loss: 0.9397
+[Diffusion] Epoch 4/10 Train Loss: 0.9811 | Val Loss: 0.9434
+[Diffusion] Epoch 5/10 Train Loss: 0.9748 | Val Loss: 0.8981
+Saved new best Diffusion model at epoch 5 with val loss 0.8981
+[Diffusion] Epoch 6/10 Train Loss: 0.9308 | Val Loss: 0.9512
+[Diffusion] Epoch 7/10 Train Loss: 0.8853 | Val Loss: 0.8151
+Saved new best Diffusion model at epoch 7 with val loss 0.8151
+[Diffusion] Epoch 8/10 Train Loss: 0.8787 | Val Loss: 0.7903
+Saved new best Diffusion model at epoch 8 with val loss 0.7903
+[Diffusion] Epoch 9/10 Train Loss: 0.8253 | Val Loss: 0.7866
+Saved new best Diffusion model at epoch 9 with val loss 0.7866
+[Diffusion] Epoch 10/10 Train Loss: 0.7961 | Val Loss: 0.7688
+Saved new best Diffusion model at epoch 10 with val loss 0.7688
+Saved last Diffusion model to ../checkpoints/diffusion_last.pth

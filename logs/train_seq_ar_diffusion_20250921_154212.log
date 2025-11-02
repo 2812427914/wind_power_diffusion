@@ -1,0 +1,25 @@
+Warning: torch.cumprod not supported on MPS, switching to CPU.
+Using device: cpu
+训练集样本数: 332
+[SeqAR-Diffusion] Train samples: 298, Val samples: 34
+[SeqAR-Diffusion] Epoch 1/10 Train Loss: 0.9622 | Val Loss: 0.9705
+Saved new best SeqAR-Diffusion model at epoch 1 with val loss 0.9705
+[SeqAR-Diffusion] Epoch 2/10 Train Loss: 0.9301 | Val Loss: 0.7980
+Saved new best SeqAR-Diffusion model at epoch 2 with val loss 0.7980
+[SeqAR-Diffusion] Epoch 3/10 Train Loss: 0.8253 | Val Loss: 0.7759
+Saved new best SeqAR-Diffusion model at epoch 3 with val loss 0.7759
+[SeqAR-Diffusion] Epoch 4/10 Train Loss: 0.7235 | Val Loss: 0.6318
+Saved new best SeqAR-Diffusion model at epoch 4 with val loss 0.6318
+[SeqAR-Diffusion] Epoch 5/10 Train Loss: 0.5967 | Val Loss: 0.5033
+Saved new best SeqAR-Diffusion model at epoch 5 with val loss 0.5033
+[SeqAR-Diffusion] Epoch 6/10 Train Loss: 0.4687 | Val Loss: 0.3971
+Saved new best SeqAR-Diffusion model at epoch 6 with val loss 0.3971
+[SeqAR-Diffusion] Epoch 7/10 Train Loss: 0.3741 | Val Loss: 0.3044
+Saved new best SeqAR-Diffusion model at epoch 7 with val loss 0.3044
+[SeqAR-Diffusion] Epoch 8/10 Train Loss: 0.2662 | Val Loss: 0.2342
+Saved new best SeqAR-Diffusion model at epoch 8 with val loss 0.2342
+[SeqAR-Diffusion] Epoch 9/10 Train Loss: 0.1908 | Val Loss: 0.1566
+Saved new best SeqAR-Diffusion model at epoch 9 with val loss 0.1566
+[SeqAR-Diffusion] Epoch 10/10 Train Loss: 0.1507 | Val Loss: 0.1529
+Saved new best SeqAR-Diffusion model at epoch 10 with val loss 0.1529
+Saved last SeqAR-Diffusion model to ../checkpoints/seq_ar_diffusion_last.pth

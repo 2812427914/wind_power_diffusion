@@ -1,0 +1,15 @@
+Warning: torch.cumprod not supported on MPS, switching to CPU.
+Using device: cpu
+Generating predictions with SeqVAE model...
+Traceback (most recent call last):
+  File "predict.py", line 281, in <module>
+    main()
+  File "predict.py", line 229, in main
+    y_samples_scaled = predict_seq_vae(X_test, y_dim, device=args.device, n_samples=args.n_samples, batch_size=args.batch_size, hist_len=24, seq_len=24, feature_dim=feature_dim)
+  File "predict.py", line 130, in predict_seq_vae
+    model.load_state_dict(torch.load(os.path.join(CHECKPOINT_DIR, 'seq_vae.pth'), map_location=device))
+  File "/Users/bytedance/Downloads/gits/wind_power_diffusion/venv/lib/python3.7/site-packages/torch/nn/modules/module.py", line 1672, in load_state_dict
+    self.__class__.__name__, "\n\t".join(error_msgs)))
+RuntimeError: Error(s) in loading state_dict for SeqVAE:
+	Missing key(s) in state_dict: "decoder_out.0.weight", "decoder_out.0.bias". 
+	Unexpected key(s) in state_dict: "decoder_out.weight", "decoder_out.bias". 

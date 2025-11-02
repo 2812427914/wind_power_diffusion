@@ -1,0 +1,14 @@
+Traceback (most recent call last):
+  File "evaluate.py", line 97, in <module>
+    main()
+  File "evaluate.py", line 78, in main
+    metrics = evaluate_metrics(y_true, y_pred, y_samples)
+  File "evaluate.py", line 43, in evaluate_metrics
+    results['MAE'] = mean_absolute_error(y_true, y_pred)
+  File "/Users/bytedance/Downloads/gits/wind_power_diffusion/venv/lib/python3.7/site-packages/sklearn/metrics/_regression.py", line 192, in mean_absolute_error
+    y_true, y_pred, multioutput
+  File "/Users/bytedance/Downloads/gits/wind_power_diffusion/venv/lib/python3.7/site-packages/sklearn/metrics/_regression.py", line 94, in _check_reg_targets
+    check_consistent_length(y_true, y_pred)
+  File "/Users/bytedance/Downloads/gits/wind_power_diffusion/venv/lib/python3.7/site-packages/sklearn/utils/validation.py", line 334, in check_consistent_length
+    % [int(l) for l in lengths]
+ValueError: Found input variables with inconsistent numbers of samples: [83, 1991]

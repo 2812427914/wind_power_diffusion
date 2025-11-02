@@ -1,0 +1,17 @@
+Using device: cpu
+[SeqDiffusion] Epoch 1/10 Train Loss: 0.9803 | Val Loss: 1.0976
+Saved new best SeqDiffusion model at epoch 1 with val loss 1.0976
+[SeqDiffusion] Epoch 2/10 Train Loss: 0.9510 | Val Loss: 1.0842
+Saved new best SeqDiffusion model at epoch 2 with val loss 1.0842
+[SeqDiffusion] Epoch 3/10 Train Loss: 0.9864 | Val Loss: 0.9958
+Saved new best SeqDiffusion model at epoch 3 with val loss 0.9958
+[SeqDiffusion] Epoch 4/10 Train Loss: 0.9806 | Val Loss: 0.9997
+[SeqDiffusion] Epoch 5/10 Train Loss: 0.9424 | Val Loss: 0.9379
+Saved new best SeqDiffusion model at epoch 5 with val loss 0.9379
+[SeqDiffusion] Epoch 6/10 Train Loss: 0.9479 | Val Loss: 0.9437
+[SeqDiffusion] Epoch 7/10 Train Loss: 0.9325 | Val Loss: 0.8098
+Saved new best SeqDiffusion model at epoch 7 with val loss 0.8098
+[SeqDiffusion] Epoch 8/10 Train Loss: 0.8917 | Val Loss: 0.9089
+[SeqDiffusion] Epoch 9/10 Train Loss: 0.8472 | Val Loss: 0.8301
+[SeqDiffusion] Epoch 10/10 Train Loss: 0.8370 | Val Loss: 0.8717
+Saved last SeqDiffusion model to ../checkpoints/seq_diffusion_last.pth

@@ -1,0 +1,5 @@
+Warning: torch.cumprod not supported on MPS, switching to CPU.
+Using device: cpu
+Generating predictions with GAN model...
+GAN Sampling:   0%|          | 0/3 [00:00<?, ?it/s]GAN Sampling: 100%|██████████| 3/3 [00:00<00:00, 31.95it/s]
+Saved gan predictions to ../results

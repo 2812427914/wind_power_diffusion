@@ -1,0 +1,19 @@
+Using device: cpu
+[GAN] Epoch 1/10 D Loss: 1.4102 G Loss: 0.6668 | Val G Loss: 0.6625
+Saved new best GAN generator/discriminator at epoch 1 with val G loss 0.6625
+[GAN] Epoch 2/10 D Loss: 1.3936 G Loss: 0.6554 | Val G Loss: 0.6495
+Saved new best GAN generator/discriminator at epoch 2 with val G loss 0.6495
+[GAN] Epoch 3/10 D Loss: 1.3844 G Loss: 0.6455 | Val G Loss: 0.6375
+Saved new best GAN generator/discriminator at epoch 3 with val G loss 0.6375
+[GAN] Epoch 4/10 D Loss: 1.3902 G Loss: 0.6263 | Val G Loss: 0.6090
+Saved new best GAN generator/discriminator at epoch 4 with val G loss 0.6090
+[GAN] Epoch 5/10 D Loss: 1.3908 G Loss: 0.6164 | Val G Loss: 0.5960
+Saved new best GAN generator/discriminator at epoch 5 with val G loss 0.5960
+[GAN] Epoch 6/10 D Loss: 1.4217 G Loss: 0.6076 | Val G Loss: 0.5837
+Saved new best GAN generator/discriminator at epoch 6 with val G loss 0.5837
+[GAN] Epoch 7/10 D Loss: 1.4184 G Loss: 0.6057 | Val G Loss: 0.5830
+Saved new best GAN generator/discriminator at epoch 7 with val G loss 0.5830
+[GAN] Epoch 8/10 D Loss: 1.4060 G Loss: 0.6362 | Val G Loss: 0.6052
+[GAN] Epoch 9/10 D Loss: 1.3722 G Loss: 0.6977 | Val G Loss: 0.6608
+[GAN] Epoch 10/10 D Loss: 1.3024 G Loss: 0.7963 | Val G Loss: 0.7568
+Saved last GAN models to ../checkpoints

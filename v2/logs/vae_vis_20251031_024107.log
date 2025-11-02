@@ -1,0 +1,2 @@
+Run args: {'y_true': 'v2/results/vae_y_true.npy', 'y_pred_mean': 'v2/results/vae_y_pred_mean.npy', 'y_samples_first': 'v2/results/vae_y_samples_first.npy', 'out': 'v2/results/plots/vae_scenarios.png', 'index': 0}
+Saved plot to: v2/results/plots/vae_scenarios.png

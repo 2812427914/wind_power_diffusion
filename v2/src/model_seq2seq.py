@@ -1,0 +1,94 @@
+from typing import Optional, Tuple
+
+import torch
+import torch.nn as nn
+
+
+class Encoder(nn.Module):
+    def __init__(self, input_dim: int, hidden_size: int, num_layers: int = 2, dropout: float = 0.2):
+        super().__init__()
+        self.lstm = nn.LSTM(
+            input_size=input_dim,
+            hidden_size=hidden_size,
+            num_layers=num_layers,
+            dropout=dropout if num_layers > 1 else 0.0,
+            batch_first=True,
+        )
+
+    def forward(self, x):
+        # x: [B, T_in, F]
+        outputs, (h, c) = self.lstm(x)
+        return h, c
+
+
+class Decoder(nn.Module):
+    def __init__(self, hidden_size: int, out_dim: int = 1, exo_dim: int = 0, num_layers: int = 2, dropout: float = 0.2):
+        super().__init__()
+        self.lstm = nn.LSTM(
+            input_size=out_dim + exo_dim,  # feed previous y and future exogenous features
+            hidden_size=hidden_size,
+            num_layers=num_layers,
+            dropout=dropout if num_layers > 1 else 0.0,
+            batch_first=True,
+        )
+        self.proj = nn.Linear(hidden_size, out_dim)
+        self.dropout = nn.Dropout(dropout)
+
+    def forward(
+        self,
+        y0: torch.Tensor,
+        x_future: torch.Tensor,
+        hidden: Tuple[torch.Tensor, torch.Tensor],
+        steps: int,
+        teacher_forcing: float = 0.0,
+        y_truth: Optional[torch.Tensor] = None,
+    ):
+        # y0: [B, 1] initial input (last observed scaled value)
+        # x_future: [B, steps, exo_dim] scaled exogenous features per future step
+        outputs = []
+        h, c = hidden
+        prev_y = y0.unsqueeze(1)  # [B, 1, 1]
+        for t in range(steps):
+            # choose previous y input
+            if self.training and y_truth is not None and torch.rand(1).item() < teacher_forcing:
+                y_in = y_truth[:, t : t + 1, :]  # [B, 1, 1]
+            else:
+                y_in = prev_y  # [B, 1, 1]
+            # concatenate with exogenous future features at step t
+            exo_t = x_future[:, t : t + 1, :]  # [B, 1, exo_dim]
+            inputs = torch.cat([y_in, exo_t], dim=2)  # [B, 1, 1 + exo_dim]
+            out, (h, c) = self.lstm(self.dropout(inputs), (h, c))
+            yhat = self.proj(out)  # [B, 1, 1]
+            outputs.append(yhat)
+            prev_y = yhat.detach()
+        return torch.cat(outputs, dim=1)  # [B, steps, 1]
+
+
+class Seq2Seq(nn.Module):
+    def __init__(self, input_dim: int, exo_dim: int, n_turbines: int, emb_dim: int = 16, hidden_size: int = 128, num_layers: int = 2, dropout: float = 0.2):
+        super().__init__()
+        self.turb_emb = nn.Embedding(n_turbines, emb_dim)
+        self.encoder = Encoder(input_dim + emb_dim, hidden_size, num_layers, dropout)
+        self.decoder = Decoder(hidden_size, out_dim=1, exo_dim=exo_dim + emb_dim, num_layers=num_layers, dropout=dropout)
+
+    def forward(
+        self,
+        x_hist: torch.Tensor,        # [B, T_in, F]
+        x_future: torch.Tensor,      # [B, T_out, exo_dim]
+        y0: torch.Tensor,            # [B, 1] initial decoder input (scaled)
+        turb_idx: torch.Tensor,      # [B] turbine id indices
+        pred_steps: int,
+        teacher_forcing: float = 0.0,
+        y_truth: Optional[torch.Tensor] = None,  # [B, T_out, 1] scaled
+    ):
+        # turbine embedding
+        emb = self.turb_emb(turb_idx)  # [B, emb_dim]
+        emb_hist = emb.unsqueeze(1).expand(-1, x_hist.size(1), -1)   # [B, T_in, emb_dim]
+        emb_future = emb.unsqueeze(1).expand(-1, x_future.size(1), -1)  # [B, T_out, emb_dim]
+
+        x_hist_aug = torch.cat([x_hist, emb_hist], dim=-1)
+        x_future_aug = torch.cat([x_future, emb_future], dim=-1)
+
+        h, c = self.encoder(x_hist_aug)
+        out = self.decoder(y0, x_future_aug, (h, c), steps=pred_steps, teacher_forcing=teacher_forcing, y_truth=y_truth)
+        return out  # scaled predictions [B, T_out, 1]

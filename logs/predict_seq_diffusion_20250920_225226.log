@@ -1,0 +1,5 @@
+Warning: torch.cumprod not supported on MPS, switching to CPU.
+Using device: cpu
+Generating predictions with SeqDiffusion model...
+SeqDiffusion Sampling:   0%|          | 0/3 [00:00<?, ?it/s]SeqDiffusion Sampling:  33%|███▎      | 1/3 [00:18<00:37, 18.55s/it]SeqDiffusion Sampling:  67%|██████▋   | 2/3 [00:36<00:18, 18.40s/it]SeqDiffusion Sampling: 100%|██████████| 3/3 [00:52<00:00, 17.09s/it]SeqDiffusion Sampling: 100%|██████████| 3/3 [00:52<00:00, 17.46s/it]
+Saved seq_diffusion predictions to ../results

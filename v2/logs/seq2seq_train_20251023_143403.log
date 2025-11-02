@@ -1,0 +1,42 @@
+/opt/conda/lib/python3.11/site-packages/torch/utils/data/dataloader.py:626: UserWarning: This DataLoader will create 100 worker processes in total. Our suggested max number of worker in current system is 22, which is smaller than what this DataLoader is going to create. Please be aware that excessive worker creation might get DataLoader running slow or even freeze, lower the worker number to avoid potential slowness/freeze if necessary.
+  warnings.warn(
+/opt/conda/lib/python3.11/site-packages/torch/utils/data/dataloader.py:626: UserWarning: This DataLoader will create 100 worker processes in total. Our suggested max number of worker in current system is 22, which is smaller than what this DataLoader is going to create. Please be aware that excessive worker creation might get DataLoader running slow or even freeze, lower the worker number to avoid potential slowness/freeze if necessary.
+  warnings.warn(
+Cleaned data: 787920 -> 609679 rows. Saved: v2/results/cleaned.csv
+Samples -> train: 47900, val: 5988, test: 6059
+
+Train samples (show 5):
+  [0] TurbID=1, start_idx=2745, hist=(2020-05-21 08:00:00~2020-05-22 07:00:00), pred=(2020-05-22 08:00:00~2020-05-23 07:00:00)
+  [1] TurbID=1, start_idx=3980, hist=(2020-08-01 17:00:00~2020-08-02 16:00:00), pred=(2020-08-02 17:00:00~2020-08-03 16:00:00)
+  [2] TurbID=1, start_idx=3038, hist=(2020-06-04 18:00:00~2020-06-05 17:00:00), pred=(2020-06-05 18:00:00~2020-06-06 17:00:00)
+  [3] TurbID=1, start_idx=307, hist=(2020-01-17 08:00:00~2020-01-18 07:00:00), pred=(2020-01-18 08:00:00~2020-01-19 07:00:00)
+  [4] TurbID=1, start_idx=4413, hist=(2020-08-29 16:00:00~2020-08-30 15:00:00), pred=(2020-08-30 16:00:00~2020-08-31 15:00:00)
+
+Val samples (show 5):
+  [0] TurbID=1, start_idx=3666, hist=(2020-07-16 02:00:00~2020-07-17 01:00:00), pred=(2020-07-17 02:00:00~2020-07-18 01:00:00)
+  [1] TurbID=1, start_idx=46, hist=(2020-01-03 00:00:00~2020-01-03 23:00:00), pred=(2020-01-04 00:00:00~2020-01-04 23:00:00)
+  [2] TurbID=1, start_idx=2727, hist=(2020-05-20 14:00:00~2020-05-21 13:00:00), pred=(2020-05-21 14:00:00~2020-05-22 13:00:00)
+  [3] TurbID=1, start_idx=2705, hist=(2020-05-19 16:00:00~2020-05-20 15:00:00), pred=(2020-05-20 16:00:00~2020-05-21 15:00:00)
+  [4] TurbID=1, start_idx=2917, hist=(2020-05-29 14:00:00~2020-05-30 13:00:00), pred=(2020-05-30 14:00:00~2020-05-31 13:00:00)
+
+Test samples (show 5):
+  [0] TurbID=1, start_idx=3769, hist=(2020-07-21 10:00:00~2020-07-22 09:00:00), pred=(2020-07-22 10:00:00~2020-07-23 09:00:00)
+  [1] TurbID=1, start_idx=293, hist=(2020-01-16 18:00:00~2020-01-17 17:00:00), pred=(2020-01-17 18:00:00~2020-01-18 17:00:00)
+  [2] TurbID=1, start_idx=2751, hist=(2020-05-21 14:00:00~2020-05-22 13:00:00), pred=(2020-05-22 14:00:00~2020-05-23 13:00:00)
+  [3] TurbID=1, start_idx=3823, hist=(2020-07-23 16:00:00~2020-07-24 15:00:00), pred=(2020-07-24 16:00:00~2020-07-25 15:00:00)
+  [4] TurbID=1, start_idx=1108, hist=(2020-02-25 17:00:00~2020-02-26 16:00:00), pred=(2020-02-26 17:00:00~2020-02-27 16:00:00)
+/opt/conda/lib/python3.11/site-packages/torch/utils/data/dataloader.py:626: UserWarning: This DataLoader will create 100 worker processes in total. Our suggested max number of worker in current system is 22, which is smaller than what this DataLoader is going to create. Please be aware that excessive worker creation might get DataLoader running slow or even freeze, lower the worker number to avoid potential slowness/freeze if necessary.
+  warnings.warn(
+/opt/conda/lib/python3.11/site-packages/torch/utils/data/dataloader.py:626: UserWarning: This DataLoader will create 100 worker processes in total. Our suggested max number of worker in current system is 22, which is smaller than what this DataLoader is going to create. Please be aware that excessive worker creation might get DataLoader running slow or even freeze, lower the worker number to avoid potential slowness/freeze if necessary.
+  warnings.warn(
+Epoch 1/400 train_mse_scaled=0.241504 val_mae=120.190 val_rmse=170.068 test_mae=119.132 test_rmse=168.279 tf=0.00lr=0.001
+/opt/conda/lib/python3.11/site-packages/torch/utils/data/dataloader.py:626: UserWarning: This DataLoader will create 100 worker processes in total. Our suggested max number of worker in current system is 22, which is smaller than what this DataLoader is going to create. Please be aware that excessive worker creation might get DataLoader running slow or even freeze, lower the worker number to avoid potential slowness/freeze if necessary.
+  warnings.warn(
+/opt/conda/lib/python3.11/site-packages/torch/utils/data/dataloader.py:626: UserWarning: This DataLoader will create 100 worker processes in total. Our suggested max number of worker in current system is 22, which is smaller than what this DataLoader is going to create. Please be aware that excessive worker creation might get DataLoader running slow or even freeze, lower the worker number to avoid potential slowness/freeze if necessary.
+  warnings.warn(
+Epoch 2/400 train_mse_scaled=0.139454 val_mae=98.855 val_rmse=142.500 test_mae=98.455 test_rmse=141.231 tf=0.00lr=0.001
+/opt/conda/lib/python3.11/site-packages/torch/utils/data/dataloader.py:626: UserWarning: This DataLoader will create 100 worker processes in total. Our suggested max number of worker in current system is 22, which is smaller than what this DataLoader is going to create. Please be aware that excessive worker creation might get DataLoader running slow or even freeze, lower the worker number to avoid potential slowness/freeze if necessary.
+  warnings.warn(
+/opt/conda/lib/python3.11/site-packages/torch/utils/data/dataloader.py:626: UserWarning: This DataLoader will create 100 worker processes in total. Our suggested max number of worker in current system is 22, which is smaller than what this DataLoader is going to create. Please be aware that excessive worker creation might get DataLoader running slow or even freeze, lower the worker number to avoid potential slowness/freeze if necessary.
+  warnings.warn(
+Epoch 3/400 train_mse_scaled=0.113006 val_mae=91.889 val_rmse=131.776 test_mae=91.417 test_rmse=130.366 tf=0.00lr=0.001

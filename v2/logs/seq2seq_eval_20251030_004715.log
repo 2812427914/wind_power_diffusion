@@ -1,0 +1,29 @@
+/root/wind_power_diffusion/v2/src/utils.py:75: UserWarning: Could not infer format, so each element will be parsed individually, falling back to `dateutil`. To ensure parsing is consistent and as-expected, please specify a format.
+  df[time_col] = pd.to_datetime(df[time_col], errors="coerce")
+Run args: {'data': 'v2/results/cleaned.csv', 'id_col': None, 'time_col': None, 'wind_col': None, 'power_col': None, 'hist_len': 24, 'pred_len': 24, 'stride': 1, 'checkpoint': 'v2/results/checkpoints/seq2seq/best.pth', 'splits_path': 'v2/results/splits_seq2seq.json', 'batch_size': None, 'seed': 42, 'out': 'v2/results/metrics_seq2seq.json'}
+[INFO] Using device: cuda
+[INFO] Loaded checkpoint: v2/results/checkpoints/seq2seq/best.pth
+[INFO] Loaded splits: train=47900, val=5988, test=6059
+[DEBUG] target_scaler.scale_ : [460.11395043]
+[DEBUG] feature_scaler.mean_: [ 7.63311543e+00  7.25987039e+02  1.10326964e-18 -5.63146529e-18
+  6.32851307e-04 -1.86239544e-01]
+[DEBUG] target_scaler.mean_: [746.06511492]
+[DEBUG] exo_scaler.mean_: [ 7.78879236e+00  1.10326964e-18 -5.63146529e-18 -1.45213366e-01
+ -1.16613238e-01]
+[INFO] Val samples: 5988, Test samples: 6059
+[INFO] Saved metrics to: v2/results/metrics_seq2seq.json
+[RESULT] val: {'mae': 187.6507110595703, 'rmse': 286.6355209582371, 'mse_scaled': 0.3880871374087885}
+[RESULT] test: {'mae': 187.53077697753906, 'rmse': 286.83454235412444, 'mse_scaled': 0.38862618248166375}
+[DEBUG] Saved val MAE: 86.073, RMSE: 125.322 (from npy)
+
+[一致性核查]
+  保存值  — MAE:  86.073   RMSE: 125.322
+  重跑值  — MAE: 187.651   RMSE: 286.636
+  差异    — MAE: 101.578   RMSE: 161.313
+
+  前 5 条样本对比（true | saved_pred | recompute_pred | diff）：
+    sample-0: true=1376.11  saved=1470.22  recompute= 112.96  diff=1357.25
+    sample-1: true=1453.85  saved=1514.77  recompute= 649.53  diff= 865.25
+    sample-2: true=1538.67  saved=1505.90  recompute= 411.44  diff=1094.46
+    sample-3: true=1442.91  saved=1494.19  recompute= 329.20  diff=1164.99
+    sample-4: true=1067.15  saved= 873.72  recompute= 115.23  diff= 758.49

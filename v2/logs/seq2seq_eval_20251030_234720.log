@@ -1,0 +1,11 @@
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/root/wind_power_diffusion/v2/src/evaluate.py", line 12, in <module>
+    from .dataset import WindSeqIndexer, WindSeqDataset
+  File "/root/wind_power_diffusion/v2/src/dataset.py", line 10, in <module>
+    from .utils import continuous_segments, sliding_window_indices
+  File "/root/wind_power_diffusion/v2/src/utils.py", line 90
+    return float(np.sqrt(mean_squared_error(y_true.reshape(-1), y_pred.reshape(-1))
+                        ^
+SyntaxError: '(' was never closed

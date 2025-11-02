@@ -1,0 +1,19 @@
+Run args: {'data': 'v2/results/cleaned.csv', 'raw': False, 'id_col': None, 'time_col': None, 'wind_col': None, 'power_col': None, 'hist_len': 24, 'pred_len': 24, 'stride': 1, 'time_encode': None, 'emb_dim': 16, 'checkpoint': 'v2/results/checkpoints/seq2seq/best.pth', 'samples': 100, 'out_prefix': 'v2/results/seq2seq', 'shuffle_split': False, 'shuffle_seed': 42, 'seed': 42, 'sample_index': 0}
+[DEBUG] Loaded 609679 rows from v2/results/cleaned.csv
+[DEBUG] hist_len=24, pred_len=24, stride=1
+[DEBUG] id_col=TurbID, time_col=Datetime, wind_col=Wspd, power_col=Patv
+[DEBUG] Using time encoding mode: sin-cos (inferred=sin-cos)
+[DEBUG] Data head:
+   TurbID  Day Tmstamp      Wspd  ...  hour_sin  hour_cos   dow_sin   dow_cos
+0       1    1   00:00  6.242000  ...  0.000000  1.000000  0.974928 -0.222521
+1       1    1   01:00  6.605000  ...  0.258819  0.965926  0.974928 -0.222521
+2       1    1   02:00  6.918333  ...  0.500000  0.866025  0.974928 -0.222521
+3       1    1   03:00  6.805000  ...  0.707107  0.707107  0.974928 -0.222521
+4       1    1   04:00  8.600000  ...  0.866025  0.500000  0.974928 -0.222521
+
+[5 rows x 13 columns]
+[INFO] Using device: cuda
+[INFO] Loaded saved splits from: v2/results/splits_seq2seq.json (train=47900, val=5988, test=6059)
+[INFO] Test split samples: 6059
+[INFO] Test loader batches: 6059
+Saved predictions to prefix: v2/results/seq2seq

@@ -9,15 +9,16 @@ os.makedirs(RESULTS_DIR, exist_ok=True)
 
 def plot_scenarios(time, y_samples, y_true=None, title="Wind Power Scenarios", save_path=None):
     plt.figure(figsize=(16, 6))
+    sample_idx = 14
     # 只画第0条样本的所有场景
-    n_samples_to_plot = min(10, y_samples.shape[1])
+    n_samples_to_plot = min(100, y_samples.shape[1])
     for i in range(n_samples_to_plot):
-        plt.plot(time, y_samples[0, i], color='deepskyblue', alpha=0.7, label='_nolegend_')
+        plt.plot(time, y_samples[sample_idx, i], color='deepskyblue', alpha=0.7, label='_nolegend_')
     # 画真实值
     if y_true is not None:
-        plt.plot(time, y_true[0], color='red', label='True', linewidth=2)
+        plt.plot(time, y_true[sample_idx], color='red', label='True', linewidth=2)
     # 画均值预测
-    y_pred = np.mean(y_samples[0], axis=0)
+    y_pred = np.mean(y_samples[sample_idx], axis=0)
     plt.plot(time, y_pred, color='blue', linestyle='--', label='Mean Prediction', linewidth=2)
 
     plt.xlabel('Hour')

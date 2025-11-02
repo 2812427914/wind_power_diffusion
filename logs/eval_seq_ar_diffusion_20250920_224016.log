@@ -1,0 +1,8 @@
+Metrics for SEQ_AR_DIFFUSION model:
+  MAE: 160451.45246
+  RMSE: 161645.10090
+  CRPS: 63614.06766
+  ES: 1046275.95988
+  QS: -83643.64359
+
+Updated metrics saved to ../results/metrics.json

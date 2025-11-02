@@ -1,0 +1,21 @@
+Warning: torch.cumprod not supported on MPS, switching to CPU.
+Using device: cpu
+[VAE] Epoch 1/10 Train Loss: 0.1584 | Val Loss: 0.1574
+Saved new best VAE model at epoch 1 with val loss 0.1574
+[VAE] Epoch 2/10 Train Loss: 0.1424 | Val Loss: 0.1550
+Saved new best VAE model at epoch 2 with val loss 0.1550
+[VAE] Epoch 3/10 Train Loss: 0.1389 | Val Loss: 0.1414
+Saved new best VAE model at epoch 3 with val loss 0.1414
+[VAE] Epoch 4/10 Train Loss: 0.1289 | Val Loss: 0.1410
+Saved new best VAE model at epoch 4 with val loss 0.1410
+[VAE] Epoch 5/10 Train Loss: 0.1208 | Val Loss: 0.1240
+Saved new best VAE model at epoch 5 with val loss 0.1240
+[VAE] Epoch 6/10 Train Loss: 0.1220 | Val Loss: 0.1209
+Saved new best VAE model at epoch 6 with val loss 0.1209
+[VAE] Epoch 7/10 Train Loss: 0.1109 | Val Loss: 0.1183
+Saved new best VAE model at epoch 7 with val loss 0.1183
+[VAE] Epoch 8/10 Train Loss: 0.1065 | Val Loss: 0.1035
+Saved new best VAE model at epoch 8 with val loss 0.1035
+[VAE] Epoch 9/10 Train Loss: 0.1082 | Val Loss: 0.1092
+[VAE] Epoch 10/10 Train Loss: 0.1060 | Val Loss: 0.1070
+Saved last VAE model to ../checkpoints/vae_last.pth

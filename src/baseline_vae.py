@@ -19,7 +19,8 @@ class VAE(nn.Module):
         self.decoder = nn.Sequential(
             nn.Linear(latent_dim + cond_dim, hidden_dim),
             nn.ReLU(),
-            nn.Linear(hidden_dim, y_dim)
+            nn.Linear(hidden_dim, y_dim),
+            nn.ReLU()
         )
 
     def encode(self, x, y):

@@ -1,0 +1,11 @@
+usage: train.py [-h] [--data DATA] [--id-col ID_COL] [--time-col TIME_COL]
+                [--wind-col WIND_COL] [--power-col POWER_COL]
+                [--hist-len HIST_LEN] [--pred-len PRED_LEN] [--stride STRIDE]
+                [--time-encode {raw,sin-cos}] [--batch-size BATCH_SIZE]
+                [--epochs EPOCHS] [--lr LR] [--hidden-size HIDDEN_SIZE]
+                [--num-layers NUM_LAYERS] [--dropout DROPOUT]
+                [--emb-dim EMB_DIM] [--teacher-start TEACHER_START]
+                [--teacher-end TEACHER_END] [--patience PATIENCE]
+                [--seed SEED] [--num-workers NUM_WORKERS] [--shuffle-split]
+                [--shuffle-seed SHUFFLE_SEED]
+train.py: error: unrecognized arguments: --shuffle_split

@@ -1,0 +1,10 @@
+Saved scenario plot to ../results/diffusion_scenarios.png
+Saved scenario plot to ../results/gan_scenarios.png
+Saved scenario plot to ../results/seq_ar_diffusion_scenarios.png
+Saved scenario plot to ../results/seq_diffusion_scenarios.png
+Saved scenario plot to ../results/seq_vae_scenarios.png
+Saved scenario plot to ../results/vae_scenarios.png
+Saved scenario plot to ../results/weibull_diffusion_scenarios.png
+Saved metrics plot to ../results/metrics_comparison.png
+
+Visualization script finished. Plots are saved in the 'results' directory.
