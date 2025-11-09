@@ -149,13 +149,23 @@ class WindSeqDataset(Dataset):
             ys.append(y)
             exos.append(X_future)
         if Xs:
-            Xc = np.concatenate(Xs, axis=0)
-            yc = np.concatenate(ys, axis=0)
-            exoc = np.concatenate(exos, axis=0)
+            # Use float64 to improve numerical stability when fitting scalers
+            Xc = np.concatenate(Xs, axis=0).astype(np.float64)
+            yc = np.concatenate(ys, axis=0).astype(np.float64)
+            exoc = np.concatenate(exos, axis=0).astype(np.float64)
             self.feature_scaler.fit(Xc)
             self.target_scaler.fit(yc)
             self.exo_scaler.fit(exoc)
             self._fitted = True
+
+    def _safe_transform(self, scaler, arr):
+        """
+        Transform with StandardScaler using float64 for numerical stability,
+        then replace non-finite values to avoid NaN/Inf propagation.
+        """
+        out = scaler.transform(arr.astype(np.float64))
+        out = np.nan_to_num(out, nan=0.0, posinf=0.0, neginf=0.0).astype(np.float32)
+        return out
 
     def _prepare_scaled_views(self):
         """
@@ -163,12 +173,13 @@ class WindSeqDataset(Dataset):
         """
         for g in self.groups:
             df = g["df"]
-            feats = df[self.feature_cols].values.astype(np.float32)
-            exos = df[self.exo_cols].values.astype(np.float32)
-            tgt = df[[self.target_col]].values.astype(np.float32)
-            g["_feat_scaled"] = self.feature_scaler.transform(feats)
-            g["_exo_scaled"] = self.exo_scaler.transform(exos)
-            g["_tgt_scaled"] = self.target_scaler.transform(tgt)
+            # Use float64 during transform, then sanitize and cast to float32
+            feats = df[self.feature_cols].values.astype(np.float64)
+            exos = df[self.exo_cols].values.astype(np.float64)
+            tgt = df[[self.target_col]].values.astype(np.float64)
+            g["_feat_scaled"] = self._safe_transform(self.feature_scaler, feats)
+            g["_exo_scaled"] = self._safe_transform(self.exo_scaler, exos)
+            g["_tgt_scaled"] = self._safe_transform(self.target_scaler, tgt)
     def __len__(self):
         return len(self.indices)
 

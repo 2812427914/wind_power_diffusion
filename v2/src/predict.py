@@ -10,6 +10,7 @@ from .preprocess import load_and_clean
 from .dataset import WindSeqIndexer, WindSeqDataset
 from .model_seq2seq import Seq2Seq
 from .model_seq2seq_diffusion import Seq2SeqDiffusion
+from .model_seq2seq_ar_diffusion import Seq2SeqARDiffusion
 from .model_gan import Seq2SeqGAN
 from .model_vae import Seq2SeqVAE
 from .utils import encode_time_features, set_seed, load_splits
@@ -17,7 +18,7 @@ from .utils import encode_time_features, set_seed, load_splits
 
 def parse_args():
     p = argparse.ArgumentParser()
-    p.add_argument("--model", choices=["seq2seq", "seq2seq_diffusion", "gan", "vae"], default="seq2seq")
+    p.add_argument("--model", choices=["seq2seq", "seq2seq_diffusion", "seq2seq_ar_diffusion", "gan", "vae"], default="seq2seq")
     p.add_argument("--data", default="v2/results/cleaned.csv")
     p.add_argument("--raw", action="store_true")
     p.add_argument("--id-col", default=None)
@@ -33,16 +34,19 @@ def parse_args():
 
     p.add_argument("--checkpoint", default="v2/results/checkpoints/seq2seq/best.pth")
     p.add_argument("--samples", type=int, default=100, help="MC dropout sample count for scenarios.")
+    p.add_argument("--seed", type=int, default=42, help="MC dropout sample count for scenarios.")
     p.add_argument("--out-prefix", default="v2/results/seq2seq")
     p.add_argument("--shuffle-split", action="store_true")
     p.add_argument("--shuffle-seed", type=int, default=42)
-    p.add_argument("--seed", type=int, default=42)
     p.add_argument(
         "--sample-index",
         type=int,
         default=0,
         help="Index of test sample to save scenarios for (0-based).",
     )
+
+    p.add_argument("--diffusion-timesteps", type=int, default=50, help="Number of diffusion timesteps")
+    p.add_argument("--batch-size", type=int, default=1024, help="Batch size for DataLoader during prediction")
 
     return p.parse_args()
 
@@ -188,7 +192,7 @@ def main():
 
     test_ds = WindSeqDataset(indexer.groups, test_indices, feature_cols, target_col, hist_len, pred_len, exo_cols,
                              feature_scaler=feature_scaler, target_scaler=target_scaler, exo_scaler=exo_scaler)
-    test_loader = DataLoader(test_ds, batch_size=1, shuffle=False)
+    test_loader = DataLoader(test_ds, batch_size=args.batch_size, shuffle=False)
 
     print(f"[INFO] Test split samples: {len(test_indices)}")
     print(f"[INFO] Test loader batches: {len(test_loader)}")
@@ -212,6 +216,8 @@ def main():
         model_cls = Seq2Seq
     elif model_name in ("seq2seq_diffusion", "seq2seq+diffusion", "seq2seq_diff"):
         model_cls = Seq2SeqDiffusion
+    elif model_name == "seq2seq_ar_diffusion":
+        model_cls = Seq2SeqARDiffusion
     elif model_name == "gan":
         model_cls = Seq2SeqGAN
     elif model_name == "vae":
@@ -220,55 +226,114 @@ def main():
         print(f"[WARN] Unknown model '{model_name}', defaulting to Seq2Seq")
         model_cls = Seq2Seq
 
-    model = model_cls(
-        input_dim=len(feature_cols),
-        exo_dim=len(exo_cols),
-        n_turbines=n_turbines_ckpt,
-        emb_dim=emb_dim,
-        hidden_size=hidden_size,
-        num_layers=num_layers,
-        dropout=dropout,
-    )
+    # For diffusion models, use checkpoint config to ensure architecture matches
+    if model_name == "seq2seq_ar_diffusion":
+        model = model_cls(
+            input_dim=len(feature_cols),
+            exo_dim=len(exo_cols),
+            n_turbines=n_turbines_ckpt,
+            emb_dim=emb_dim,
+            hidden_size=hidden_size,
+            num_layers=num_layers,
+            dropout=dropout,
+            timesteps=config.get("diffusion_timesteps", 100),
+            beta_start=config.get("diffusion_beta_start", 1e-4),
+            beta_end=config.get("diffusion_beta_end", 0.02),
+            schedule=config.get("diffusion_schedule", "linear"),
+            t_embed_dim=config.get("diffusion_t_embed_dim", 32),
+            k_steps=config.get("diffusion_k_steps", 4),
+        )
+    else:
+        model = model_cls(
+            input_dim=len(feature_cols),
+            exo_dim=len(exo_cols),
+            n_turbines=n_turbines_ckpt,
+            emb_dim=emb_dim,
+            hidden_size=hidden_size,
+            num_layers=num_layers,
+            dropout=dropout,
+        )
     model.load_state_dict(ckpt["model_state"])
     model.to(device)
 
-    # Collect first N examples for visualization
+    # Collect N examples for visualization (only those starting at 00:00)
     y_trues = []
     y_preds_mean = []
     y_preds_samples = []
+    turb_ids = []  # 保存风机ID
 
-    # We need to ensure we collect enough batches to reach the requested sample_index.
-    # Keep the previous cap for visualization but allow extending it so sample-index can be reached.
-    max_collect = max(50, args.sample_index + 1)
-    count = 0
+    max_collect = np.inf  # 可扩展到指定样本数
     empty_loader = True
+    offset = 0           # 全局样本偏移量（跨 batch 计数）
+    total_kept = 0
+
     for batch in test_loader:
         empty_loader = False
-        X = batch["X"].to(device)  # [1, hist, F]
-        X_future = batch["X_future"].to(device)  # [1, pred, exo_dim]
-        y_true = batch["y"].numpy()  # [1, pred, 1]
-        y0 = batch["y0_scaled"].to(device)  # [1, 1]
+        X = batch["X"].to(device)               # [B, hist, F]
+        X_future = batch["X_future"].to(device) # [B, pred, exo_dim]
+        y_true_batch = batch["y"].cpu().numpy() # [B, pred, 1]
+        y0 = batch["y0_scaled"].to(device)      # [B, 1]
+        turb_idx_batch = batch["turb_idx"].to(device)
 
-        # MC Dropout scenarios: enable dropout by setting model to train, but no grad
-        samples = []
+        B = X.shape[0]
+        keep_local_idx = []
+        keep_turb_ids = []
+
+        # 找出本批次中满足“预测起始时间为 0 点”的样本
+        for i in range(B):
+            global_idx = offset + i
+            g_idx, seg_start, win_start = test_ds.indices[global_idx]
+            g = test_ds.groups[g_idx]
+            gdf = g["df"]
+            s = seg_start + win_start
+            he = s + hist_len
+            pred_start_time = gdf.iloc[he]["Datetime"]
+            hour_val = int(getattr(pred_start_time, "hour", -1))
+            if hour_val == 0:
+                keep_local_idx.append(i)
+                keep_turb_ids.append(g["id"])
+
+        # 若本批没有符合条件的样本，跳过
+        if len(keep_local_idx) == 0:
+            offset += B
+            continue
+
+        # 取子集进行推理
+        X_sel = X[keep_local_idx]
+        Xf_sel = X_future[keep_local_idx]
+        y0_sel = y0[keep_local_idx]
+        turb_idx_sel = turb_idx_batch[keep_local_idx]
+        y_true_sel = y_true_batch[keep_local_idx]  # [b_sel, pred, 1]
+
+        # MC Dropout scenarios: 训练模式开启 dropout，但无梯度
         model.train()
-        turb_idx = batch["turb_idx"].to(device)
+        preds_samples = []
         for _ in range(args.samples):
-            yhat_scaled = model(X, X_future, y0, turb_idx, pred_steps=y_true.shape[1], teacher_forcing=0.0)
-            yhat = target_scaler.inverse_transform(yhat_scaled.cpu().numpy().reshape(-1, 1)).reshape(y_true.shape)
-            samples.append(yhat[0, :, 0])  # [pred]
+            yhat_scaled = model(X_sel, Xf_sel, y0_sel, turb_idx_sel, pred_steps=y_true_sel.shape[1], teacher_forcing=0.0)
+            yhat = target_scaler.inverse_transform(
+                yhat_scaled.detach().cpu().numpy().reshape(-1, 1)
+            ).reshape(y_true_sel.shape)  # [b_sel, pred, 1]
+            preds_samples.append(yhat[:, :, 0])  # [b_sel, pred]
         model.eval()
 
-        samples_np = np.stack(samples, axis=0)  # [S, pred]
-        mean_np = samples_np.mean(axis=0)       # [pred]
+        preds_samples_np = np.stack(preds_samples, axis=0)  # [S, b_sel, pred]
+        mean_np = preds_samples_np.mean(axis=0)             # [b_sel, pred]
 
-        y_trues.append(y_true[0, :, 0])
-        y_preds_mean.append(mean_np)
-        y_preds_samples.append(samples_np)
+        # 逐样本落盘收集
+        b_sel = len(keep_local_idx)
+        for j in range(b_sel):
+            y_trues.append(y_true_sel[j, :, 0])
+            y_preds_mean.append(mean_np[j])
+            y_preds_samples.append(preds_samples_np[:, j, :])
+            turb_ids.append(keep_turb_ids[j])
+            total_kept += 1
+            if total_kept >= max_collect:
+                break
 
-        count += 1
-        if count >= max_collect:
+        if total_kept >= max_collect:
             break
+
+        offset += B
 
     if empty_loader or len(y_trues) == 0 or len(y_preds_mean) == 0:
         print("Error: No test samples found. Please check your data and split settings.")
@@ -276,20 +341,28 @@ def main():
 
     y_trues = np.stack(y_trues, axis=0)                  # [N, pred]
     y_preds_mean = np.stack(y_preds_mean, axis=0)        # [N, pred]
-    # For memory, only store samples for the chosen example (args.sample_index).
+    turb_ids = np.array(turb_ids)                        # [N]
+    
+    # 保存所有样本的场景序列，形状为 [N, S, pred]
     if len(y_preds_samples) > 0:
-        sel_idx = min(max(0, args.sample_index), len(y_preds_samples) - 1)
-        y_samples_selected = y_preds_samples[sel_idx]
+        y_samples_all = np.stack(y_preds_samples, axis=0)  # [N, S, pred]
     else:
-        y_samples_selected = np.zeros((args.samples, pred_len))
+        y_samples_all = np.zeros((len(y_trues), args.samples, pred_len))
 
     os.makedirs(os.path.dirname(args.out_prefix), exist_ok=True)
     np.save(f"{args.out_prefix}_y_true.npy", y_trues)
     np.save(f"{args.out_prefix}_y_pred_mean.npy", y_preds_mean)
-    # Keep the filename for backward compatibility (this file contains the selected sample's scenarios).
-    np.save(f"{args.out_prefix}_y_samples_first.npy", y_samples_selected)
+    np.save(f"{args.out_prefix}_turb_ids.npy", turb_ids)  # 新增：保存风机ID
+    # 保存所有样本的场景序列
+    np.save(f"{args.out_prefix}_y_samples_all.npy", y_samples_all)
+    # 兼容旧脚本，继续保存第一条
+    if y_samples_all.shape[0] > 0:
+        np.save(f"{args.out_prefix}_y_samples_first.npy", y_samples_all[0])
+    else:
+        np.save(f"{args.out_prefix}_y_samples_first.npy", np.zeros((args.samples, pred_len)))
 
     print("Saved predictions to prefix:", args.out_prefix)
+    print(f"Filtered {len(y_trues)} samples that start at 0:00 hour")
 
 
 if __name__ == "__main__":

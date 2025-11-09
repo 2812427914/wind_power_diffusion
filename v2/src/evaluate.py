@@ -22,7 +22,7 @@ from .utils import (
     save_json,
     load_json,
 )
-from .train import eval_epoch
+from .train import eval_epoch, eval_epoch_ar_diff
 
 
 def parse_args():
@@ -236,8 +236,12 @@ def main():
 
     # criterion and evaluation (reuse train.eval_epoch for strict consistency)
     criterion = nn.MSELoss()
-    val_metrics = eval_epoch(model, val_loader, device, criterion, target_scaler)
-    test_metrics = eval_epoch(model, test_loader, device, criterion, target_scaler)
+    if model_name == "seq2seq_ar_diffusion":
+        val_metrics = eval_epoch_ar_diff(model, val_loader, device, target_scaler)
+        test_metrics = eval_epoch_ar_diff(model, test_loader, device, target_scaler)
+    else:
+        val_metrics = eval_epoch(model, val_loader, device, criterion, target_scaler)
+        test_metrics = eval_epoch(model, test_loader, device, criterion, target_scaler)
 
     # save metrics
     metrics = {
