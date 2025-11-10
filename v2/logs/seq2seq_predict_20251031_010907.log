@@ -1,9 +1,0 @@
-usage: predict.py [-h] [--data DATA] [--raw] [--id-col ID_COL]
-                  [--time-col TIME_COL] [--wind-col WIND_COL]
-                  [--power-col POWER_COL] [--hist-len HIST_LEN]
-                  [--pred-len PRED_LEN] [--stride STRIDE]
-                  [--time-encode {raw,sin-cos}] [--emb-dim EMB_DIM]
-                  [--checkpoint CHECKPOINT] [--samples SAMPLES]
-                  [--out-prefix OUT_PREFIX] [--shuffle-split]
-                  [--shuffle-seed SHUFFLE_SEED] [--seed SEED]
-predict.py: error: unrecognized arguments: --sample-index 0

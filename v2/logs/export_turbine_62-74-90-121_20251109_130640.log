@@ -1,0 +1,19 @@
+[INFO] 模型 seq2seq 找到风机 62 的样本数：2
+[INFO] 模型 seq2seq 找到风机 74 的样本数：2
+[INFO] 模型 seq2seq 找到风机 90 的样本数：1
+[INFO] 模型 seq2seq 找到风机 121 的样本数：2
+[WARN] 模型 seq2seq_diffusion 的输出文件缺失，跳过。需要：v2/results/seq2seq_diffusion_y_true.npy, v2/results/seq2seq_diffusion_y_pred_mean.npy, v2/results/seq2seq_diffusion_turb_ids.npy
+[INFO] 模型 seq2seq_ar_diffusion 找到风机 62 的样本数：2
+[INFO] 模型 seq2seq_ar_diffusion 找到风机 74 的样本数：2
+[INFO] 模型 seq2seq_ar_diffusion 找到风机 90 的样本数：1
+[INFO] 模型 seq2seq_ar_diffusion 找到风机 121 的样本数：2
+[INFO] 模型 gan 找到风机 62 的样本数：2
+[INFO] 模型 gan 找到风机 74 的样本数：2
+[INFO] 模型 gan 找到风机 90 的样本数：1
+[INFO] 模型 gan 找到风机 121 的样本数：2
+[INFO] 模型 vae 找到风机 62 的样本数：2
+[INFO] 模型 vae 找到风机 74 的样本数：2
+[INFO] 模型 vae 找到风机 90 的样本数：1
+[INFO] 模型 vae 找到风机 121 的样本数：2
+[SUCCESS] 已保存 CSV：v2/results/turbine_forecasts_62-74-90-121.csv
+统计：尝试(model,id)对数=16, 有匹配对数=16, 导出行数=384

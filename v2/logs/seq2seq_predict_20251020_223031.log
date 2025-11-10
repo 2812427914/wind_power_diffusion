@@ -1,3 +1,0 @@
-/root/wind_power_diffusion/v2/src/utils.py:75: UserWarning: Could not infer format, so each element will be parsed individually, falling back to `dateutil`. To ensure parsing is consistent and as-expected, please specify a format.
-  df[time_col] = pd.to_datetime(df[time_col], errors="coerce")
-Error: No test samples found. Please check your data and split settings.

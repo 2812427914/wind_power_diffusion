@@ -1,4 +1,0 @@
-Traceback (most recent call last):
-  File "/root/wind_power_diffusion/v2/src/train.py", line 13, in <module>
-    from .preprocess import load_and_clean
-ImportError: attempted relative import with no known parent package

@@ -32,6 +32,9 @@ class Decoder(nn.Module):
         )
         self.proj = nn.Linear(hidden_size, out_dim)
         self.dropout = nn.Dropout(dropout)
+        # Latent noise projection (GAN-style stochastic generator)
+        self.z_dim = 16
+        self.z_proj = nn.Linear(self.z_dim, out_dim + exo_dim)
 
     def forward(
         self,
@@ -42,17 +45,29 @@ class Decoder(nn.Module):
         teacher_forcing: float = 0.0,
         y_truth: Optional[torch.Tensor] = None,
         noise_std: float = 0.0,
+        z: Optional[torch.Tensor] = None,
     ):
+        """
+        Decoder that injects a per-sequence latent code z as an additive bias to inputs.
+        Also supports optional Gaussian input noise via noise_std.
+        """
         outputs = []
         h, c = hidden
         prev_y = y0.unsqueeze(1)  # [B, 1, 1]
+        B = y0.size(0)
+        # Prepare latent bias once per sequence
+        z_bias = None
+        if z is not None:
+            z_bias = self.z_proj(z).unsqueeze(1)  # [B, 1, in_size]
         for t in range(steps):
             if self.training and y_truth is not None and torch.rand(1).item() < teacher_forcing:
                 y_in = y_truth[:, t : t + 1, :]
             else:
                 y_in = prev_y
             exo_t = x_future[:, t : t + 1, :]
-            in_t = torch.cat([y_in, exo_t], dim=2)
+            in_t = torch.cat([y_in, exo_t], dim=2)  # [B, 1, in_size]
+            if z_bias is not None:
+                in_t = in_t + z_bias  # broadcast along time=1
             if noise_std > 0:
                 in_t = in_t + torch.randn_like(in_t) * noise_std
             out, (h, c) = self.lstm(self.dropout(in_t), (h, c))
@@ -92,5 +107,19 @@ class Seq2SeqGAN(nn.Module):
         x_future_aug = torch.cat([x_future, emb_future], dim=-1)
 
         h, c = self.encoder(x_hist_aug)
-        out = self.decoder(y0, x_future_aug, (h, c), steps=pred_steps, teacher_forcing=teacher_forcing, y_truth=y_truth, noise_std=noise_std)
+        # Stochastic latent code: sample when training for diversity; deterministic zero in eval for repeatability
+        B = x_hist.size(0)
+        device = x_hist.device
+        if self.training:
+            z = torch.randn(B, self.decoder.z_dim, device=device)
+        else:
+            z = torch.zeros(B, self.decoder.z_dim, device=device)
+        out = self.decoder(
+            y0, x_future_aug, (h, c),
+            steps=pred_steps,
+            teacher_forcing=teacher_forcing,
+            y_truth=y_truth,
+            noise_std=noise_std,
+            z=z,
+        )
         return out

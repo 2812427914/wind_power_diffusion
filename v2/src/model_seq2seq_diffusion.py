@@ -32,6 +32,11 @@ class Decoder(nn.Module):
         )
         self.proj = nn.Linear(hidden_size, out_dim)
         self.dropout = nn.Dropout(dropout)
+        # Time-step conditioning projected to input size, added as bias each step.
+        self.time_proj = nn.Linear(1, out_dim + exo_dim)
+        # Default diffusion noise schedule (std) used during training if not explicitly provided.
+        self.noise_min = 0.0
+        self.noise_max = 0.1
 
     def forward(
         self,
@@ -43,20 +48,40 @@ class Decoder(nn.Module):
         y_truth: Optional[torch.Tensor] = None,
         noise_std: float = 0.0,
     ):
+        """
+        Decoder with diffusion-style stochasticity:
+        - Adds a learned time-step bias (via linear projection of normalized t).
+        - Injects Gaussian noise with either a provided std (noise_std>0) or a linear schedule during training.
+        """
         outputs = []
         h, c = hidden
         prev_y = y0.unsqueeze(1)  # [B, 1, 1]
+        B = y0.size(0)
         for t in range(steps):
+            # teacher forcing
             if self.training and y_truth is not None and torch.rand(1).item() < teacher_forcing:
                 y_in = y_truth[:, t : t + 1, :]  # [B, 1, 1]
             else:
                 y_in = prev_y
+            # exogenous at step t
             exo_t = x_future[:, t : t + 1, :]  # [B, 1, exo_dim]
             step_in = torch.cat([y_in, exo_t], dim=2)  # [B, 1, 1+exo]
+            # time-step conditioning (normalized t in [0,1])
+            t_norm = 0.0 if steps <= 1 else float(t) / float(steps - 1)
+            t_token = torch.full((B, 1, 1), fill_value=t_norm, device=y0.device, dtype=y0.dtype)
+            time_bias = self.time_proj(t_token)  # [B, 1, 1+exo]
+            step_in = step_in + time_bias
+            # diffusion noise injection
             if noise_std > 0.0:
-                step_in = step_in + torch.randn_like(step_in) * noise_std
+                sigma_t = noise_std
+            else:
+                # Only inject scheduled noise during training; deterministic in eval by default.
+                sigma_t = (self.noise_min + (self.noise_max - self.noise_min) * t_norm) if self.training else 0.0
+            if sigma_t > 0.0:
+                step_in = step_in + torch.randn_like(step_in) * sigma_t
+            # LSTM step
             out, (h, c) = self.lstm(self.dropout(step_in), (h, c))
-            yhat = self.proj(out)
+            yhat = self.proj(out)  # [B, 1, 1]
             outputs.append(yhat)
             prev_y = yhat.detach()
         return torch.cat(outputs, dim=1)  # [B, steps, 1]

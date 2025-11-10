@@ -16,6 +16,7 @@ from .model_seq2seq import Seq2Seq
 from .model_seq2seq_diffusion import Seq2SeqDiffusion
 from .model_gan import Seq2SeqGAN
 from .model_vae import Seq2SeqVAE
+from .model_seq2seq_ar_diffusion import Seq2SeqARDiffusion
 from .utils import set_seed, mae, rmse, save_splits, load_splits
 
 
@@ -36,6 +37,27 @@ def train_epoch(model, loader, device, criterion, teacher_forcing):
         torch.nn.utils.clip_grad_norm_(model.parameters(), 5.0)
         optimizer.step()
         total_loss += loss.item() * X.size(0)
+    return total_loss / len(loader.dataset)
+
+
+def train_epoch_ar_diff(model, loader, device, optimizer):
+    """
+    Specialized training loop for Seq2SeqARDiffusion using epsilon loss.
+    """
+    model.train()
+    total_loss = 0.0
+    for batch in loader:
+        X = batch["X"].to(device)
+        X_future = batch["X_future"].to(device)
+        y_scaled = batch["y_scaled"].to(device)
+        turb_idx = batch["turb_idx"].to(device)
+
+        optimizer.zero_grad()
+        loss = model.train_loss(X, X_future, y_scaled, turb_idx)
+        loss.backward()
+        torch.nn.utils.clip_grad_norm_(model.parameters(), 5.0)
+        optimizer.step()
+        total_loss += float(loss.item()) * X.size(0)
     return total_loss / len(loader.dataset)
 
 
@@ -70,6 +92,42 @@ def eval_epoch(model, loader, device, criterion, target_scaler):
     }
     return metrics
 
+
+@torch.no_grad()
+def eval_epoch_ar_diff(model, loader, device, target_scaler):
+    """
+    Evaluation for Seq2SeqARDiffusion: generate deterministic forecasts and compute metrics.
+    """
+    model.eval()
+    ys = []
+    yhs = []
+    for batch in loader:
+        X = batch["X"].to(device)
+        X_future = batch["X_future"].to(device)
+        y_true = batch["y"].cpu().numpy()  # original units
+        y0 = batch["y0_scaled"].to(device)
+        turb_idx = batch["turb_idx"].to(device)
+
+        # deterministic sampling in eval mode via model.forward
+        yhat_scaled = model(X, X_future, y0, turb_idx, pred_steps=y_true.shape[1], teacher_forcing=0.0)
+        yhat = target_scaler.inverse_transform(yhat_scaled.cpu().numpy().reshape(-1, 1)).reshape(y_true.shape)
+        ys.append(y_true)
+        yhs.append(yhat)
+
+    if len(ys) == 0:
+        return {"mae": 0.0, "rmse": 0.0, "mse_scaled": 0.0}
+    y_true_all = np.concatenate(ys, axis=0)
+    y_pred_all = np.concatenate(yhs, axis=0)
+    # Sanitize any NaN/Inf to avoid metric failures
+    y_pred_all = np.nan_to_num(y_pred_all, nan=0.0, posinf=0.0, neginf=0.0)
+    y_true_all = np.nan_to_num(y_true_all, nan=0.0, posinf=0.0, neginf=0.0)
+    metrics = {
+        "mae": mae(y_true_all, y_pred_all),
+        "rmse": rmse(y_true_all, y_pred_all),
+        "mse_scaled": 0.0,  # not applicable
+    }
+    return metrics
+
 @torch.no_grad()
 def predict_loader(model, loader, device, target_scaler):
     """
@@ -95,6 +153,9 @@ def predict_loader(model, loader, device, target_scaler):
         return np.zeros((0, 0, 0)), np.zeros((0, 0, 0))
     y_true_all = np.concatenate(ys, axis=0)  # [N, T, 1]
     y_pred_all = np.concatenate(yhs, axis=0)  # [N, T, 1]
+    # Sanitize any NaN/Inf to keep downstream metrics robust
+    y_pred_all = np.nan_to_num(y_pred_all, nan=0.0, posinf=0.0, neginf=0.0)
+    y_true_all = np.nan_to_num(y_true_all, nan=0.0, posinf=0.0, neginf=0.0)
     return y_true_all, y_pred_all
 
 
@@ -113,7 +174,7 @@ def ensure_dirs(model_name: str):
 
 def parse_args():
     p = argparse.ArgumentParser()
-    p.add_argument("--model", choices=["seq2seq", "seq2seq_diffusion", "gan", "vae"], default="seq2seq")
+    p.add_argument("--model", choices=["seq2seq", "seq2seq_diffusion", "seq2seq_ar_diffusion", "gan", "vae"], default="seq2seq")
     p.add_argument("--data", default="data/wtbdata_hourly.csv")
     p.add_argument("--id-col", default=None)
     p.add_argument("--time-col", default=None)
@@ -132,6 +193,14 @@ def parse_args():
     p.add_argument("--num-layers", type=int, default=2)
     p.add_argument("--dropout", type=float, default=0.2)
     p.add_argument("--emb-dim", type=int, default=16)
+
+    # Diffusion-specific parameters
+    p.add_argument("--diffusion-timesteps", type=int, default=50, help="Number of diffusion timesteps")
+    p.add_argument("--diffusion-beta-start", type=float, default=1e-4, help="Diffusion beta start")
+    p.add_argument("--diffusion-beta-end", type=float, default=0.02, help="Diffusion beta end")
+    p.add_argument("--diffusion-schedule", choices=["linear", "cosine"], default="linear", help="Diffusion schedule")
+    p.add_argument("--diffusion-t-embed-dim", type=int, default=16, help="Time embedding dimension for diffusion")
+    p.add_argument("--diffusion-k-steps", type=int, default=2, help="Number of random steps to sample during training")
 
     p.add_argument("--teacher-start", type=float, default=1.0)
     p.add_argument("--teacher-end", type=float, default=0.2)
@@ -258,6 +327,8 @@ if __name__ == "__main__":
         model_cls = Seq2Seq
     elif args.model in ("seq2seq_diffusion", "seq2seq+diffusion", "seq2seq_diff"):
         model_cls = Seq2SeqDiffusion
+    elif args.model == "seq2seq_ar_diffusion":
+        model_cls = Seq2SeqARDiffusion
     elif args.model == "gan":
         model_cls = Seq2SeqGAN
     elif args.model == "vae":
@@ -266,15 +337,33 @@ if __name__ == "__main__":
         print(f"[WARN] Unknown model '{args.model}', defaulting to Seq2Seq")
         model_cls = Seq2Seq
 
-    model = model_cls(
-        input_dim=len(feature_cols),
-        exo_dim=len(exo_cols),
-        n_turbines=indexer.n_turbines,
-        emb_dim=args.emb_dim,
-        hidden_size=args.hidden_size,
-        num_layers=args.num_layers,
-        dropout=args.dropout,
-    ).to(device)
+    # For diffusion models, pass additional parameters
+    if args.model == "seq2seq_ar_diffusion":
+        model = model_cls(
+            input_dim=len(feature_cols),
+            exo_dim=len(exo_cols),
+            n_turbines=indexer.n_turbines,
+            emb_dim=args.emb_dim,
+            hidden_size=args.hidden_size,
+            num_layers=args.num_layers,
+            dropout=args.dropout,
+            timesteps=args.diffusion_timesteps,
+            beta_start=args.diffusion_beta_start,
+            beta_end=args.diffusion_beta_end,
+            schedule=args.diffusion_schedule,
+            t_embed_dim=args.diffusion_t_embed_dim,
+            k_steps=args.diffusion_k_steps,
+        ).to(device)
+    else:
+        model = model_cls(
+            input_dim=len(feature_cols),
+            exo_dim=len(exo_cols),
+            n_turbines=indexer.n_turbines,
+            emb_dim=args.emb_dim,
+            hidden_size=args.hidden_size,
+            num_layers=args.num_layers,
+            dropout=args.dropout,
+        ).to(device)
 
     # 5) Training setup
     criterion = nn.MSELoss()
@@ -289,18 +378,24 @@ if __name__ == "__main__":
 
     total_steps = max(1, args.epochs - 1)
     for epoch in range(1, args.epochs + 1):
-        teacher_forcing = linear_schedule(args.teacher_start, args.teacher_end, epoch - 1, total_steps)
-        train_loss = train_epoch(model, train_loader, device, criterion, teacher_forcing)
-        val_metrics = eval_epoch(model, val_loader, device, criterion, train_ds.target_scaler)
-        # test_metrics = eval_epoch(model, test_loader, device, criterion, train_ds.target_scaler)
+        if args.model == "seq2seq_ar_diffusion":
+            # diffusion AR training does not use teacher forcing ratio in the same way
+            train_loss = train_epoch_ar_diff(model, train_loader, device, optimizer)
+            val_metrics = eval_epoch_ar_diff(model, val_loader, device, train_ds.target_scaler)
+            tf_value = 0.0
+            train_loss_name = "train_eps_loss"
+        else:
+            teacher_forcing = linear_schedule(args.teacher_start, args.teacher_end, epoch - 1, total_steps)
+            train_loss = train_epoch(model, train_loader, device, criterion, teacher_forcing)
+            val_metrics = eval_epoch(model, val_loader, device, criterion, train_ds.target_scaler)
+            tf_value = teacher_forcing
+            train_loss_name = "train_mse_scaled"
 
-        # 仅打印训练/验证信息，验证集的预测保存将在发现更好模型时进行
         current_lr = optimizer.param_groups[0]["lr"]
         print(f"Epoch {epoch}/{args.epochs} "
-              f"train_mse_scaled={train_loss:.6f} "
-              f"val_mae={val_metrics['mae']:.3f} val_rmse={val_metrics['rmse']:.3f} "
-            #   f"test_mae={test_metrics['mae']:.3f} test_rmse={test_metrics['rmse']:.3f} "
-              f"tf={teacher_forcing:.2f}"
+              f"{train_loss_name}={train_loss:.6f} "
+              f"val_mae={val_metrics.get('mae', np.inf):.3f} val_rmse={val_metrics.get('rmse', np.inf):.3f} "
+              f"tf={tf_value:.2f} "
               f"lr={current_lr:.6g}")
 
         # scheduler.step(val_metrics["rmse"])
@@ -314,7 +409,7 @@ if __name__ == "__main__":
             "exo_scaler": train_ds.exo_scaler,
             "id2idx": {str(k): int(v) for k, v in indexer.id2idx.items()},
         }, last_path)
-        improved = val_metrics["rmse"] < best_rmse - 1e-6
+        improved = val_metrics.get("rmse", np.inf) < best_rmse - 1e-6
         if improved:
             best_rmse = val_metrics["rmse"]
             torch.save({
@@ -327,7 +422,10 @@ if __name__ == "__main__":
             }, best_path)
             # 仅在发现更好模型时，保存验证集的真实值与预测值，便于后续可视化使用（避免每个 epoch 重复写入）
             try:
-                y_val_true, y_val_pred = predict_loader(model, val_loader, device, train_ds.target_scaler)
+                if args.model == "seq2seq_ar_diffusion":
+                    y_val_true, y_val_pred = predict_loader(model, val_loader, device, train_ds.target_scaler)
+                else:
+                    y_val_true, y_val_pred = predict_loader(model, val_loader, device, train_ds.target_scaler)
                 if isinstance(y_val_true, np.ndarray) and y_val_true.size > 0:
                     np.save(f"v2/results/{args.model}_val_y_true.npy", y_val_true.squeeze())   # 保存为 [N, T]
                     np.save(f"v2/results/{args.model}_val_y_pred_mean.npy", y_val_pred.squeeze())  # 保存为 [N, T]

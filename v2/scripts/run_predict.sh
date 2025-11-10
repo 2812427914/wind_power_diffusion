@@ -4,6 +4,7 @@ set -e
 PY=${PY:-python}
 MODEL=${MODEL:-seq2seq}
 SAMPLE_INDEX=${SAMPLE_INDEX:-0}
+BATCH_SIZE=${BATCH_SIZE:-1024}
 LOGDIR="v2/logs"
 mkdir -p "$LOGDIR"
 NOW=$(date +"%Y%m%d_%H%M%S")
@@ -18,5 +19,6 @@ nohup $PY -m v2.src.predict \
   --samples 100 \
   --out-prefix "v2/results/${MODEL}" \
   --sample-index "$SAMPLE_INDEX" \
+  --batch-size "$BATCH_SIZE" \
   > "$LOGFILE" 2>&1 &
 echo "Prediction started. Log: $LOGFILE (sample_index=$SAMPLE_INDEX)"

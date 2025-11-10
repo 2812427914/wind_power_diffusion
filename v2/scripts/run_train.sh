@@ -14,19 +14,22 @@ nohup $PY -m v2.src.train \
   --hist-len 24 \
   --pred-len 24 \
   --stride 1 \
-  --batch-size 256 \
+  --batch-size 64 \
   --epochs 2000 \
-  --lr 1e-3 \
-  --hidden-size 32 \
-  --emb-dim 5 \
+  --lr 5e-4 \
+  --hidden-size 128 \
+  --emb-dim 8 \
   --num-layers 2 \
   --dropout 0.1 \
   --teacher-start 0 \
   --teacher-end 0 \
-  --patience 100 \
+  --patience 2000 \
   --seed 42 \
-  --num-workers 20 \
+  --num-workers 10 \
   --time-encode sin-cos \
   --shuffle-split \
+  --diffusion-timesteps 30 \
+  --diffusion-t-embed-dim 16 \
+  --diffusion-k-steps 2 \
   > "$LOGFILE" 2>&1 &
 echo "Training started. Log: $LOGFILE"
